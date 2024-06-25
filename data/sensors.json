@@ -1,0 +1,37 @@
+[
+  {
+	"uid": "1",
+	"name": "Status"
+  },
+  {
+	"uid": "4.78",
+	"name": "pH",
+	"icon": "mdi:water-sync",
+	"state_class": "measurement",
+	"unit_of_measurement": "pH",
+	"value_template": "{{value_json.v | float / 10 }}"
+  },
+  {
+	"uid": "4.82",
+	"name": "Redox",
+	"icon": "mdi:water-opacity",
+	"state_class": "measurement",
+	"unit_of_measurement": "mv",
+	"value_template": "{{value_json.v | int }}"
+  },
+  {
+	"uid": "4.98",
+	"name": "Temperature",
+	"device_class": "temperature",
+	"unit_of_measurement": "°C",
+	"value_template": "{{value_json.v | float / 10}}"
+  },
+  {
+	"uid": "4.100",
+	"name": "Salt",
+	"icon": "mdi:water-sync",
+	"state_class": "measurement",
+	"unit_of_measurement": "mg/L",
+	"value_template": "{{value_json.v | float * 100 }}"
+  }
+]

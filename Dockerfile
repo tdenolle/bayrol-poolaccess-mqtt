@@ -10,13 +10,13 @@ RUN \
 RUN \
   pip3 install \
     paho-mqtt \
-    docopt 
+    docopt
 
 # Working dir setup
 WORKDIR /data
 
 ## Copy app
-COPY app/ ./
+COPY /app/*.* /app/
 
 ## Default entrypoint
 COPY Docker.entrypoint.sh /usr/bin/entrypoint.sh
