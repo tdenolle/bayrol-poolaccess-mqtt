@@ -1,11 +1,13 @@
 [
   {
 	"uid": "1",
-	"name": "Status"
+	"key": "status",
+	"name" : "Status"
   },
   {
 	"uid": "4.78",
-	"name": "pH",
+	"key": "ph",
+	"name" : "pH",
 	"icon": "mdi:water-sync",
 	"state_class": "measurement",
 	"unit_of_measurement": "pH",
@@ -13,7 +15,8 @@
   },
   {
 	"uid": "4.82",
-	"name": "Redox",
+	"key": "mv_se",
+	"name" : "Redox",
 	"icon": "mdi:water-opacity",
 	"state_class": "measurement",
 	"unit_of_measurement": "mv",
@@ -21,14 +24,25 @@
   },
   {
 	"uid": "4.98",
-	"name": "Temperature",
+	"key": "temperature",
+	"name" : "Température",
 	"device_class": "temperature",
 	"unit_of_measurement": "°C",
 	"value_template": "{{value_json.v | float / 10}}"
   },
   {
 	"uid": "4.100",
-	"name": "Salt",
+	"key": "salt",
+	"name" : "Sel",
+	"icon": "mdi:water-sync",
+	"state_class": "measurement",
+	"unit_of_measurement": "mg/L",
+	"value_template": "{{value_json.v | float * 100 }}"
+  },
+  {
+	"uid": "5.29",
+	"key": "flow_in",
+	"name" : "Filtration",
 	"icon": "mdi:water-sync",
 	"state_class": "measurement",
 	"unit_of_measurement": "mg/L",

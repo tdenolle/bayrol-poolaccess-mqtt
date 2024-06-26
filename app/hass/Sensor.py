@@ -1,18 +1,22 @@
 import re
 import json
-
-from app.Utils import normalize_string
+import sys
 
 
 class Sensor:
     def __init__(self, data: dict):
         self._uid = load_attr("uid", data)
+        self._key = load_attr("key", data)
         self._name = load_attr("name", data)
         self._attributes = data
 
     @property
     def uid(self) -> str:
         return self._uid
+
+    @property
+    def key(self) -> str:
+        return self._key
 
     @property
     def name(self) -> str:
@@ -29,14 +33,13 @@ class Sensor:
     def build_config(self, device: dict, hass_dicovery_prefix: str = "homeassistant"):
         # variables
         device_id = str(device["identifiers"][0])
-        normalized_name = normalize_string(self.name, "_")
         sensor_topic_prefix = "%s/sensor/%s" % (hass_dicovery_prefix, device_id)
-        config_topic = "%s/%s/config" % (sensor_topic_prefix, normalized_name)
+        state_topic = "%s/%s" % (sensor_topic_prefix, self.key)
         # config build-ins
         config = self.attributes
-        config["unique_id"] = ("bayrol_%s_%s" % (normalize_string(device_id, ""), normalized_name))
+        config["unique_id"] = ("bayrol_%s_%s" % (normalize(device_id), self.key))
         config["name"] = self.name
-        config["state_topic"] = "%s/%s" % (sensor_topic_prefix, normalized_name)
+        config["state_topic"] = state_topic
         config["availability"] = [{
             "topic": "%s/status" % sensor_topic_prefix,
             "value_template": "{{ 'online' if value_json.v | float > 17.0 else 'offline' }}"
@@ -44,8 +47,13 @@ class Sensor:
         if "value_template" not in config:
             config["value_template"] = "{{ value_json.v }}"
         config["device"] = device
-        config["json_attributes_topic"] = config["state_topic"]
-        return config_topic, config
+        config["json_attributes_topic"] = state_topic
+        return "%s/config" % state_topic, config
+
+
+def normalize(s: str):
+    s = re.sub(u"[\W|_]", "", s)
+    return s.lower()
 
 
 def load_attr(key: str, data: dict):

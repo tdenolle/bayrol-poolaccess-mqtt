@@ -3,7 +3,7 @@
 """ Home Assistant MQTT bridge
 
 Usage:
-    bayrol-poolaccess-mqtt-bridge [--config=<file>] [--sensors=<file>] [--debug]
+    PoolAccessMqttBridge [--config=<file>] [--sensors=<file>] [--debug]
 
 Options:
     -c <file>, --config=<file>          Config file path [default: options.json]
@@ -21,14 +21,9 @@ import sys
 from docopt import docopt
 from paho.mqtt.client import MQTTMessage
 
-from app.Utils import normalize_string
-from app.hass.Sensor import Sensor, load_sensors
-from app.mqtt.MqttClient import MqttClient
-from app.mqtt.PoolAccessClient import PoolAccessClient
-
-DEFAULT_MQTT_PORT = 1883
-DEFAULT_MQTT_KEEPALIVE = 60
-DEFAULT_RECONNECT_DELAY = 60
+from hass.Sensor import Sensor, load_sensors
+from mqtt.MqttClient import MqttClient
+from mqtt.PoolAccessClient import PoolAccessClient
 
 arguments = docopt(__doc__)
 
@@ -76,7 +71,7 @@ class PoolAccessMqttBridge:
             if re.match(".+/v/%s$" % s.uid, message.topic):
                 self._logger.debug("Reading %s %s", message.topic, str(message.payload))
                 payload = s.payload if s.payload else message.payload
-                topic = "%s/%s" % (self._base_sensor_topic, normalize_string(s.name, "_"))
+                topic = "%s/%s" % (self._base_sensor_topic, s.key)
                 self._brocker_client.publish(topic, payload, message.qos, retain=True)
                 self._logger.debug("Publishing to brocker %s %s", topic, str(payload))
 
@@ -87,7 +82,7 @@ class PoolAccessMqttBridge:
                 "identifiers": [self._poolaccess_device_serial],
                 "manufacturer": "Bayrol",
                 "model": "Automatic Salt" if "AS" in self._poolaccess_device_serial else "Unknown",
-                "name": "Bayrol %s" % self._poolaccess_device_serial  # "bayrol_%s" % (normalize_string(self._poolaccess_device_serial, "")
+                "name": "Bayrol %s" % self._poolaccess_device_serial
             }
             # Looping on sensors
             for s in self._hass_sensors:  # type: Sensor

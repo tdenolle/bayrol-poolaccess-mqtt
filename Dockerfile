@@ -16,7 +16,7 @@ RUN \
 WORKDIR /data
 
 ## Copy app
-COPY /app/*.* /app/
+COPY app/ /app/
 
 ## Default entrypoint
 COPY Docker.entrypoint.sh /usr/bin/entrypoint.sh

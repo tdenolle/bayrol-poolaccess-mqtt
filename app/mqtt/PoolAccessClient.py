@@ -1,4 +1,4 @@
-from app.mqtt.MqttClient import MqttClient
+from .MqttClient import MqttClient
 
 BAYROL_POOLACCESS_MQTT_TRANSPORT = "websockets"
 BAYROL_POOLACCESS_MQTT_HOST = "www.bayrol-poolaccess.de"
