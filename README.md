@@ -2,7 +2,7 @@
 
 ![License](https://img.shields.io/github/license/tdenolle/bayrol-poolaccess-mqtt)
 
-![](docs/bayrol-automatic-salt.png)
+![](docs/bayrol_automatic_salt_connect.png)
 
 ### Bayrol PoolAccess (eg Automatic Salt Products) to MQTT Bridge
 
