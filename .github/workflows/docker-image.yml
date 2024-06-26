@@ -27,5 +27,5 @@ jobs:
           push: true
           platforms: linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/amd64
           build-args: |
-            BUILD_FROM="homeassistant/amd64-base:latest"
+            BUILD_FROM=homeassistant/amd64-base:latest
           tags: tdenolle/bayrol-poolaccess-mqtt:latest
