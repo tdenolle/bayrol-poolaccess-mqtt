@@ -21,9 +21,9 @@ import sys
 from docopt import docopt
 from paho.mqtt.client import MQTTMessage
 
-from hass.Sensor import Sensor, load_sensors
-from mqtt.MqttClient import MqttClient
-from mqtt.PoolAccessClient import PoolAccessClient
+from .hass.Sensor import Sensor, load_sensors
+from .mqtt.MqttClient import MqttClient
+from .mqtt.PoolAccessClient import PoolAccessClient
 
 arguments = docopt(__doc__)
 

@@ -1,6 +1,5 @@
 import re
 import json
-import sys
 
 
 class Sensor:

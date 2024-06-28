@@ -1,6 +1,7 @@
 # Bayrol PoolAccess to Mqtt
 
 ![License](https://img.shields.io/github/license/tdenolle/bayrol-poolaccess-mqtt)
+![Docker pulls](https://img.shields.io/docker/pulls/tdenolle/bayrol-poolaccess-mqtt)
 
 ![](docs/bayrol_automatic_salt_connect.png)
 
