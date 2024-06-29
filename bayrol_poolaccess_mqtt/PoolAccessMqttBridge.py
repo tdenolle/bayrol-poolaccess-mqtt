@@ -3,7 +3,7 @@
 """ Home Assistant MQTT bridge
 
 Usage:
-    PoolAccessMqttBridge [--config=<file>] [--sensors=<file>] [--debug]
+    PoolAccessMqttBridge.py [--config=<file>] [--sensors=<file>] [--debug]
 
 Options:
     -c <file>, --config=<file>          Config file path [default: options.json]
@@ -27,15 +27,6 @@ from .mqtt.PoolAccessClient import PoolAccessClient
 
 arguments = docopt(__doc__)
 
-# Config load
-with open(arguments['--config'], 'r') as f:
-    config = json.load(f)
-
-# Logger
-logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s :: %(levelname)s :: %(message)s')
-logger = logging.getLogger()
-logger.setLevel('DEBUG' if arguments['--debug'] else config["LOG_LEVEL"])
-
 
 class PoolAccessMqttBridge:
     _logger = None
@@ -58,7 +49,7 @@ class PoolAccessMqttBridge:
         # Home Assistant Discovery Prefix
         self._hass_discovery_prefix = hass_discovery_prefix
         # Base sensor topic
-        self._base_sensor_topic = "%s/sensor/%s" % (hass_discovery_prefix,poolaccess_device_serial)
+        self._base_sensor_topic = "%s/sensor/%s" % (hass_discovery_prefix, poolaccess_device_serial)
         # Home Assistant Sensors
         self._hass_sensors = hass_sensors
         # Mqtt Clients
@@ -84,6 +75,12 @@ class PoolAccessMqttBridge:
                 "model": "Automatic Salt" if "AS" in self._poolaccess_device_serial else "Unknown",
                 "name": "Bayrol %s" % self._poolaccess_device_serial
             }
+
+            # Subscribing to PoolAccess Messages
+            topic = "d02/%s/v/#" % self._poolaccess_device_serial
+            self._logger.info("Subscribing to topic: %s", topic)
+            self._poolaccess_client.subscribe(topic, qos=1)
+
             # Looping on sensors
             for s in self._hass_sensors:  # type: Sensor
                 # Publish Get topic to Poolaccess
@@ -96,11 +93,6 @@ class PoolAccessMqttBridge:
                 payload = str(json.dumps(cfg))
                 self._logger.info("Publishing to brocker: %s %s", topic, payload)
                 self._brocker_client.publish(topic, qos=1, payload=payload, retain=True)
-
-                # Subscribing to PoolAccess Messages
-                topic = "d02/%s/v/#" % self._poolaccess_device_serial
-                self._logger.info("Subscribing to topic: %s", topic)
-                self._poolaccess_client.subscribe(topic, qos=1)
         else:
             self._logger.info("[poolaccess] on_connect: Connection failed [%s]", str(rc))
             exit(1)
@@ -146,4 +138,13 @@ def main():
 
 
 if __name__ == "__main__":
+    # Config load
+    with open(arguments['--config'], 'r') as f:
+        config = json.load(f)
+
+    # Logger
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s :: %(levelname)s :: %(message)s')
+    logger = logging.getLogger()
+    logger.setLevel('DEBUG' if arguments['--debug'] else config["LOG_LEVEL"])
+
     main()

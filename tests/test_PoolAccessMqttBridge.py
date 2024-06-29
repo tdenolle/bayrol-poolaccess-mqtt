@@ -1,9 +1,12 @@
 import unittest
 from unittest.mock import MagicMock, patch
 import json
-from ..app.PoolAccessMqttBridge import PoolAccessMqttBridge, Sensor
-from ..app.mqtt.MqttClient import MqttClient
-from ..app.mqtt.PoolAccessClient import PoolAccessClient
+
+from paho.mqtt.client import MQTTMessage
+
+from bayrol_poolaccess_mqtt.PoolAccessMqttBridge import PoolAccessMqttBridge, Sensor
+from bayrol_poolaccess_mqtt.mqtt.MqttClient import MqttClient
+from bayrol_poolaccess_mqtt.mqtt.PoolAccessClient import PoolAccessClient
 
 
 class TestPoolAccessMqttBridge(unittest.TestCase):
@@ -24,8 +27,8 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
 
         # Mock sensors
         self.sensors = [
-            Sensor("temperature", "temperature", "°C", "d02/AS12345678/g/temperature", "temperature", None),
-            Sensor("ph", "ph", "", "d02/AS12345678/g/ph", "ph", None)
+            Sensor({"uid": "123", "key": "temperature", "name": "Température", }),
+            Sensor({"uid": "456", "key": "ph", "name": "pH"})
         ]
 
         # Mock MQTT clients
@@ -54,68 +57,72 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
     @patch('bayrol_poolaccess_mqtt.PoolAccessMqttBridge.PoolAccessMqttBridge._multi_loop')
     def test_start(self, mock_multi_loop):
         self.bridge.start()
-        self.poolaccess_client.on_message.assert_called_once_with(self.bridge.on_poolaccess_message)
-        self.poolaccess_client.on_connect.assert_called_once_with(self.bridge.on_poolaccess_connect)
         self.poolaccess_client.establish_connection.assert_called_once()
-        self.brocker_client.on_connect.assert_called_once_with(self.bridge.on_brocker_connect)
         self.brocker_client.establish_connection.assert_called_once()
         mock_multi_loop.assert_called_once()
 
     def test_on_poolaccess_message(self):
         message = MagicMock(spec=MQTTMessage)
-        message.topic = "d02/AS12345678/v/temperature"
-        message.payload = b"25.5"
-        self.bridge.on_poolaccess_message(None, None, message)
-        self.brocker_client.publish.assert_called_once_with("bayrol/sensor/AS12345678/temperature", b"25.5",
+        message.topic = "d02/AS12345678/v/123"
+        message.payload = b"{v : '255'}"
+        self.bridge.on_poolaccess_message(self.poolaccess_client, None, message)
+        self.brocker_client.publish.assert_called_once_with("bayrol/sensor/AS12345678/temperature", b"{v : '255'}",
                                                             message.qos, retain=True)
 
     def test_on_poolaccess_connect(self):
         self.bridge.on_poolaccess_connect(None, None, None, 0)
         self.poolaccess_client.publish.assert_has_calls([
-            unittest.mock.call("d02/AS12345678/g/temperature", qos=0, payload=None),
-            unittest.mock.call("d02/AS12345678/g/ph", qos=0, payload=None)
+            unittest.mock.call("d02/AS12345678/g/123", qos=0, payload=None),
+            unittest.mock.call("d02/AS12345678/g/456", qos=0, payload=None)
         ])
         self.brocker_client.publish.assert_has_calls([
-            unittest.mock.call('bayrol/sensor/AS12345678/temperature/config', json.dumps({
-                "device_class": "temperature",
-                "name": "Bayrol AS12345678 Temperature",
+            unittest.mock.call('bayrol/sensor/AS12345678/temperature/config', qos=1, payload=json.dumps({
+                "unique_id": "bayrol_as12345678_temperature",
+                "name": "Température",
                 "state_topic": "bayrol/sensor/AS12345678/temperature",
-                "unit_of_measurement": "°C",
-                "value_template": "{{ value }}",
-                "unique_id": "bayrol_AS12345678_temperature",
+                "availability": [{"topic": "bayrol/sensor/AS12345678/status",
+                                  "value_template": "{{ \'online\' if value_json.v | float > 17.0 else \'offline\' }}"}],
+                "value_template": "{{ value_json.v }}",
                 "device": {
                     "identifiers": ["AS12345678"],
                     "manufacturer": "Bayrol",
                     "model": "Automatic Salt",
                     "name": "Bayrol AS12345678"
-                }
-            }), qos=1, retain=True),
-            unittest.mock.call('bayrol/sensor/AS12345678/ph/config', json.dumps({
-                "device_class": "ph",
-                "name": "Bayrol AS12345678 PH",
+                },
+                "json_attributes_topic": "bayrol/sensor/AS12345678/temperature"
+            }), retain=True),
+            unittest.mock.call('bayrol/sensor/AS12345678/ph/config', qos=1, payload=json.dumps({
+                "unique_id": "bayrol_as12345678_ph",
+                "name": "pH",
                 "state_topic": "bayrol/sensor/AS12345678/ph",
-                "unit_of_measurement": "",
-                "value_template": "{{ value }}",
-                "unique_id": "bayrol_AS12345678_ph",
+                "availability": [{"topic": "bayrol/sensor/AS12345678/status",
+                                  "value_template": "{{ \'online\' if value_json.v | float > 17.0 else \'offline\' }}"}],
+                "value_template": "{{ value_json.v }}",
                 "device": {
                     "identifiers": ["AS12345678"],
                     "manufacturer": "Bayrol",
                     "model": "Automatic Salt",
                     "name": "Bayrol AS12345678"
-                }
-            }), qos=1, retain=True)
+                },
+                "json_attributes_topic": "bayrol/sensor/AS12345678/ph"
+            }), retain=True)
         ])
         self.poolaccess_client.subscribe.assert_called_once_with("d02/AS12345678/v/#", qos=1)
 
     def test_on_brocker_connect(self):
-        self.bridge.on_brocker_connect(None, None, None, 0)
+        self.bridge.on_brocker_connect(self.brocker_client, None, None, 0)
 
     def test_on_brocker_connect_failed(self):
-        self.bridge.on_brocker_connect(None, None, None, 1)
+        with self.assertRaises(SystemExit) as se:
+            self.bridge.on_brocker_connect(self.brocker_client, None, None, 1)
+        e = se.exception
+        self.assertEqual(e.code, 1)
 
     def test_on_poolaccess_connect_failed(self):
-        self.bridge.on_poolaccess_connect(None, None, None, 1)
-
+        with self.assertRaises(SystemExit) as se:
+            self.bridge.on_poolaccess_connect(self.poolaccess_client, None, None, 1)
+        e = se.exception
+        self.assertEqual(e.code, 1)
 
 if __name__ == '__main__':
     unittest.main()

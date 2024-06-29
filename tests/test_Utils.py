@@ -1,6 +1,6 @@
 import unittest
 
-from app.Utils import normalize_string
+from bayrol_poolaccess_mqtt.Utils import normalize_string
 
 
 class TestUtils(unittest.TestCase):

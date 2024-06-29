@@ -1,0 +1,40 @@
+[project]
+dynamic = ["version"]
+name = "bayrol-poolaccess-mqtt"
+requires-python = ">= 3.11"
+authors = [
+    { name="tdenolle", email="thomas@denolle.fr" }
+]
+description = "Easily connect Bayrol Poolaccess to Mqtt"
+keywords = ['bayrol', 'poolaccess', 'mqtt']
+readme = "README.md"
+license = {file = "LICENSE"}
+dependencies = [
+    "requests>=2.1.0",
+    "paho-mqtt>=2.1.0",
+    "docopt>=0.6.0,<1.0.0"
+]
+classifiers=[
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'Programming Language :: Python :: 3.11',
+]
+
+
+[project.scripts]
+bayrol-poolaccess-mqtt="bayrol_poolaccess_mqtt.PoolaccessMqtt:main"
+
+[project.urls]
+Repository = "https://github.com/tdenolle/bayrol-poolaccess-mqtt"
+
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+
+[tool.setuptools.packages.find]
+where = ["bayrol_poolaccess_mqtt"]
+
+[tool.setuptools.package-data]
+data =  ['sensors.json']
