@@ -25,8 +25,6 @@ from .hass.Sensor import Sensor, load_sensors
 from .mqtt.MqttClient import MqttClient
 from .mqtt.PoolAccessClient import PoolAccessClient
 
-arguments = docopt(__doc__)
-
 
 class PoolAccessMqttBridge:
     _logger = None
@@ -138,6 +136,7 @@ def main():
 
 
 if __name__ == "__main__":
+    arguments = docopt(__doc__)
     # Config load
     with open(arguments['--config'], 'r') as f:
         config = json.load(f)

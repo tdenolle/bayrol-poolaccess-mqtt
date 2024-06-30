@@ -10,7 +10,6 @@ keywords = ['bayrol', 'poolaccess', 'mqtt']
 readme = "README.md"
 license = {file = "LICENSE"}
 dependencies = [
-    "requests>=2.1.0",
     "paho-mqtt>=2.1.0",
     "docopt>=0.6.0,<1.0.0"
 ]
