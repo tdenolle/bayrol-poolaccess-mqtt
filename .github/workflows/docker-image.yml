@@ -1,4 +1,4 @@
-name: Build and Push Docker Image to Hub
+name: Build and Push Docker Image to Docker Hub
 
 on:
   push:
@@ -14,7 +14,6 @@ jobs:
         uses: actions/checkout@v4
       - name: GitHub Tag Name example
         run: |
-          echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
           echo "Tag name from github.ref_name: ${{  github.ref_name }}"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -29,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          platforms: "{{vars.$PLATFORMS}}"
+          platforms: linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/amd64
           build-args: |
-            BUILD_FROM="{{vars.$BUILD_FROM}}"
-          tags: "{{vars.$IMAGE_NAME}}:latest,{{vars.$IMAGE_NAME}}:${{github.ref_name}}"
+            BUILD_FROM=homeassistant/amd64-base:latest
+          tags: "tdenolle/bayrol-poolaccess-mqtt:latest,tdenolle/bayrol-poolaccess-mqtt:${{github.ref_name}}"
