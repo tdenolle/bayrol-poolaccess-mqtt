@@ -3,7 +3,7 @@
 """ Home Assistant MQTT bridge
 
 Usage:
-    python -m bayrol_poolaccess_mqtt.PoolAccessMqttBridge [--config=<file>] [--sensors=<file>] [--debug]
+    PoolAccessMqttBridge [--config=<file>] [--sensors=<file>] [--debug]
 
 Options:
     -c <file>, --config=<file>          Config file path [default: options.json]
