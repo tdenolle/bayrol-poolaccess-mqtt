@@ -32,4 +32,4 @@ jobs:
           platforms: $PLATFORMS
           build-args: |
             BUILD_FROM=$BUILD_FROM
-          tags: "$IMAGE_NAME:latest","$IMAGE_NAME:${{  github.ref_name }}""
+          tags: "$IMAGE_NAME:latest","$IMAGE_NAME:${{  github.ref_name }}"
