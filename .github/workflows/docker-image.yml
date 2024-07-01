@@ -12,6 +12,10 @@ jobs:
     steps:
       - name: check repository
         uses: actions/checkout@v4
+      - name: GitHub Tag Name example
+        run: |
+          echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
+          echo "Tag name from github.ref_name: ${{  github.ref_name }}"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -25,7 +29,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          platforms: linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/amd64
+          platforms: $PLATFORMS
           build-args: |
-            BUILD_FROM=homeassistant/amd64-base:latest
-          tags: tdenolle/bayrol-poolaccess-mqtt:$GITHUB_REF_NAME
+            BUILD_FROM=$BUILD_FROM
+          tags: "$IMAGE_NAME:latest","$IMAGE_NAME:${{  github.ref_name }}""
