@@ -1,0 +1,1 @@
+[Latest] https://github.com/tdenolle/bayrol-poolaccess-mqtt/releases/latest
