@@ -1,9 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 """ Home Assistant MQTT bridge
 
 Usage:
-    PoolAccessMqttBridge.py [--config=<file>] [--sensors=<file>] [--debug]
+    python -m bayrol_poolaccess_mqtt.PoolAccessMqttBridge [--config=<file>] [--sensors=<file>] [--debug]
 
 Options:
     -c <file>, --config=<file>          Config file path [default: options.json]
@@ -21,7 +21,8 @@ import sys
 from docopt import docopt
 from paho.mqtt.client import MQTTMessage
 
-from .hass.Sensor import Sensor, load_sensors
+from .hass.Sensor import Sensor
+from .hass.Sensor import load_sensors
 from .mqtt.MqttClient import MqttClient
 from .mqtt.PoolAccessClient import PoolAccessClient
 

@@ -1,4 +1,7 @@
+#!/usr/bin/env python3
+
 from .MqttClient import MqttClient
+
 
 BAYROL_POOLACCESS_MQTT_TRANSPORT = "websockets"
 BAYROL_POOLACCESS_MQTT_HOST = "www.bayrol-poolaccess.de"
