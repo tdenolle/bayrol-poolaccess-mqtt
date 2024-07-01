@@ -65,7 +65,7 @@ class PoolAccessMqttBridge:
                 self._brocker_client.publish(topic, payload, message.qos, retain=True)
                 self._logger.debug("Publishing to brocker %s %s", topic, str(payload))
 
-    def on_poolaccess_connect(self, client: PoolAccessClient, userdata, flags, rc):
+    def on_poolaccess_connect(self, client: PoolAccessClient, userdata, flags, rc, properties):
         if rc == 0:
             self._logger.info("[poolaccess] on_connect: [%s][%s][%s]", str(rc), str(userdata), str(flags))
             device = {
@@ -96,7 +96,7 @@ class PoolAccessMqttBridge:
             self._logger.info("[poolaccess] on_connect: Connection failed [%s]", str(rc))
             exit(1)
 
-    def on_brocker_connect(self, client: MqttClient, userdata, flags, rc):
+    def on_brocker_connect(self, client: MqttClient, userdata, flags, rc, properties):
         if rc == 0:
             self._logger.info("[mqtt] on_connect: [%s][%s][%s]", str(rc), str(userdata), str(flags))
         else:
