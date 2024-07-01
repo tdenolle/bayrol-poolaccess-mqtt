@@ -29,7 +29,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          platforms: $PLATFORMS
+          platforms: "{{env.$PLATFORMS}}"
           build-args: |
-            BUILD_FROM=$BUILD_FROM
-          tags: "$IMAGE_NAME:latest","$IMAGE_NAME:${{  github.ref_name }}"
+            BUILD_FROM="{{env.$BUILD_FROM}}"
+          tags: "{{env.$IMAGE_NAME}}:latest,{{env.$IMAGE_NAME}}:${{github.ref_name}}"
