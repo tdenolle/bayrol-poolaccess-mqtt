@@ -70,7 +70,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
                                                             message.qos, retain=True)
 
     def test_on_poolaccess_connect(self):
-        self.bridge.on_poolaccess_connect(None, None, None, 0)
+        self.bridge.on_poolaccess_connect(None, None, None, 0, None)
         self.poolaccess_client.publish.assert_has_calls([
             unittest.mock.call("d02/AS12345678/g/123", qos=0, payload=None),
             unittest.mock.call("d02/AS12345678/g/456", qos=0, payload=None)
@@ -110,17 +110,17 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         self.poolaccess_client.subscribe.assert_called_once_with("d02/AS12345678/v/#", qos=1)
 
     def test_on_brocker_connect(self):
-        self.bridge.on_brocker_connect(self.brocker_client, None, None, 0)
+        self.bridge.on_brocker_connect(self.brocker_client, None, None, 0, None)
 
     def test_on_brocker_connect_failed(self):
         with self.assertRaises(SystemExit) as se:
-            self.bridge.on_brocker_connect(self.brocker_client, None, None, 1)
+            self.bridge.on_brocker_connect(self.brocker_client, None, None, 1, None)
         e = se.exception
         self.assertEqual(e.code, 1)
 
     def test_on_poolaccess_connect_failed(self):
         with self.assertRaises(SystemExit) as se:
-            self.bridge.on_poolaccess_connect(self.poolaccess_client, None, None, 1)
+            self.bridge.on_poolaccess_connect(self.poolaccess_client, None, None, 1, None)
         e = se.exception
         self.assertEqual(e.code, 1)
 
