@@ -3,11 +3,10 @@
 """ Home Assistant MQTT bridge
 
 Usage:
-    PoolAccessMqttBridge [--config=<file>] [--sensors=<file>] [--debug]
+    PoolAccessMqttBridge [--config=<file>] [--debug]
 
 Options:
     -c <file>, --config=<file>          Config file path [default: options.json]
-    -s <file>, --sensors=<file>         Sensors file path [default: sensors.json]
     --debug                             Debug mode
     --help                              Display Help
 
@@ -15,12 +14,14 @@ Options:
 
 import json
 import logging
+import os
 import re
 import threading
 import sys
 from docopt import docopt
-from paho.mqtt.client import MQTTMessage
+from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS
 
+from bayrol_poolaccess_mqtt.utils.Utils import get_device_model_from_serial
 from .hass.Sensor import Sensor
 from .hass.Sensor import load_sensors
 from .mqtt.MqttClient import MqttClient
@@ -71,7 +72,7 @@ class PoolAccessMqttBridge:
             device = {
                 "identifiers": [self._poolaccess_device_serial],
                 "manufacturer": "Bayrol",
-                "model": "Automatic Salt" if "AS" in self._poolaccess_device_serial else "Unknown",
+                "model": get_device_model_from_serial(self._poolaccess_device_serial),
                 "name": "Bayrol %s" % self._poolaccess_device_serial
             }
 
@@ -103,18 +104,27 @@ class PoolAccessMqttBridge:
             self._logger.info("[mqtt] on_connect: Connection failed [%s]", str(rc))
             exit(1)
 
+    def on_disconnect(self, client):
+        self._logger.warning("[mqtt] on_disconnect: %s", type(client).__name__)
+
     def _multi_loop(self, timeout=1):
         while True:
-            self._brocker_client.loop(timeout)
-            self._poolaccess_client.loop(timeout)
+            brocker_status = self._brocker_client.loop(timeout)
+            poolaccess_status = self._poolaccess_client.loop(timeout)
+            if brocker_status != MQTT_ERR_SUCCESS:
+                self._logger.warning("Brocker Status: %s", brocker_status)
+            if poolaccess_status != MQTT_ERR_SUCCESS:
+                self._logger.warning("Poolaccess Status: %s", poolaccess_status)
 
     def start(self):
         # PoolAccess setup
         self._poolaccess_client.on_message = self.on_poolaccess_message
         self._poolaccess_client.on_connect = self.on_poolaccess_connect
+        self._poolaccess_client.on_disconnect = self.on_disconnect
         self._poolaccess_client.establish_connection()
         # Brocker setup
         self._brocker_client.on_connect = self.on_brocker_connect
+        self._brocker_client.on_disconnect = self.on_disconnect
         self._brocker_client.establish_connection()
         # Multithreading startup
         t = threading.Thread(target=self._multi_loop, args=())  # start multi loop
@@ -124,7 +134,8 @@ class PoolAccessMqttBridge:
 def main():
     brocker_client = MqttClient(config["MQTT_HOST"], config["MQTT_PORT"], config["MQTT_USER"], config["MQTT_PASSWORD"])
     poolaccess_client = PoolAccessClient(config["DEVICE_TOKEN"])
-    hass_sensors = load_sensors(arguments['--sensors'])
+    hass_sensors = load_sensors(os.path.join(script_dir, "sensors.json"))
+    logger.info("Starting Bridge")
     bridge = PoolAccessMqttBridge(
         config["MQTT_BASE_TOPIC"],
         config["DEVICE_SERIAL"],
@@ -137,6 +148,7 @@ def main():
 
 
 if __name__ == "__main__":
+    script_dir = os.path.dirname(__file__)
     arguments = docopt(__doc__)
     # Config load
     with open(arguments['--config'], 'r') as f:
