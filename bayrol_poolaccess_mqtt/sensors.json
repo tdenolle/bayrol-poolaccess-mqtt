@@ -2,50 +2,187 @@
   {
 	"uid": "1",
 	"key": "status",
-	"name" : "Status"
+	"name": "Status"
   },
   {
 	"uid": "4.78",
 	"key": "ph",
-	"name" : "pH",
+	"name": "pH",
 	"icon": "mdi:water-sync",
 	"state_class": "measurement",
 	"unit_of_measurement": "pH",
-	"value_template": "{{value_json.v | float / 10 }}"
+	"value_template": "{{ value_json.v | float / 10 }}"
   },
   {
 	"uid": "4.82",
 	"key": "mv_se",
-	"name" : "Redox",
+	"name": "Redox",
 	"icon": "mdi:water-opacity",
 	"state_class": "measurement",
 	"unit_of_measurement": "mv",
-	"value_template": "{{value_json.v | int }}"
+	"value_template": "{{ value_json.v | int }}"
   },
   {
 	"uid": "4.98",
 	"key": "temperature",
-	"name" : "Température",
+	"name": "Température",
 	"device_class": "temperature",
 	"unit_of_measurement": "°C",
-	"value_template": "{{value_json.v | float / 10}}"
+	"value_template": "{{ value_json.v | float / 10 }}"
   },
   {
 	"uid": "4.100",
 	"key": "salt",
-	"name" : "Sel",
+	"name": "Sel",
 	"icon": "mdi:water-sync",
 	"state_class": "measurement",
 	"unit_of_measurement": "mg/L",
-	"value_template": "{{value_json.v | float * 100 }}"
+	"value_template": "{{ value_json.v | float * 100 }}"
   },
   {
 	"uid": "5.29",
 	"key": "flow_in",
-	"name" : "Filtration",
-	"icon": "mdi:water-sync",
-	"state_class": "measurement",
-	"unit_of_measurement": "mg/L",
-	"value_template": "{{value_json.v | float * 100 }}"
+	"name": "Filtration",
+	"icon": "mdi:water-pump",
+	"value_template": "{{ 'on' if value_json.v | float == 19.96 else 'off' }}"
+  },
+  {
+	"uid": "10",
+	"key": "messages",
+	"name": "Messages",
+	"value_template": "{{ value_json.v | length }}",
+	"json_attributes_template": {
+	  "v": "{{ value_json.v | to_json }}",
+	  "strings": {
+		"8.5": {
+		  "message": "Pompe de filtration arrêtée",
+		  "type": "warning"
+		},
+		"8.6": {
+		  "message": "Pompe de filtration arrêtée(pas de signal 230V~ de la pompe de filtration)",
+		  "type": "warning"
+		},
+		"8.7": {
+		  "message": "Délai de démarrage",
+		  "type": "warning"
+		},
+		"8.8": {
+		  "message": "Gaz détecté dans la cellule! Electrolyse de sel arrêtée !",
+		  "type": "info"
+		},
+		"8.9": {
+		  "message": "Mesure redox trop basse depuis plusieurs jours! Electrolyse en mode \"Safe\" !",
+		  "type": "warning"
+		},
+		"8.10": {
+		  "message": "Mesure redox trop basse depuis plusieurs jours! Electrolyse arrêtée !",
+		  "type": "warning"
+		},
+		"8.11": {
+		  "message": "Mesure redox trop bassedepuis plusieurs jours",
+		  "type": "warning"
+		},
+		"8.12": {
+		  "message": "La mesure redox n'augmente pas comme prévu! Electrolyse en mode \"Safe\" !",
+		  "type": "warning"
+		},
+		"8.13": {
+		  "message": "La mesure redox n'augmente pas comme prévu! Electrolyse arrêtée !",
+		  "type": "warning"
+		},
+		"8.14": {
+		  "message": "La mesure redox n'augmente pas comme prévu",
+		  "type": "warning"
+		},
+		"8.15": {
+		  "message": "La mesure pH ne réagit pas comme prévu! Dosage pH arrêté !",
+		  "type": "warning"
+		},
+		"8.16": {
+		  "message": "La mesure redox ne réagit pas comme prévu! Dosage chlore arrêté !",
+		  "type": "warning"
+		},
+		"8.17": {
+		  "message": "Bidon de pH-Minus vide",
+		  "type": "warning"
+		},
+		"8.18": {
+		  "message": "Bidon de pH-Plus vide",
+		  "type": "warning"
+		},
+		"8.19": {
+		  "message": "Taux de sel trop bas! Electrolyse arrêtée !",
+		  "type": "warning"
+		},
+		"8.20": {
+		  "message": "Taux de sel trop faible! Production réduite (protection cellule)  !",
+		  "type": "warning"
+		},
+		"8.21": {
+		  "message": "Taux de sel inférieur au taux préféré",
+		  "type": "warning"
+		},
+		"8.22": {
+		  "message": "Production par électrolyse trop faible",
+		  "type": "warning"
+		},
+		"8.23": {
+		  "message": "Mesure pH trop haute",
+		  "type": "warning"
+		},
+		"8.24": {
+		  "message": "Mesure pH trop basse",
+		  "type": "warning"
+		},
+		"8.25": {
+		  "message": "Température de l'eau trop basseElectrolyse arrêtée",
+		  "type": "warning"
+		},
+		"8.26": {
+		  "message": "Température de l'eau basseElectrolyse arrêtée",
+		  "type": "warning"
+		},
+		"8.27": {
+		  "message": "Température de l'eau trop basseProduction réduite (protection cellule)",
+		  "type": "warning"
+		},
+		"8.28": {
+		  "message": "Mesure redox trop haute",
+		  "type": "warning"
+		},
+		"8.29": {
+		  "message": "Mesure redox trop basse",
+		  "type": "warning"
+		},
+		"8.30": {
+		  "message": "Pas de courant cellule",
+		  "type": "warning"
+		},
+		"8.31": {
+		  "message": "Temps de filtration journalierpotentiellement trop faible",
+		  "type": "warning"
+		},
+		"8.32": {
+		  "message": "Bidon de Chloriliquide vide",
+		  "type": "warning"
+		},
+		"8.33": {
+		  "message": "Tout va bien. Profitez de votre piscine !",
+		  "type": "success"
+		},
+		"8.34": {
+		  "message": "Software reset",
+		  "type": "warning"
+		},
+		"8.35": {
+		  "message": "Power on",
+		  "type": "info"
+		},
+		"8.36": {
+		  "message": "Default reset",
+		  "type": "info"
+		}
+	  }
+	}
   }
 ]
