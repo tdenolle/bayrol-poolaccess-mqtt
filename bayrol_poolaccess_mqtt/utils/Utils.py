@@ -25,3 +25,15 @@ def normalize_string(string: str, sep: str = " "):
     if sep != " ":
         str_slugified = str_slugified.replace(" ", sep)
     return str_slugified.strip(sep)
+
+
+def get_device_model_from_serial(device_serial: str):
+    if re.match("[0-9]{2}ASE[0-9]-[0-9]{5}",device_serial):
+        return "Automatic Salt"
+    elif re.match("[0-9]{2}ACL[0-9]-[0-9]{5}",device_serial):
+        return "Automatic Cl-pH"
+    elif re.match("[0-9]{2}APH[0-9]-[0-9]{5}",device_serial):
+        return "Automatic pH"
+    else:
+        return "Unknown"
+
