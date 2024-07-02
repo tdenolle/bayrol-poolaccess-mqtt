@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from bayrol_poolaccess_mqtt.mqtt.MqttClient import MqttClient
+from app.mqtt.MqttClient import MqttClient
 
 
 class TestMqttClient(unittest.TestCase):

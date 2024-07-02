@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from bayrol_poolaccess_mqtt.mqtt.PoolAccessClient import PoolAccessClient, BAYROL_POOLACCESS_MQTT_HOST, \
+from app.mqtt.PoolAccessClient import PoolAccessClient, BAYROL_POOLACCESS_MQTT_HOST, \
     BAYROL_POOLACCESS_MQTT_PORT, BAYROL_POOLACCESS_MQTT_TRANSPORT, BAYROL_POOLACCESS_MQTT_PASSWORD
 
 

@@ -4,9 +4,9 @@ import json
 
 from paho.mqtt.client import MQTTMessage
 
-from bayrol_poolaccess_mqtt.PoolAccessMqttBridge import PoolAccessMqttBridge, Sensor
-from bayrol_poolaccess_mqtt.mqtt.MqttClient import MqttClient
-from bayrol_poolaccess_mqtt.mqtt.PoolAccessClient import PoolAccessClient
+from app.PoolAccessMqttBridge import PoolAccessMqttBridge, Sensor
+from app.mqtt.MqttClient import MqttClient
+from app.mqtt.PoolAccessClient import PoolAccessClient
 
 
 class TestPoolAccessMqttBridge(unittest.TestCase):
@@ -54,7 +54,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         self.assertEqual(self.bridge._poolaccess_client, self.poolaccess_client)
         self.assertEqual(self.bridge._brocker_client, self.brocker_client)
 
-    @patch('bayrol_poolaccess_mqtt.PoolAccessMqttBridge.PoolAccessMqttBridge._multi_loop')
+    @patch('app.PoolAccessMqttBridge.PoolAccessMqttBridge._multi_loop')
     def test_start(self, mock_multi_loop):
         self.bridge.start()
         self.poolaccess_client.establish_connection.assert_called_once()

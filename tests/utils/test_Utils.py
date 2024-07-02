@@ -1,6 +1,6 @@
 import unittest
 
-from bayrol_poolaccess_mqtt.utils.Utils import normalize_string, get_device_model_from_serial
+from app.utils.Utils import normalize_string, get_device_model_from_serial
 
 
 class TestUtils(unittest.TestCase):

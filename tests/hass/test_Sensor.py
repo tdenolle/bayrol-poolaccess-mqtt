@@ -1,5 +1,5 @@
 import unittest
-from bayrol_poolaccess_mqtt.hass.Sensor import Sensor
+from app.hass.Sensor import Sensor
 
 
 class TestSensor(unittest.TestCase):

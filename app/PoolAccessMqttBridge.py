@@ -21,7 +21,7 @@ import sys
 from docopt import docopt
 from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS
 
-from bayrol_poolaccess_mqtt.utils.Utils import get_device_model_from_serial
+from .utils.Utils import get_device_model_from_serial
 from .hass.Sensor import Sensor
 from .hass.Sensor import load_sensors
 from .mqtt.MqttClient import MqttClient
