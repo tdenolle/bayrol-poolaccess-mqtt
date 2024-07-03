@@ -2,7 +2,8 @@
   {
 	"uid": "1",
 	"key": "status",
-	"name": "Status"
+	"name": "Status",
+	"value_template": "{{ 'online' if value_json.v | float > 17.0 else 'offline' }}"
   },
   {
 	"uid": "4.78",
