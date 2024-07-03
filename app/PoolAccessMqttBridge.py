@@ -104,8 +104,8 @@ class PoolAccessMqttBridge:
             self._logger.info("[mqtt] on_connect: Connection failed [%s]", str(rc))
             exit(1)
 
-    def on_disconnect(self, client):
-        self._logger.warning("[mqtt] on_disconnect: %s", type(client).__name__)
+    def on_disconnect(self, client, userdata, flags, rc, properties):
+        self._logger.warning("[mqtt] on_disconnect: %s  [%s][%s][%s]",type(client).__name__,str(rc), str(userdata), str(flags))
 
     def _multi_loop(self, timeout=1):
         while True:

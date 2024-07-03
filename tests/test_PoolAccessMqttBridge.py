@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, patch
 import json
 
 from paho.mqtt.client import MQTTMessage
+from paho.mqtt.enums import MQTTErrorCode
 
 from app.PoolAccessMqttBridge import PoolAccessMqttBridge, Sensor
 from app.mqtt.MqttClient import MqttClient
@@ -124,9 +125,12 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         e = se.exception
         self.assertEqual(e.code, 1)
 
-    def test_on_poolaccess_disconnect(self):
-        self.bridge.on_disconnect(None)
 
+    def test_on_poolaccess_disconnect(self):
+        c = PoolAccessClient("__token__")
+        c.on_disconnect = self.bridge.on_disconnect
+        c._do_on_disconnect(False,None)
+        assert self.bridge.on_disconnect
 
 if __name__ == '__main__':
     unittest.main()
