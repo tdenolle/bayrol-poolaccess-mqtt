@@ -1,9 +1,15 @@
-# Bayrol PoolAccess to Mqtt
+# Bayrol PoolAccess to MQTT
+
+
+![Supports arm64 Architecture][arm64-shield] 
+![Supports amd64 Architecture][amd64-shield] 
+![Supports armv6 Architecture][armv6-shield] 
+![Supports armv7 Architecture][armv7-shield]
 
 ![License](https://img.shields.io/github/license/tdenolle/bayrol-poolaccess-mqtt)
 ![Docker pulls](https://img.shields.io/docker/pulls/tdenolle/bayrol-poolaccess-mqtt)
 
-![](docs/bayrol_automatic_salt_connect.png)
+![Bayrol Automatic Salt](docs/bayrol_automatic_salt_connect.png)
 
 ### Bayrol PoolAccess (eg Automatic Salt Products) to MQTT Bridge
 
@@ -19,3 +25,8 @@
 ## License
 
 This project is licensed under the [MIT license](https://github.com/tdenolle/bayrol-poolaccess-mqtt/blob/master/LICENSE).
+
+[amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
+[armv6-shield]: https://img.shields.io/badge/armv6-yes-green.svg
+[armv7-shield]: https://img.shields.io/badge/armv7-yes-green.svg
+[arm64-shield]: https://img.shields.io/badge/arm64-yes-green.svg
