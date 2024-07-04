@@ -18,6 +18,8 @@ import os
 import re
 import threading
 import sys
+import time
+
 from docopt import docopt
 from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS
 
@@ -26,6 +28,8 @@ from .hass.Sensor import Sensor
 from .hass.Sensor import load_sensors
 from .mqtt.MqttClient import MqttClient
 from .mqtt.PoolAccessClient import PoolAccessClient
+
+DEFAULT_RECONNECT_DELAY = 60
 
 
 class PoolAccessMqttBridge:
@@ -105,16 +109,33 @@ class PoolAccessMqttBridge:
             exit(1)
 
     def on_disconnect(self, client, userdata, flags, rc, properties):
-        self._logger.warning("[mqtt] on_disconnect: %s  [%s][%s][%s]",type(client).__name__,str(rc), str(userdata), str(flags))
+        self._logger.warning("[mqtt] on_disconnect: %s  [%s][%s][%s]", type(client).__name__, str(rc), str(userdata),
+                             str(flags))
 
     def _multi_loop(self, timeout=1):
         while True:
             brocker_status = self._brocker_client.loop(timeout)
             poolaccess_status = self._poolaccess_client.loop(timeout)
+
             if brocker_status != MQTT_ERR_SUCCESS:
-                self._logger.warning("Brocker Status: %s", brocker_status)
+                logger.warning("Brocker Client has been disconnected [status: %s] : trying to reconnect ...",
+                               brocker_status)
+                try:
+                    self._brocker_client.reconnect()
+                except Exception as e:
+                    logger.error("Reconnect exception occurred %s ...", str(e))
+                logger.info("Waiting %ss ...", str(DEFAULT_RECONNECT_DELAY))
+                time.sleep(DEFAULT_RECONNECT_DELAY)
+
             if poolaccess_status != MQTT_ERR_SUCCESS:
-                self._logger.warning("Poolaccess Status: %s", poolaccess_status)
+                logger.warning("Poolaccess Client has been disconnected [status: %s] : trying to reconnect ...",
+                               poolaccess_status)
+                try:
+                    self._poolaccess_client.reconnect()
+                except Exception as e:
+                    logger.error("Reconnect exception occurred %s ...", str(e))
+                logger.info("Waiting %ss ...", str(DEFAULT_RECONNECT_DELAY))
+                time.sleep(DEFAULT_RECONNECT_DELAY)
 
     def start(self):
         # PoolAccess setup
