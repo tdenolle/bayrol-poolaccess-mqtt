@@ -1,4 +1,5 @@
-FROM python:3.11-alpine
+ARG BUILD_FROM
+FROM $BUILD_FROM
 # Copy requirements.txt file
 COPY requirements.txt /
 # Install requirements.txt
