@@ -54,7 +54,8 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         self.assertEqual(self.bridge._poolaccess_client, self.poolaccess_client)
         self.assertEqual(self.bridge._brocker_client, self.brocker_client)
 
-    def test_start(self):
+    @patch('app.PoolAccessMqttBridge.PoolAccessMqttBridge._multi_loop')
+    def test_start(self,mock_multi_loop):
         # Mock connect responses
         self.poolaccess_client.establish_connection.return_value = 0
         self.brocker_client.establish_connection.return_value = 0
@@ -65,6 +66,8 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         # Assert connect calls
         self.poolaccess_client.establish_connection.assert_called_once()
         self.brocker_client.establish_connection.assert_called_once()
+
+        mock_multi_loop.assert_called_once()
 
     @patch('app.PoolAccessMqttBridge.PoolAccessMqttBridge._multi_loop')
     def test_start_with_connection_errors(self, mock_multi_loop):
