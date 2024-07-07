@@ -3,7 +3,6 @@ from unittest.mock import MagicMock, patch
 import json
 
 from paho.mqtt.client import MQTTMessage
-from paho.mqtt.enums import MQTTErrorCode
 
 from app.PoolAccessMqttBridge import PoolAccessMqttBridge, Sensor
 from app.mqtt.MqttClient import MqttClient
@@ -55,12 +54,33 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         self.assertEqual(self.bridge._poolaccess_client, self.poolaccess_client)
         self.assertEqual(self.bridge._brocker_client, self.brocker_client)
 
-    @patch('app.PoolAccessMqttBridge.PoolAccessMqttBridge._multi_loop')
-    def test_start(self, mock_multi_loop):
+    def test_start(self):
+        # Mock connect responses
+        self.poolaccess_client.establish_connection.return_value = 0
+        self.brocker_client.establish_connection.return_value = 0
+
+        # Call start
         self.bridge.start()
+
+        # Assert connect calls
         self.poolaccess_client.establish_connection.assert_called_once()
         self.brocker_client.establish_connection.assert_called_once()
-        mock_multi_loop.assert_called_once()
+
+    @patch('app.PoolAccessMqttBridge.PoolAccessMqttBridge._multi_loop')
+    def test_start_with_connection_errors(self, mock_multi_loop):
+        # Mock connect responses
+        self.poolaccess_client.establish_connection.return_value = 1
+        self.brocker_client.establish_connection.return_value = 1
+
+        # Call start
+        self.bridge.start()
+
+        # Assert connect calls
+        self.poolaccess_client.establish_connection.assert_called_once()
+        self.brocker_client.establish_connection.assert_called_once()
+
+        # Assert multi_loop not called
+        mock_multi_loop.assert_not_called()
 
     def test_on_poolaccess_message(self):
         message = MagicMock(spec=MQTTMessage)
@@ -125,12 +145,12 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         e = se.exception
         self.assertEqual(e.code, 1)
 
-
     def test_on_poolaccess_disconnect(self):
         c = PoolAccessClient("__token__")
         c.on_disconnect = self.bridge.on_disconnect
-        c._do_on_disconnect(False,None)
+        c._do_on_disconnect(False, None)
         assert self.bridge.on_disconnect
+
 
 if __name__ == '__main__':
     unittest.main()

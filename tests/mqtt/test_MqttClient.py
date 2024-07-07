@@ -1,5 +1,8 @@
 import unittest
 from unittest.mock import patch, MagicMock
+
+from paho.mqtt.enums import MQTTErrorCode
+
 from app.mqtt.MqttClient import MqttClient
 
 
@@ -71,6 +74,20 @@ class TestMqttClient(unittest.TestCase):
     def test_loop_forever(self, mock_loop_forever):
         self.client.loop_forever()
         mock_loop_forever.assert_called_once()
+
+    @patch('paho.mqtt.client.Client.connect')
+    def test_establish_connection_success(self, mock_connect):
+        mock_connect.return_value = 0
+        result = self.client.establish_connection()
+        self.assertEqual(result, MQTTErrorCode.MQTT_ERR_SUCCESS)
+        mock_connect.assert_called_once_with(self.host, self.port)
+
+    @patch('paho.mqtt.client.Client.connect')
+    def test_establish_connection_failure(self, mock_connect):
+        mock_connect.side_effect = ConnectionRefusedError("Connection refused")
+        result = self.client.establish_connection()
+        self.assertEqual(result, MQTTErrorCode.MQTT_ERR_CONN_REFUSED)
+        mock_connect.assert_called_once_with(self.host, self.port)
 
 
 if __name__ == '__main__':

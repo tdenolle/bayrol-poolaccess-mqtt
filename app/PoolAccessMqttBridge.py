@@ -118,39 +118,47 @@ class PoolAccessMqttBridge:
             poolaccess_status = self._poolaccess_client.loop(timeout)
 
             if brocker_status != MQTT_ERR_SUCCESS:
-                logger.warning("Brocker Client has been disconnected [status: %s] : trying to reconnect ...",
+                self._logger.warning("Brocker Client has been disconnected [status: %s] : trying to reconnect ...",
                                brocker_status)
                 try:
                     self._brocker_client.reconnect()
                 except Exception as e:
-                    logger.error("Reconnect exception occurred %s ...", str(e))
-                logger.info("Waiting %ss ...", str(DEFAULT_RECONNECT_DELAY))
+                    self._logger.error("Reconnect exception occurred %s ...", str(e))
+                self._logger.info("Waiting %ss ...", str(DEFAULT_RECONNECT_DELAY))
                 time.sleep(DEFAULT_RECONNECT_DELAY)
 
             if poolaccess_status != MQTT_ERR_SUCCESS:
-                logger.warning("Poolaccess Client has been disconnected [status: %s] : trying to reconnect ...",
+                self._logger.warning("Poolaccess Client has been disconnected [status: %s] : trying to reconnect ...",
                                poolaccess_status)
                 try:
                     self._poolaccess_client.reconnect()
                 except Exception as e:
-                    logger.error("Reconnect exception occurred %s ...", str(e))
-                logger.info("Waiting %ss ...", str(DEFAULT_RECONNECT_DELAY))
+                    self._logger.error("Reconnect exception occurred %s ...", str(e))
+                self._logger.info("Waiting %ss ...", str(DEFAULT_RECONNECT_DELAY))
                 time.sleep(DEFAULT_RECONNECT_DELAY)
 
     def start(self):
+        connection_success = True
         # PoolAccess setup
         self._poolaccess_client.on_message = self.on_poolaccess_message
         self._poolaccess_client.on_connect = self.on_poolaccess_connect
         self._poolaccess_client.on_disconnect = self.on_disconnect
-        self._poolaccess_client.establish_connection()
+        if self._poolaccess_client.establish_connection() != 0:
+            self._logger.error("Poolaccess connection failure !")
+            connection_success = False
+
         # Brocker setup
         self._brocker_client.on_connect = self.on_brocker_connect
         self._brocker_client.on_disconnect = self.on_disconnect
-        self._brocker_client.establish_connection()
-        # Multithreading startup
-        t = threading.Thread(target=self._multi_loop, args=())  # start multi loop
-        t.start()
+        if self._brocker_client.establish_connection() != 0:
+            self._logger.error("MQTT Brocker connection failure !")
+            connection_success = False
 
+        # Multithreading startup if connection_success
+        if connection_success:
+            self._logger.info("Starting Multithreading")
+            t = threading.Thread(target=self._multi_loop, args=())  # start multi loop
+            t.start()
 
 def main():
     brocker_client = MqttClient(config["MQTT_HOST"], config["MQTT_PORT"], config["MQTT_USER"], config["MQTT_PASSWORD"])
