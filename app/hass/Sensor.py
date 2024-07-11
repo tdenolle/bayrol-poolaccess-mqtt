@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import re
-import json
 
 
 class Sensor:
@@ -27,9 +26,8 @@ class Sensor:
     def attributes(self) -> dict:
         return self._attributes
 
-    @property
-    def payload(self):
-        return None
+    def get_payload(self, message: bytes = None) -> bytes:
+        return message
 
     def build_config(self, device: dict, hass_dicovery_prefix: str = "homeassistant"):
         # variables
@@ -48,7 +46,8 @@ class Sensor:
         if "value_template" not in config:
             config["value_template"] = "{{ value_json.v }}"
         config["device"] = device
-        config["json_attributes_topic"] = state_topic
+        if "json_attributes_topic" not in config and "json_attributes_template" in config:
+            config["json_attributes_topic"] = state_topic
         return "%s/config" % state_topic, config
 
 
@@ -62,8 +61,3 @@ def load_attr(key: str, data: dict):
     value = data[key]
     del data[key]
     return value
-
-
-def load_sensors(filepath: str) -> list[Sensor]:
-    with open(filepath, 'r') as f:
-        return [Sensor(s) for s in json.load(f)]

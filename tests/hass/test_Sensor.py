@@ -22,7 +22,6 @@ class TestSensor(unittest.TestCase):
         config_topic, config = sensor.build_config(device)
         expected_config = {
             "unique_id": "bayrol_22ase12343_temperature",
-            'json_attributes_topic': 'homeassistant/sensor/22ASE-12343/temperature',
             "name": "Temperature Sensor",
             "state_topic": "homeassistant/sensor/22ASE-12343/temperature",
             "availability": [

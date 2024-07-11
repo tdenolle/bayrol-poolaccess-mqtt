@@ -112,8 +112,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
                     "manufacturer": "Bayrol",
                     "model": "Automatic Salt",
                     "name": "Bayrol 24ASE2-45678"
-                },
-                "json_attributes_topic": "bayrol/sensor/24ASE2-45678/temperature"
+                }
             }), retain=True),
             unittest.mock.call('bayrol/sensor/24ASE2-45678/ph/config', qos=1, payload=json.dumps({
                 "unique_id": "bayrol_24ase245678_ph",
@@ -127,9 +126,8 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
                     "manufacturer": "Bayrol",
                     "model": "Automatic Salt",
                     "name": "Bayrol 24ASE2-45678"
-                },
-                "json_attributes_topic": "bayrol/sensor/24ASE2-45678/ph"
-            }), retain=True)
+                }
+             }), retain=True)
         ])
         self.poolaccess_client.subscribe.assert_called_once_with("d02/24ASE2-45678/v/#", qos=1)
 

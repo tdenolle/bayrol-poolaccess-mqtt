@@ -25,7 +25,7 @@ from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS
 
 from .utils.Utils import get_device_model_from_serial
 from .hass.Sensor import Sensor
-from .hass.Sensor import load_sensors
+from .hass.MessagesSensor import MessagesSensor
 from .mqtt.MqttClient import MqttClient
 from .mqtt.PoolAccessClient import PoolAccessClient
 
@@ -65,7 +65,7 @@ class PoolAccessMqttBridge:
         for s in self._hass_sensors:  # type: Sensor
             if re.match(".+/v/%s$" % s.uid, message.topic):
                 self._logger.debug("Reading %s %s", message.topic, str(message.payload))
-                payload = s.payload if s.payload else message.payload
+                payload = s.get_payload(message.payload)
                 topic = "%s/%s" % (self._base_sensor_topic, s.key)
                 self._brocker_client.publish(topic, payload, message.qos, retain=True)
                 self._logger.debug("Publishing to brocker %s %s", topic, str(payload))
@@ -90,7 +90,7 @@ class PoolAccessMqttBridge:
                 # Publish Get topic to Poolaccess
                 topic = "d02/%s/g/%s" % (self._poolaccess_device_serial, s.uid)
                 self._logger.info("Publishing to poolaccess: %s", topic)
-                self._poolaccess_client.publish(topic, qos=0, payload=s.payload)
+                self._poolaccess_client.publish(topic, qos=0, payload=s.get_payload())
 
                 # Publish sensor config to brocker
                 (topic, cfg) = s.build_config(device, self._hass_discovery_prefix)
@@ -119,7 +119,7 @@ class PoolAccessMqttBridge:
 
             if brocker_status != MQTT_ERR_SUCCESS:
                 self._logger.warning("Brocker Client has been disconnected [status: %s] : trying to reconnect ...",
-                               brocker_status)
+                                     brocker_status)
                 try:
                     self._brocker_client.reconnect()
                 except Exception as e:
@@ -129,7 +129,7 @@ class PoolAccessMqttBridge:
 
             if poolaccess_status != MQTT_ERR_SUCCESS:
                 self._logger.warning("Poolaccess Client has been disconnected [status: %s] : trying to reconnect ...",
-                               poolaccess_status)
+                                     poolaccess_status)
                 try:
                     self._poolaccess_client.reconnect()
                 except Exception as e:
@@ -159,6 +159,12 @@ class PoolAccessMqttBridge:
             self._logger.info("Starting Multithreading")
             t = threading.Thread(target=self._multi_loop, args=())  # start multi loop
             t.start()
+
+
+def load_sensors(filepath: str) -> list[Sensor]:
+    with open(filepath, 'r') as fp:
+        return [MessagesSensor(s) if s["uid"]=="10" else Sensor(s) for s in json.load(fp)]
+
 
 def main():
     brocker_client = MqttClient(config["MQTT_HOST"], config["MQTT_PORT"], config["MQTT_USER"], config["MQTT_PASSWORD"])
