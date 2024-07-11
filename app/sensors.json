@@ -49,7 +49,8 @@
 	"key": "flow_in",
 	"name": "Filtration",
 	"icon": "mdi:water-pump",
-	"value_template": "{{ 'on' if value_json.v | float == 19.96 else 'off' }}"
+	"value_template": "{{ 'on' if value_json.v | float == 19.96 else 'off' }}",
+  	"json_attributes_template": "{ }"
   },
   {
 	"uid": "10",
