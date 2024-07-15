@@ -35,6 +35,11 @@ class TestUtils(unittest.TestCase):
         expected_output = "12345 numbers in the string"
         self.assertEqual(normalize_string(input_string), expected_output)
 
+        # Test case 7 : Entrées avec des caractères spéciaux et caractère de remplacement
+        input_string = "-This is a test with @#$ special characters!-"
+        expected_output = "this-is-a-test-with-special-characters"
+        self.assertEqual(normalize_string(input_string,"-"), expected_output)
+
     def test_get_device_model_from_serial_automatic_salt(self):
         self.assertEqual(get_device_model_from_serial("12ASE1-12345"), "Automatic Salt")
 
