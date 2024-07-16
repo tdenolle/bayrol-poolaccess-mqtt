@@ -1,10 +1,12 @@
+import os
 import unittest
 from unittest.mock import MagicMock, patch
 import json
 
 from paho.mqtt.client import MQTTMessage
 
-from app.PoolAccessMqttBridge import PoolAccessMqttBridge, Sensor
+from app.PoolAccessMqttBridge import PoolAccessMqttBridge, Sensor, load_sensors, main
+from app.hass.MessagesSensor import MessagesSensor
 from app.mqtt.MqttClient import MqttClient
 from app.mqtt.PoolAccessClient import PoolAccessClient
 
@@ -55,7 +57,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         self.assertEqual(self.bridge._brocker_client, self.brocker_client)
 
     @patch('app.PoolAccessMqttBridge.PoolAccessMqttBridge._multi_loop')
-    def test_start(self,mock_multi_loop):
+    def test_start(self, mock_multi_loop):
         # Mock connect responses
         self.poolaccess_client.establish_connection.return_value = 0
         self.brocker_client.establish_connection.return_value = 0
@@ -127,7 +129,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
                     "model": "Automatic Salt",
                     "name": "Bayrol 24ASE2-45678"
                 }
-             }), retain=True)
+            }), retain=True)
         ])
         self.poolaccess_client.subscribe.assert_called_once_with("d02/24ASE2-45678/v/#", qos=1)
 
@@ -151,6 +153,30 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         c.on_disconnect = self.bridge.on_disconnect
         c._do_on_disconnect(False, None)
         assert self.bridge.on_disconnect
+
+    def test_load_sensors(self):
+        # Mock sensors.json file
+        sensors_json_path = os.path.join(os.path.dirname(__file__), "sensors.json")
+        with open(sensors_json_path, 'w') as f:
+            json.dump([
+                {"uid": "1", "key": "temperature", "unit_of_measurement": "°C"},
+                {"uid": "10", "key": "messages"}
+            ], f)
+
+        # Load sensors
+        sensors = load_sensors(sensors_json_path)
+
+        # Assert sensor types
+        self.assertIsInstance(sensors[0], Sensor)
+        self.assertIsInstance(sensors[1], MessagesSensor)
+
+        # Clean up
+        os.remove(sensors_json_path)
+
+    @patch('app.PoolAccessMqttBridge.PoolAccessMqttBridge.start')
+    def test_main(self, mock_start):
+        main(self.config)
+        mock_start.assert_called_once()
 
 
 if __name__ == '__main__':

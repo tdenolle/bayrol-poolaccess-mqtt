@@ -5,7 +5,7 @@ from app.hass.Sensor import Sensor
 class TestSensor(unittest.TestCase):
     def setUp(self):
         # Example JSON data for testing
-        self.json_data = {"uid": "123", "key": "temperature", "name": "Temperature Sensor", "v": "20.5"}
+        self.json_data = {"uid": "123", "key": "temperature", "name": "Temperature Sensor", "json_attributes_template" : "{}", "v": "20.5"}
 
     def test_sensor_creation(self):
         # Test creating a Sensor instance
@@ -13,7 +13,7 @@ class TestSensor(unittest.TestCase):
         self.assertEqual(sensor.uid, "123")
         self.assertEqual(sensor.key, "temperature")
         self.assertEqual(sensor.name, "Temperature Sensor")
-        self.assertEqual(sensor.attributes, {"v": "20.5"})
+        self.assertEqual(sensor.attributes, {"v": "20.5", "json_attributes_template": "{}"})
 
     def test_sensor_config(self):
         # Test building sensor configuration
@@ -31,6 +31,8 @@ class TestSensor(unittest.TestCase):
                 }
             ],
             "v": "20.5",
+            "json_attributes_template": "{}",
+            "json_attributes_topic": "homeassistant/sensor/22ASE-12343/temperature",
             "value_template": "{{ value_json.v }}",
             "device": device
         }
