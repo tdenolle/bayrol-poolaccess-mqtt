@@ -33,7 +33,12 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools_scm]
 
 [tool.setuptools.packages.find]
-where = ["bayrol_poolaccess_mqtt"]
+where = ["app"]
 
 [tool.setuptools.package-data]
 data =  ['sensors.json']
+
+[tool.coverage.report]
+exclude_lines = [
+    "if __name__ == .__main__.:"
+    ]
