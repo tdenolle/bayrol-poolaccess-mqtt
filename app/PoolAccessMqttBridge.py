@@ -29,7 +29,7 @@ from .hass.MessagesSensor import MessagesSensor
 from .mqtt.MqttClient import MqttClient
 from .mqtt.PoolAccessClient import PoolAccessClient
 
-DEFAULT_RECONNECT_DELAY = 60
+DEFAULT_RECONNECT_DELAY = 30
 
 
 class PoolAccessMqttBridge:
@@ -166,10 +166,11 @@ def load_sensors(filepath: str) -> list[Sensor]:
         return [MessagesSensor(s) if s["uid"]=="10" else Sensor(s) for s in json.load(fp)]
 
 
-def main():
+def main(config: dict):
     brocker_client = MqttClient(config["MQTT_HOST"], config["MQTT_PORT"], config["MQTT_USER"], config["MQTT_PASSWORD"])
     poolaccess_client = PoolAccessClient(config["DEVICE_TOKEN"])
-    hass_sensors = load_sensors(os.path.join(script_dir, "sensors.json"))
+    hass_sensors = load_sensors(os.path.join(os.path.dirname(__file__), "sensors.json"))
+    logger = logging.getLogger()
     logger.info("Starting Bridge")
     bridge = PoolAccessMqttBridge(
         config["MQTT_BASE_TOPIC"],
@@ -183,15 +184,13 @@ def main():
 
 
 if __name__ == "__main__":
-    script_dir = os.path.dirname(__file__)
-    arguments = docopt(__doc__)
+    args = docopt(__doc__)
     # Config load
-    with open(arguments['--config'], 'r') as f:
-        config = json.load(f)
+    with open(args['--config'], 'r') as f:
+        c = json.load(f)
 
     # Logger
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s :: %(levelname)s :: %(message)s')
-    logger = logging.getLogger()
-    logger.setLevel('DEBUG' if arguments['--debug'] else config["LOG_LEVEL"])
+    logging.getLogger().setLevel('DEBUG' if args['--debug'] else c["LOG_LEVEL"])
 
-    main()
+    main(c)
