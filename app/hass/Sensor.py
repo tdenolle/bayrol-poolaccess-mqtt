@@ -7,7 +7,7 @@ class Sensor:
     def __init__(self, data: dict):
         self._uid = load_attr("uid", data)
         self._key = load_attr("key", data)
-        self._name = load_attr("name", data)
+        self._name = load_attr("name", data) if "name" in data else self._key
         self._attributes = data
 
     @property
