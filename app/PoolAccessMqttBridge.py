@@ -61,7 +61,7 @@ class PoolAccessMqttBridge:
         self._brocker_client = brocker_client
 
     def on_poolaccess_message(self, client: PoolAccessClient, userdata, message: MQTTMessage):
-        self._logger.debug("[poolaccess] on_message: [%s] %s", str(userdata), str(message.topic))
+        self._logger.info("[poolaccess] message [%s]", str(message.topic))
         for s in self._hass_sensors:  # type: Sensor
             if re.match(".+/v/%s$" % s.uid, message.topic):
                 self._logger.debug("Reading %s %s", message.topic, str(message.payload))
@@ -72,7 +72,7 @@ class PoolAccessMqttBridge:
 
     def on_poolaccess_connect(self, client: PoolAccessClient, userdata, flags, rc, properties):
         if rc == 0:
-            self._logger.info("[poolaccess] on_connect: [%s][%s][%s]", str(rc), str(userdata), str(flags))
+            self._logger.info("[poolaccess] connect: [%s][%s][%s]", str(rc), str(userdata), str(flags))
             device = {
                 "identifiers": [self._poolaccess_device_serial],
                 "manufacturer": "Bayrol",
@@ -98,18 +98,18 @@ class PoolAccessMqttBridge:
                 self._logger.info("Publishing to brocker: %s %s", topic, payload)
                 self._brocker_client.publish(topic, qos=1, payload=payload, retain=True)
         else:
-            self._logger.info("[poolaccess] on_connect: Connection failed [%s]", str(rc))
+            self._logger.info("[poolaccess] connect: Connection failed [%s]", str(rc))
             exit(1)
 
     def on_brocker_connect(self, client: MqttClient, userdata, flags, rc, properties):
         if rc == 0:
-            self._logger.info("[mqtt] on_connect: [%s][%s][%s]", str(rc), str(userdata), str(flags))
+            self._logger.info("[mqtt] connect: [%s][%s][%s]", str(rc), str(userdata), str(flags))
         else:
-            self._logger.info("[mqtt] on_connect: Connection failed [%s]", str(rc))
+            self._logger.info("[mqtt] connect: Connection failed [%s]", str(rc))
             exit(1)
 
     def on_disconnect(self, client, userdata, flags, rc, properties):
-        self._logger.warning("[mqtt] on_disconnect: %s  [%s][%s][%s]", type(client).__name__, str(rc), str(userdata),
+        self._logger.warning("[mqtt] disconnect: %s  [%s][%s][%s]", type(client).__name__, str(rc), str(userdata),
                              str(flags))
 
     def _multi_loop(self, timeout=1):
