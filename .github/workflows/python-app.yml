@@ -27,7 +27,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 coverage pytest-cov
+        pip install flake8 
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
     - name: Lint with flake8
@@ -56,7 +56,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade coverage[toml]
+          python -m pip install --upgrade pytest-cov coverage[toml]
 
       - name: Run coverage
         run: |
