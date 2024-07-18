@@ -2,8 +2,8 @@ name: Python Application CI
 
 env:
   PYTHON_VERSION: '3.11'
-  DOCKER_PLATFORMS: linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/amd64
-  DOCKER_HUB_REPOSITORY: tdenolle/bayrol-poolaccess-mqtt
+  DOCKER_PLATFORMS: 'linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/amd64'
+  DOCKER_HUB_REPOSITORY: 'tdenolle/bayrol-poolaccess-mqtt'
 
 
 on:
@@ -45,7 +45,7 @@ jobs:
         python -m unittest discover -s ./tests  -p 'test_*.py'
 
   coverage:
-    name: Combine and check coverage
+    name: Check coverage
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -88,6 +88,8 @@ jobs:
     needs:
       - build
       - coverage
+    outputs:
+      tag_name: ${{ steps.tag_name.outputs.value }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -102,7 +104,7 @@ jobs:
 
       - name: Generate tag name
         id: tag_name
-        run: echo "value=${{ steps.toml_version.outputs.value }}.$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+        run: echo "value=${{ steps.toml_version.outputs.value }}.$(date +'%Y%m%d%H%M%S')" >> "$GITHUB_OUTPUT"
 
       - name: Create tag
         uses: actions/github-script@v7
@@ -139,7 +141,7 @@ jobs:
           platforms: ${{ env.DOCKER_PLATFORMS }}
           build-args: |
             BUILD_FROM=python:${{ env.PYTHON_VERSION }}-alpine
-          tags: "${{ env.DOCKER_HUB_REPOSITORY }}:dev,${{ env.DOCKER_HUB_REPOSITORY }}:${{ needs.tag.outputs.value }}"
+          tags: "${{ env.DOCKER_HUB_REPOSITORY }}:dev,${{ env.DOCKER_HUB_REPOSITORY }}:${{ needs.tag.outputs.tag_name }}"
 
 
 
