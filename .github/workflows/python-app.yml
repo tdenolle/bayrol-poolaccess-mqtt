@@ -84,7 +84,7 @@ jobs:
         if: ${{ failure() }}
 
   tag:
-    name: Tag
+    name: Generate Tag
     needs:
       - build
       - coverage
@@ -104,7 +104,7 @@ jobs:
 
       - name: Generate tag name
         id: tag_name
-        run: echo "value=${{ steps.toml_version.outputs.value }}-dev.$(date +'%Y%m%d%H%M%S')" >> "$GITHUB_OUTPUT"
+        run: echo "value=${{ steps.toml_version.outputs.value }}" >> "$GITHUB_OUTPUT"
 
       - name: Create tag
         uses: actions/github-script@v7
