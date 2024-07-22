@@ -61,14 +61,14 @@ class PoolAccessMqttBridge:
         self._brocker_client = brocker_client
 
     def on_poolaccess_message(self, client: PoolAccessClient, userdata, message: MQTTMessage):
-        self._logger.info("[poolaccess] message [%s]", str(message.topic))
+        self._logger.debug("[poolaccess] message [%s]", str(message.topic))
         for s in self._hass_sensors:  # type: Sensor
             if re.match(".+/v/%s$" % s.uid, message.topic):
                 self._logger.debug("Reading %s %s", message.topic, str(message.payload))
                 payload = s.get_payload(message.payload)
                 topic = "%s/%s" % (self._base_sensor_topic, s.key)
                 self._brocker_client.publish(topic, payload, message.qos, retain=True)
-                self._logger.debug("Publishing to brocker %s %s", topic, str(payload))
+                self._logger.info("[mqtt] publishing to brocker %s %s", topic, str(payload))
 
     def on_poolaccess_connect(self, client: PoolAccessClient, userdata, flags, rc, properties):
         if rc == 0:

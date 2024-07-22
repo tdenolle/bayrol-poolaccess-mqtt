@@ -1,6 +1,6 @@
 import os
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, ANY
 import json
 
 from paho.mqtt.client import MQTTMessage
@@ -90,10 +90,14 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
     def test_on_poolaccess_message(self):
         message = MagicMock(spec=MQTTMessage)
         message.topic = "d02/24ASE2-45678/v/123"
-        message.payload = b"{v : '255'}"
+        message.payload = b"{\"v\" : \"255\"}"
         self.bridge.on_poolaccess_message(self.poolaccess_client, None, message)
-        self.brocker_client.publish.assert_called_once_with("bayrol/sensor/24ASE2-45678/temperature", b"{v : '255'}",
-                                                            message.qos, retain=True)
+        (self.brocker_client.publish
+            .assert_called_once_with("bayrol/sensor/24ASE2-45678/temperature", ANY, message.qos, retain= True))
+        # Check payload via args manually because of createdAt date value
+        payload = str(self.brocker_client.publish.call_args[0][1])
+        self.assertIn("v", payload)
+        self.assertIn("createdAt", payload)
 
     def test_on_poolaccess_connect(self):
         self.bridge.on_poolaccess_connect(None, None, None, 0, None)

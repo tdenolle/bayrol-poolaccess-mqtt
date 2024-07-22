@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-
+import json
 import re
+from datetime import datetime
 
 
 class Sensor:
@@ -26,8 +27,16 @@ class Sensor:
     def attributes(self) -> dict:
         return self._attributes
 
-    def get_payload(self, message: bytes = None) -> bytes:
-        return message
+    def get_payload(self, message: bytes = None):
+        if message is None:
+            return None
+        json_object = json.loads(message)
+        payload = self.build_payload(json_object)
+        return json.dumps(payload)
+
+    def build_payload(self, json_object):
+        json_object["createdAt"] = f"{datetime.utcnow().isoformat()[:-3]}Z"
+        return json_object
 
     def build_config(self, device: dict, hass_dicovery_prefix: str = "homeassistant"):
         # variables
