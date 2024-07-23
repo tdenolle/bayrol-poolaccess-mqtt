@@ -15,19 +15,19 @@ class TestMessagesSensor(unittest.TestCase):
         sensor = MessagesSensor(self.json_data)
         message = b'{"v": ["8.33"]}'
         actual_payload = sensor.get_payload(message)
-        createdAt = self.get_attribute_value_in_payload(actual_payload, "createdAt")
+        updatedAt = self.get_attribute_value_in_payload(actual_payload, "updatedAt")
         expected_payload = ('{"v": [{"message": "Tout va bien. Profitez de votre piscine !", "type": "success"}], '
-                            '"createdAt": "%s"}') % createdAt
+                            '"updatedAt": "%s"}') % updatedAt
         self.assertEqual(actual_payload, expected_payload)
 
     def test_get_payload_with_multiple_messages(self):
         sensor = MessagesSensor(self.json_data)
         message = b'{"v": ["8.33", "8.19"]}'
         actual_payload = sensor.get_payload(message)
-        createdAt = self.get_attribute_value_in_payload(actual_payload,"createdAt")
+        updatedAt = self.get_attribute_value_in_payload(actual_payload,"updatedAt")
         expected_payload = ('{"v": [{"message": "Tout va bien. Profitez de votre piscine !", "type": "success"}, '
                             '{"message": "Taux de sel trop bas\\n! Electrolyse arr\\u00eat\\u00e9e !", '
-                            '"type": "warning"}], "createdAt": "%s"}') % createdAt
+                            '"type": "warning"}], "updatedAt": "%s"}') % updatedAt
 
         self.assertEqual(actual_payload, expected_payload)
 

@@ -31,12 +31,11 @@ class Sensor:
         if message is None:
             return None
         json_object = json.loads(message)
-        payload = self.build_payload(json_object)
-        return json.dumps(payload)
+        self.build_payload(json_object)
+        return json.dumps(json_object)
 
     def build_payload(self, json_object):
-        json_object["createdAt"] = f"{datetime.utcnow().isoformat()[:-3]}Z"
-        return json_object
+        json_object["updatedAt"] = f"{datetime.utcnow().isoformat()[:-3]}Z"
 
     def build_config(self, device: dict, hass_dicovery_prefix: str = "homeassistant"):
         # variables

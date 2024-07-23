@@ -140,13 +140,10 @@ class MessagesSensor(Sensor):
         super().__init__(data)
 
     def build_payload(self, json_object):
-        json_object = (super()
-                       .build_payload(json_object))
+        super().build_payload(json_object)
         # iterate through message strings
         if "v" in json_object:
             ar = json_object["v"]
             for i in range(len(ar)):
                 if ar[i] in MESSAGES:
                     ar[i] = MESSAGES[ar[i]]
-        # convert json back to string
-        return json_object

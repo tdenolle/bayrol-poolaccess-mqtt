@@ -97,7 +97,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         # Check payload via args manually because of createdAt date value
         payload = str(self.brocker_client.publish.call_args[0][1])
         self.assertIn("v", payload)
-        self.assertIn("createdAt", payload)
+        self.assertIn("updatedAt", payload)
 
     def test_on_poolaccess_connect(self):
         self.bridge.on_poolaccess_connect(None, None, None, 0, None)
