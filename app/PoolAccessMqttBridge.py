@@ -46,6 +46,7 @@ class PoolAccessMqttBridge:
                  brocker_client: MqttClient):
         # Logger
         self._logger = logging.getLogger()
+        self._reconnect_delay = DEFAULT_RECONNECT_DELAY
         # Poolaccess Device Serial
         self._poolaccess_device_serial = poolaccess_device_serial
         # Mqtt base topic
@@ -112,7 +113,7 @@ class PoolAccessMqttBridge:
         self._logger.warning("[mqtt] disconnect: %s  [%s][%s][%s]", type(client).__name__, str(rc), str(userdata),
                              str(flags))
 
-    def _multi_loop(self, timeout=1):
+    def _multi_loop(self, loop=True, timeout=1):
         while True:
             brocker_status = self._brocker_client.loop(timeout)
             poolaccess_status = self._poolaccess_client.loop(timeout)
@@ -124,8 +125,8 @@ class PoolAccessMqttBridge:
                     self._brocker_client.reconnect()
                 except Exception as e:
                     self._logger.error("Reconnect exception occurred %s ...", str(e))
-                self._logger.info("Waiting %ss ...", str(DEFAULT_RECONNECT_DELAY))
-                time.sleep(DEFAULT_RECONNECT_DELAY)
+                self._logger.info("Waiting %ss ...", str(self._reconnect_delay))
+                time.sleep(self._reconnect_delay)
 
             if poolaccess_status != MQTT_ERR_SUCCESS:
                 self._logger.warning("Poolaccess Client has been disconnected [status: %s] : trying to reconnect ...",
@@ -134,8 +135,13 @@ class PoolAccessMqttBridge:
                     self._poolaccess_client.reconnect()
                 except Exception as e:
                     self._logger.error("Reconnect exception occurred %s ...", str(e))
-                self._logger.info("Waiting %ss ...", str(DEFAULT_RECONNECT_DELAY))
-                time.sleep(DEFAULT_RECONNECT_DELAY)
+                self._logger.info("Waiting %ss ...", str(self._reconnect_delay))
+                time.sleep(self._reconnect_delay)
+
+            # loop exit condition
+            if not loop:
+                break
+
 
     def start(self):
         connection_success = True
