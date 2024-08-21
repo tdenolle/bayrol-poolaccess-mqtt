@@ -50,7 +50,7 @@ class Entity:
         config["name"] = self.name
         config["state_topic"] = state_topic
         config["availability"] = [{
-            "topic": "%s/status" % entity_topic_prefix,
+            "topic": "%s/sensor/%s/status" % (hass_dicovery_prefix, device_id),
             "value_template": "{{ 'online' if value_json.v | float > 17.0 else 'offline' }}"
         }]
         if "value_template" not in config:
