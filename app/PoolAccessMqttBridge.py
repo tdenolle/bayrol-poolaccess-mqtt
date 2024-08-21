@@ -178,7 +178,7 @@ class PoolAccessMqttBridge:
             t.start()
 
     def get_entity_topic(self, entity: Entity):
-        return "%s/sensor/%s/%s" % (self._hass_discovery_prefix, self._poolaccess_device_serial, entity.key)
+        return "%s/%s/%s/%s" % (self._hass_discovery_prefix, entity.type, self._poolaccess_device_serial, entity.key)
 
 
 def load_entities(filepath: str) -> []:
