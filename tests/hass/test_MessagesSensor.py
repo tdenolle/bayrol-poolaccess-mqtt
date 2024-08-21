@@ -1,3 +1,4 @@
+import re
 import unittest
 import json
 
@@ -12,15 +13,23 @@ class TestMessagesSensor(unittest.TestCase):
 
     def test_get_payload_with_valid_message(self):
         sensor = MessagesSensor(self.json_data)
-        message = '{"v": ["8.33"]}'
-        expected_payload = '{"v": [{"message": "Tout va bien. Profitez de votre piscine !", "type": "success"}]}'
-        self.assertEqual(sensor.get_payload(message), expected_payload)
+        message = b'{"v": ["8.33"]}'
+        actual_payload = sensor.get_payload(message)
+        updatedAt = self.get_attribute_value_in_payload(actual_payload, "updatedAt")
+        expected_payload = ('{"v": [{"message": "Tout va bien. Profitez de votre piscine !", "type": "success"}], '
+                            '"updatedAt": "%s"}') % updatedAt
+        self.assertEqual(actual_payload, expected_payload)
 
     def test_get_payload_with_multiple_messages(self):
         sensor = MessagesSensor(self.json_data)
-        message = '{"v": ["8.33", "8.19"]}'
-        expected_payload = '{"v": [{"message": "Tout va bien. Profitez de votre piscine !", "type": "success"}, {"message": "Taux de sel trop bas\\n! Electrolyse arr\\u00eat\\u00e9e !", "type": "warning"}]}'
-        self.assertEqual(sensor.get_payload(message), expected_payload)
+        message = b'{"v": ["8.33", "8.19"]}'
+        actual_payload = sensor.get_payload(message)
+        updatedAt = self.get_attribute_value_in_payload(actual_payload,"updatedAt")
+        expected_payload = ('{"v": [{"message": "Tout va bien. Profitez de votre piscine !", "type": "success"}, '
+                            '{"message": "Taux de sel trop bas\\n! Electrolyse arr\\u00eat\\u00e9e !", '
+                            '"type": "warning"}], "updatedAt": "%s"}') % updatedAt
+
+        self.assertEqual(actual_payload, expected_payload)
 
     def test_get_payload_with_invalid_message(self):
         sensor = MessagesSensor(self.json_data)
@@ -31,6 +40,13 @@ class TestMessagesSensor(unittest.TestCase):
         sensor = MessagesSensor(self.json_data)
         self.assertIsNone(sensor.get_payload())
 
+    def get_attribute_value_in_payload(self, payload, attr_name):
+        # use a regular expression to get attribute in payload string
+        match = re.search(r'"%s": "(.*?)"' % attr_name, payload)
+        if match:
+            return match.group(1)
+        # use regex to get attribute in payload string
+        return "Not Found"
 
 if __name__ == '__main__':
     unittest.main()

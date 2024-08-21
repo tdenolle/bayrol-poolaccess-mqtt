@@ -1,9 +1,9 @@
 import os
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, ANY, Mock
 import json
 
-from paho.mqtt.client import MQTTMessage
+from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS, MQTT_ERR_AUTH, MQTT_ERR_CONN_REFUSED
 
 from app.PoolAccessMqttBridge import PoolAccessMqttBridge, Sensor, load_sensors, main
 from app.hass.MessagesSensor import MessagesSensor
@@ -46,6 +46,8 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
             self.poolaccess_client,
             self.brocker_client
         )
+        # avoid waiting for delay when reconnecting in connect loop
+        self.bridge._reconnect_delay = 0
 
     def test_init(self):
         self.assertEqual(self.bridge._poolaccess_device_serial, self.config["DEVICE_SERIAL"])
@@ -87,13 +89,43 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         # Assert multi_loop not called
         mock_multi_loop.assert_not_called()
 
+    def test_multi_loop_with_success(self):
+        # Mock connect responses
+        self.poolaccess_client.loop.return_value = MQTT_ERR_SUCCESS
+        self.brocker_client.loop.return_value = MQTT_ERR_SUCCESS
+
+        self.bridge._multi_loop(loop=False)
+        self.poolaccess_client.loop.assert_called_once()
+        self.brocker_client.loop.assert_called_once()
+
+    def test_multi_loop_with_connection_errors(self):
+        # Mock connect responses
+        self.poolaccess_client.loop.return_value = MQTT_ERR_AUTH
+        self.brocker_client.loop.return_value = MQTT_ERR_CONN_REFUSED
+        self.poolaccess_client.reconnect.side_effect = Exception('Poolaccess Test Exception')
+        self.brocker_client.reconnect.side_effect = Exception('Brocker Test Exception')
+
+        self.bridge._multi_loop(loop=False)
+
+        # loop calls
+        self.poolaccess_client.loop.assert_called_once()
+        self.brocker_client.loop.assert_called_once()
+
+        # reconnect calls
+        self.poolaccess_client.reconnect.assert_called_once()
+        self.brocker_client.reconnect.assert_called_once()
+
     def test_on_poolaccess_message(self):
         message = MagicMock(spec=MQTTMessage)
         message.topic = "d02/24ASE2-45678/v/123"
-        message.payload = b"{v : '255'}"
+        message.payload = b"{\"v\" : \"255\"}"
         self.bridge.on_poolaccess_message(self.poolaccess_client, None, message)
-        self.brocker_client.publish.assert_called_once_with("bayrol/sensor/24ASE2-45678/temperature", b"{v : '255'}",
-                                                            message.qos, retain=True)
+        (self.brocker_client.publish
+         .assert_called_once_with("bayrol/sensor/24ASE2-45678/temperature", ANY, message.qos, retain=True))
+        # Check payload via args manually because of createdAt date value
+        payload = str(self.brocker_client.publish.call_args[0][1])
+        self.assertIn("v", payload)
+        self.assertIn("updatedAt", payload)
 
     def test_on_poolaccess_connect(self):
         self.bridge.on_poolaccess_connect(None, None, None, 0, None)

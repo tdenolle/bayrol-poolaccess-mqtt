@@ -14,11 +14,11 @@ MESSAGES = {
     },
     "8.7": {
         "message": "Délai de démarrage",
-        "type": "warning"
+        "type": "info"
     },
     "8.8": {
         "message": "Gaz détecté dans la cellule\n! Electrolyse de sel arrêtée !",
-        "type": "info"
+        "type": "warning"
     },
     "8.9": {
         "message": "Mesure redox trop basse depuis plusieurs jours\n! Electrolyse en mode \"Safe\" !",
@@ -139,20 +139,11 @@ class MessagesSensor(Sensor):
     def __init__(self, data: dict):
         super().__init__(data)
 
-    def get_payload(self, message: str = None):
-        if message is None:
-            return None
-        # convert bytes to string
-        #message = message.decode("utf-8")
-        # convert string to json
-        message = json.loads(message)
+    def build_payload(self, json_object):
+        super().build_payload(json_object)
         # iterate through message strings
-        if "v" in message:
-            ar = message["v"]
+        if "v" in json_object:
+            ar = json_object["v"]
             for i in range(len(ar)):
                 if ar[i] in MESSAGES:
                     ar[i] = MESSAGES[ar[i]]
-        # convert json back to string
-        return json.dumps(message)
-        # convert string to bytes
-        #return message.encode("utf-8")

@@ -46,6 +46,7 @@ class PoolAccessMqttBridge:
                  brocker_client: MqttClient):
         # Logger
         self._logger = logging.getLogger()
+        self._reconnect_delay = DEFAULT_RECONNECT_DELAY
         # Poolaccess Device Serial
         self._poolaccess_device_serial = poolaccess_device_serial
         # Mqtt base topic
@@ -61,14 +62,14 @@ class PoolAccessMqttBridge:
         self._brocker_client = brocker_client
 
     def on_poolaccess_message(self, client: PoolAccessClient, userdata, message: MQTTMessage):
-        self._logger.info("[poolaccess] message [%s]", str(message.topic))
+        self._logger.debug("[poolaccess] message [%s]", str(message.topic))
         for s in self._hass_sensors:  # type: Sensor
             if re.match(".+/v/%s$" % s.uid, message.topic):
                 self._logger.debug("Reading %s %s", message.topic, str(message.payload))
                 payload = s.get_payload(message.payload)
                 topic = "%s/%s" % (self._base_sensor_topic, s.key)
                 self._brocker_client.publish(topic, payload, message.qos, retain=True)
-                self._logger.debug("Publishing to brocker %s %s", topic, str(payload))
+                self._logger.info("[mqtt] publishing to brocker %s %s", topic, str(payload))
 
     def on_poolaccess_connect(self, client: PoolAccessClient, userdata, flags, rc, properties):
         if rc == 0:
@@ -112,7 +113,7 @@ class PoolAccessMqttBridge:
         self._logger.warning("[mqtt] disconnect: %s  [%s][%s][%s]", type(client).__name__, str(rc), str(userdata),
                              str(flags))
 
-    def _multi_loop(self, timeout=1):
+    def _multi_loop(self, loop=True, timeout=1):
         while True:
             brocker_status = self._brocker_client.loop(timeout)
             poolaccess_status = self._poolaccess_client.loop(timeout)
@@ -124,8 +125,8 @@ class PoolAccessMqttBridge:
                     self._brocker_client.reconnect()
                 except Exception as e:
                     self._logger.error("Reconnect exception occurred %s ...", str(e))
-                self._logger.info("Waiting %ss ...", str(DEFAULT_RECONNECT_DELAY))
-                time.sleep(DEFAULT_RECONNECT_DELAY)
+                self._logger.info("Waiting %ss ...", str(self._reconnect_delay))
+                time.sleep(self._reconnect_delay)
 
             if poolaccess_status != MQTT_ERR_SUCCESS:
                 self._logger.warning("Poolaccess Client has been disconnected [status: %s] : trying to reconnect ...",
@@ -134,8 +135,13 @@ class PoolAccessMqttBridge:
                     self._poolaccess_client.reconnect()
                 except Exception as e:
                     self._logger.error("Reconnect exception occurred %s ...", str(e))
-                self._logger.info("Waiting %ss ...", str(DEFAULT_RECONNECT_DELAY))
-                time.sleep(DEFAULT_RECONNECT_DELAY)
+                self._logger.info("Waiting %ss ...", str(self._reconnect_delay))
+                time.sleep(self._reconnect_delay)
+
+            # loop exit condition
+            if not loop:
+                break
+
 
     def start(self):
         connection_success = True
