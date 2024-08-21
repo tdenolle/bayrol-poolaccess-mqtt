@@ -12,6 +12,7 @@ Options:
 
 """
 
+import importlib
 import json
 import logging
 import os
@@ -23,6 +24,7 @@ import time
 from docopt import docopt
 from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS
 
+from .hass.Entity import Entity
 from .utils.Utils import get_device_model_from_serial
 from .hass.Sensor import Sensor
 from .hass.MessagesSensor import MessagesSensor
@@ -41,7 +43,7 @@ class PoolAccessMqttBridge:
                  mqtt_base_topic: str,
                  poolaccess_device_serial: str,
                  hass_discovery_prefix: str,
-                 hass_sensors: list[Sensor],
+                 hass_entities: list[Entity],
                  poolaccess_client: PoolAccessClient,
                  brocker_client: MqttClient):
         # Logger
@@ -53,23 +55,21 @@ class PoolAccessMqttBridge:
         self._mqtt_base_topic = mqtt_base_topic
         # Home Assistant Discovery Prefix
         self._hass_discovery_prefix = hass_discovery_prefix
-        # Base sensor topic
-        self._base_sensor_topic = "%s/sensor/%s" % (hass_discovery_prefix, poolaccess_device_serial)
-        # Home Assistant Sensors
-        self._hass_sensors = hass_sensors
+        # Home Assistant Entities
+        self._hass_entities = hass_entities
         # Mqtt Clients
         self._poolaccess_client = poolaccess_client
         self._brocker_client = brocker_client
 
     def on_poolaccess_message(self, client: PoolAccessClient, userdata, message: MQTTMessage):
-        self._logger.debug("[poolaccess] message [%s]", str(message.topic))
-        for s in self._hass_sensors:  # type: Sensor
-            if re.match(".+/v/%s$" % s.uid, message.topic):
+        self._logger.info("[poolaccess] message [%s]", str(message.topic))
+        for e in self._hass_entities:  # type: Entity
+            if re.match(".+/v/%s$" % e.uid, message.topic):
                 self._logger.debug("Reading %s %s", message.topic, str(message.payload))
-                payload = s.get_payload(message.payload)
-                topic = "%s/%s" % (self._base_sensor_topic, s.key)
+                payload = e.get_payload(message.payload)
+                topic = self.get_entity_topic(e)
                 self._brocker_client.publish(topic, payload, message.qos, retain=True)
-                self._logger.info("[mqtt] publishing to brocker %s %s", topic, str(payload))
+                self._logger.debug("Publishing to brocker %s %s", topic, str(payload))
 
     def on_poolaccess_connect(self, client: PoolAccessClient, userdata, flags, rc, properties):
         if rc == 0:
@@ -87,7 +87,7 @@ class PoolAccessMqttBridge:
             self._poolaccess_client.subscribe(topic, qos=1)
 
             # Looping on sensors
-            for s in self._hass_sensors:  # type: Sensor
+            for s in self._hass_entities:  # type: Entity
                 # Publish Get topic to Poolaccess
                 topic = "d02/%s/g/%s" % (self._poolaccess_device_serial, s.uid)
                 self._logger.info("Publishing to poolaccess: %s", topic)
@@ -108,6 +108,18 @@ class PoolAccessMqttBridge:
         else:
             self._logger.info("[mqtt] connect: Connection failed [%s]", str(rc))
             exit(1)
+
+    def on_brocker_message(self, client: MqttClient, userdata, message: MQTTMessage):
+        self._logger.info("[mqtt] message [%s][%s]", str(message.topic), str(message.payload))
+        # only dealing with set commands
+        if not message.topic.endswith("/set"):
+            return
+        # finding corresponding entity and publishing to poolaccess client
+        for e in self._hass_entities:  # type: Entity
+            if re.match(".+/%s/set$" % e.key, message.topic):
+                poolaccess_topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid)
+                self._logger.info("Publishing to poolaccess: %s", poolaccess_topic)
+                self._poolaccess_client.publish(poolaccess_topic, qos=0, payload=message.payload, retain=True)
 
     def on_disconnect(self, client, userdata, flags, rc, properties):
         self._logger.warning("[mqtt] disconnect: %s  [%s][%s][%s]", type(client).__name__, str(rc), str(userdata),
@@ -142,7 +154,6 @@ class PoolAccessMqttBridge:
             if not loop:
                 break
 
-
     def start(self):
         connection_success = True
         # PoolAccess setup
@@ -166,23 +177,35 @@ class PoolAccessMqttBridge:
             t = threading.Thread(target=self._multi_loop, args=())  # start multi loop
             t.start()
 
+    def get_entity_topic(self, entity: Entity):
+        return "%s/sensor/%s/%s" % (self._hass_discovery_prefix, self._poolaccess_device_serial, entity.key)
 
-def load_sensors(filepath: str) -> list[Sensor]:
+
+def load_entities(filepath: str) -> []:
+    entities = []
     with open(filepath, 'r') as fp:
-        return [MessagesSensor(s) if s["uid"]=="10" else Sensor(s) for s in json.load(fp)]
+        for s in json.load(fp):
+            class_type = s["class_type"] if "class_type" in s else "Sensor"
+            # Load module
+            hass_module = importlib.import_module("app.hass.%s" % class_type)
+            # Get class
+            hass_class = getattr(hass_module, class_type)
+            # Instantiate the class (pass arguments to the constructor, if needed)
+            entities.append(hass_class(s))
+    return entities
 
 
 def main(config: dict):
     brocker_client = MqttClient(config["MQTT_HOST"], config["MQTT_PORT"], config["MQTT_USER"], config["MQTT_PASSWORD"])
     poolaccess_client = PoolAccessClient(config["DEVICE_TOKEN"])
-    hass_sensors = load_sensors(os.path.join(os.path.dirname(__file__), "sensors.json"))
+    hass_entities = load_entities(os.path.join(os.path.dirname(__file__), "entities.json"))
     logger = logging.getLogger()
     logger.info("Starting Bridge")
     bridge = PoolAccessMqttBridge(
         config["MQTT_BASE_TOPIC"],
         config["DEVICE_SERIAL"],
         config["HASS_DISCOVERY_PREFIX"],
-        hass_sensors,
+        hass_entities,
         poolaccess_client,
         brocker_client
     )

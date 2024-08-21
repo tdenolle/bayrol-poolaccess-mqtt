@@ -1,0 +1,73 @@
+import re
+import json
+from datetime import datetime
+
+class Entity:
+    def __init__(self, data: dict):
+        self._uid = load_attr("uid", data)
+        self._key = load_attr("key", data)
+        self._name = load_attr("name", data) if "name" in data else self._key
+        self._attributes = data
+
+    @property
+    def uid(self) -> str:
+        return self._uid
+
+    @property
+    def key(self) -> str:
+        return self._key
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def attributes(self) -> dict:
+        return self._attributes
+
+    @property
+    def type(self) -> str:
+        raise NotImplementedError
+
+    def get_payload(self, message: bytes = None):
+        if message is None:
+            return None
+        json_object = json.loads(message)
+        self.build_payload(json_object)
+        return json.dumps(json_object)
+
+    def build_payload(self, json_object):
+        json_object["updatedAt"] = f"{datetime.utcnow().isoformat()[:-3]}Z"
+
+    def build_config(self, device: dict, hass_dicovery_prefix: str = "homeassistant"):
+        # variables
+        device_id = str(device["identifiers"][0])
+        entity_topic_prefix = "%s/%s/%s" % (hass_dicovery_prefix, self.type, device_id)
+        state_topic = "%s/%s" % (entity_topic_prefix, self.key)
+        # config build-ins
+        config = self.attributes
+        config["unique_id"] = ("bayrol_%s_%s" % (normalize(device_id), self.key))
+        config["name"] = self.name
+        config["state_topic"] = state_topic
+        config["availability"] = [{
+            "topic": "%s/status" % entity_topic_prefix,
+            "value_template": "{{ 'online' if value_json.v | float > 17.0 else 'offline' }}"
+        }]
+        if "value_template" not in config:
+            config["value_template"] = "{{ value_json.v }}"
+        config["device"] = device
+        if "json_attributes_topic" not in config and "json_attributes_template" in config:
+            config["json_attributes_topic"] = state_topic
+        return "%s/config" % state_topic, config
+
+
+def normalize(s: str):
+    s = re.sub(u"[\W|_]", "", s)
+    return s.lower()
+
+
+def load_attr(key: str, data: dict):
+    assert key in data
+    value = data[key]
+    del data[key]
+    return value

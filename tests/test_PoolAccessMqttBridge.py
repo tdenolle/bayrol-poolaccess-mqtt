@@ -5,8 +5,9 @@ import json
 
 from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS, MQTT_ERR_AUTH, MQTT_ERR_CONN_REFUSED
 
-from app.PoolAccessMqttBridge import PoolAccessMqttBridge, Sensor, load_sensors, main
+from app.PoolAccessMqttBridge import PoolAccessMqttBridge, Sensor, load_entities, main
 from app.hass.MessagesSensor import MessagesSensor
+from app.hass.Switch import Switch
 from app.mqtt.MqttClient import MqttClient
 from app.mqtt.PoolAccessClient import PoolAccessClient
 
@@ -27,10 +28,11 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
             "LOG_LEVEL": "INFO"
         }
 
-        # Mock sensors
-        self.sensors = [
+        # Mock entities
+        self.entities = [
             Sensor({"uid": "123", "key": "temperature", "name": "Température", }),
-            Sensor({"uid": "456", "key": "ph", "name": "pH"})
+            Sensor({"uid": "456", "key": "ph", "name": "pH"}),
+            Switch({"uid": "789", "key": "ph_switch", "name": "Activate pH"})
         ]
 
         # Mock MQTT clients
@@ -42,7 +44,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
             self.config["MQTT_BASE_TOPIC"],
             self.config["DEVICE_SERIAL"],
             self.config["HASS_DISCOVERY_PREFIX"],
-            self.sensors,
+            self.entities,
             self.poolaccess_client,
             self.brocker_client
         )
@@ -53,8 +55,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         self.assertEqual(self.bridge._poolaccess_device_serial, self.config["DEVICE_SERIAL"])
         self.assertEqual(self.bridge._mqtt_base_topic, self.config["MQTT_BASE_TOPIC"])
         self.assertEqual(self.bridge._hass_discovery_prefix, self.config["HASS_DISCOVERY_PREFIX"])
-        self.assertEqual(self.bridge._base_sensor_topic, "bayrol/sensor/24ASE2-45678")
-        self.assertEqual(self.bridge._hass_sensors, self.sensors)
+        self.assertEqual(self.bridge._hass_entities, self.entities)
         self.assertEqual(self.bridge._poolaccess_client, self.poolaccess_client)
         self.assertEqual(self.bridge._brocker_client, self.brocker_client)
 
@@ -127,6 +128,21 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         self.assertIn("v", payload)
         self.assertIn("updatedAt", payload)
 
+
+    def test_on_brocker_message(self):
+        message = MagicMock(spec=MQTTMessage)
+        message.topic = "bayrol/switch/24ASE2-45678/ph_switch/set"
+        message.payload = b"{\"v\" : \"on\"}"
+        self.bridge.on_brocker_message(self.brocker_client, None, message)
+        (self.poolaccess_client.publish
+         .assert_called_once_with("d02/24ASE2-45678/s/789", qos=0, payload=b'{"v" : "on"}', retain=True))
+
+    def test_on_brocker_message_with_not_set(self):
+        message = MagicMock(spec=MQTTMessage)
+        message.topic = "bayrol/switch/24ASE2-45678/ph_switch"
+        self.bridge.on_brocker_message(self.brocker_client, None, message)
+        self.poolaccess_client.publish.assert_not_called()
+
     def test_on_poolaccess_connect(self):
         self.bridge.on_poolaccess_connect(None, None, None, 0, None)
         self.poolaccess_client.publish.assert_has_calls([
@@ -187,23 +203,23 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         assert self.bridge.on_disconnect
 
     def test_load_sensors(self):
-        # Mock sensors.json file
-        sensors_json_path = os.path.join(os.path.dirname(__file__), "sensors.json")
-        with open(sensors_json_path, 'w') as f:
+        # Mock entities.json file
+        entities_json_path = os.path.join(os.path.dirname(__file__), "entities.json")
+        with open(entities_json_path, 'w') as f:
             json.dump([
                 {"uid": "1", "key": "temperature", "unit_of_measurement": "°C"},
-                {"uid": "10", "key": "messages"}
+                {"uid": "10", "key": "messages", "class_type": "MessagesSensor"}
             ], f)
 
-        # Load sensors
-        sensors = load_sensors(sensors_json_path)
+        # Load entities
+        entities = load_entities(entities_json_path)
 
         # Assert sensor types
-        self.assertIsInstance(sensors[0], Sensor)
-        self.assertIsInstance(sensors[1], MessagesSensor)
+        self.assertIsInstance(entities[0], Sensor)
+        self.assertIsInstance(entities[1], MessagesSensor)
 
         # Clean up
-        os.remove(sensors_json_path)
+        os.remove(entities_json_path)
 
     @patch('app.PoolAccessMqttBridge.PoolAccessMqttBridge.start')
     def test_main(self, mock_start):
