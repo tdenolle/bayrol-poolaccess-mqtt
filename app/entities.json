@@ -4,8 +4,7 @@
 	"key": "status",
 	"name": "Status",
 	"value_template": "{{ 'Online' if value_json.v | float > 17.0 else 'Offline' }}",
-	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\"}",
-	"class_type" : "Sensor"
+	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
 	"uid": "4.78",
@@ -15,8 +14,7 @@
 	"state_class": "measurement",
 	"unit_of_measurement": "pH",
 	"value_template": "{{ value_json.v | float / 10 }}",
-	"json_attributes_template": "{ \"min\": \"{{ value_json.min | float / 10 }}\", \"max\": \"{{ value_json.max | float / 10 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}",
-	"class_type" : "Sensor"
+	"json_attributes_template": "{ \"min\": \"{{ value_json.min | float / 10 }}\", \"max\": \"{{ value_json.max | float / 10 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
 	"uid": "4.82",
@@ -26,8 +24,7 @@
 	"state_class": "measurement",
 	"unit_of_measurement": "mv",
 	"value_template": "{{ value_json.v | int }}",
-	"json_attributes_template": "{ \"min\": \"{{ value_json.min | int }}\", \"max\": \"{{ value_json.max | int }}\", \"updated\": \"{{ value_json.updatedAt }}\"}",
-	"class_type" : "Sensor"
+	"json_attributes_template": "{ \"min\": \"{{ value_json.min | int }}\", \"max\": \"{{ value_json.max | int }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
 	"uid": "4.98",
@@ -36,8 +33,8 @@
 	"device_class": "temperature",
 	"unit_of_measurement": "°C",
 	"value_template": "{{ value_json.v | float / 10 }}",
-	"json_attributes_template": "{ \"min\": \"{{ value_json.min | float / 10 }}\", \"max\": \"{{ value_json.max | float / 10 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}",
-	"class_type" : "Sensor"
+	"json_attributes_template": "{ \"min\": \"{{ value_json.min | float / 10 }}\", \"max\": \"{{ value_json.max | float / 10 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
+
   },
   {
 	"uid": "4.100",
@@ -47,8 +44,7 @@
 	"state_class": "measurement",
 	"unit_of_measurement": "mg/L",
 	"value_template": "{{ value_json.v | int * 100 }}",
-	"json_attributes_template": "{ \"min\": \"{{ value_json.min | int * 100 }}\", \"max\": \"{{ value_json.max | int * 100 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}",
-	"class_type" : "Sensor"
+	"json_attributes_template": "{ \"min\": \"{{ value_json.min | int * 100 }}\", \"max\": \"{{ value_json.max | int * 100 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
 	"uid": "5.29",
@@ -56,17 +52,16 @@
 	"name": "Filtration",
 	"icon": "mdi:water-pump",
 	"value_template": "{{ 'on' if value_json.v | float == 19.96 else 'off' }}",
-  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"class_type" : "Sensor"
+  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
   },
   {
+	"__class__" : "MessagesSensor",
 	"uid": "10",
 	"key": "messages",
 	"name": "Messages",
 	"icon": "mdi:message-bulleted",
 	"value_template": "{{ value_json.v | length }}",
-	"json_attributes_template": "{ \"data\": {{ value_json.v | to_json }}, \"updated\": \"{{ value_json.updatedAt }}\"}",
-	"class_type" : "MessagesSensor"
+	"json_attributes_template": "{ \"data\": {{ value_json.v | to_json }}, \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
 	"uid": "4.89",
@@ -76,8 +71,7 @@
 	"unit_of_measurement": "%",
 	"icon": "mdi:beaker",
 	"value_template": "{{ value_json.v }}",
-  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"class_type" : "Sensor"
+  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
   },
   {
 	"uid": "4.91",
@@ -87,17 +81,36 @@
 	"unit_of_measurement": "%",
 	"icon": "mdi:beaker",
 	"value_template": "{{ value_json.v }}",
-  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"class_type" : "Sensor"
+  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
   },
   {
+	"__class__" : "Switch",
+	"uid": "5.40",
+	"key": "se_on_off",
+	"name": "Electrolyse de sel",
+	"icon": "mdi:water-opacity",
+	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
+  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+	"command_template" : "{ \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
+  },
+  {
+	"__class__" : "Switch",
 	"uid": "5.42",
 	"key": "ph_on_off",
-	"name": "Automatic pH Dosing",
+	"name": "Dosage Automatique pH",
 	"icon": "mdi:beaker",
 	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"command_template" : "{ \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
-	"class_type" : "Switch"
+	"command_template" : "{ \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
+  },
+  {
+	"__class__" : "Switch",
+	"uid": "5.130",
+	"key": "se_activate_boost",
+	"name": "Mode Boost Electrolyse de Sel",
+	"icon": "mdi:beaker",
+	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
+  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+	"command_template" : "{ \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
   }
 ]
