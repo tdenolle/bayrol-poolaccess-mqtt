@@ -86,7 +86,7 @@ class PoolAccessMqttBridge:
             self._logger.info("Subscribing to topic: %s", topic)
             self._poolaccess_client.subscribe(topic, qos=1)
 
-            # Looping on sensors
+            # Looping on entities
             for s in self._hass_entities:  # type: Entity
                 # Publish entity config to Brocker
                 (topic, cfg) = s.build_config(device, self._hass_discovery_prefix)
@@ -105,6 +105,13 @@ class PoolAccessMqttBridge:
     def on_brocker_connect(self, client: MqttClient, userdata, flags, rc, properties):
         if rc == 0:
             self._logger.info("[mqtt] connect: [%s][%s][%s]", str(rc), str(userdata), str(flags))
+            # Looping on entities
+            for e in self._hass_entities:  # type: Entity
+                if e.type == "switch":
+                    # Subscribing to Entity Messages
+                    command_topic = "%s/set" % self.get_entity_topic(e)
+                    self._logger.info("Subscribing to topic: %s", command_topic)
+                    self._brocker_client.subscribe(command_topic, qos=1)
         else:
             self._logger.info("[mqtt] connect: Connection failed [%s]", str(rc))
             exit(1)
