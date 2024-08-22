@@ -208,7 +208,8 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         with open(entities_json_path, 'w') as f:
             json.dump([
                 {"uid": "1", "key": "temperature", "unit_of_measurement": "°C"},
-                {"uid": "10", "key": "messages", "class_type": "MessagesSensor"}
+                {"uid": "10", "key": "messages", "__class__": "MessagesSensor"},
+                {"uid": "15", "key": "sw", "__class__": "Switch"}
             ], f)
 
         # Load entities
@@ -217,6 +218,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         # Assert sensor types
         self.assertIsInstance(entities[0], Sensor)
         self.assertIsInstance(entities[1], MessagesSensor)
+        self.assertIsInstance(entities[2], Switch)
 
         # Clean up
         os.remove(entities_json_path)

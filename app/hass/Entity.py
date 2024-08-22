@@ -2,6 +2,7 @@ import re
 import json
 from datetime import datetime
 
+
 class Entity:
     def __init__(self, data: dict):
         self._uid = load_attr("uid", data)

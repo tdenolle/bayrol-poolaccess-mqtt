@@ -88,16 +88,16 @@ class PoolAccessMqttBridge:
 
             # Looping on sensors
             for s in self._hass_entities:  # type: Entity
-                # Publish Get topic to Poolaccess
-                topic = "d02/%s/g/%s" % (self._poolaccess_device_serial, s.uid)
-                self._logger.info("Publishing to poolaccess: %s", topic)
-                self._poolaccess_client.publish(topic, qos=0, payload=s.get_payload())
-
-                # Publish sensor config to brocker
+                # Publish entity config to Brocker
                 (topic, cfg) = s.build_config(device, self._hass_discovery_prefix)
                 payload = str(json.dumps(cfg))
                 self._logger.info("Publishing to brocker: %s %s", topic, payload)
                 self._brocker_client.publish(topic, qos=1, payload=payload, retain=True)
+
+                # Publish Get topic to Poolaccess
+                topic = "d02/%s/g/%s" % (self._poolaccess_device_serial, s.uid)
+                self._logger.info("Publishing to poolaccess: %s", topic)
+                self._poolaccess_client.publish(topic, qos=0, payload=s.get_payload())
         else:
             self._logger.info("[poolaccess] connect: Connection failed [%s]", str(rc))
             exit(1)
@@ -185,7 +185,10 @@ def load_entities(filepath: str) -> []:
     entities = []
     with open(filepath, 'r') as fp:
         for s in json.load(fp):
-            class_type = s["class_type"] if "class_type" in s else "Sensor"
+            class_type = "Sensor"
+            if "__class__" in s :
+                class_type = s["__class__"]
+                del s["__class__"]
             # Load module
             hass_module = importlib.import_module("app.hass.%s" % class_type)
             # Get class

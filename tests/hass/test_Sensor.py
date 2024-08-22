@@ -12,6 +12,7 @@ class TestSensor(unittest.TestCase):
         sensor = Sensor(self.json_data)
         self.assertEqual(sensor.uid, "123")
         self.assertEqual(sensor.key, "temperature")
+        self.assertEqual(sensor.type, "sensor")
         self.assertEqual(sensor.name, "Temperature Sensor")
         self.assertEqual(sensor.attributes, {"v": "20.5", "json_attributes_template": "{}"})
 
