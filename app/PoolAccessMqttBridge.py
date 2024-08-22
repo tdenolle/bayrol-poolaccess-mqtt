@@ -166,6 +166,7 @@ class PoolAccessMqttBridge:
 
         # Brocker setup
         self._brocker_client.on_connect = self.on_brocker_connect
+        self._brocker_client.on_message = self.on_brocker_message
         self._brocker_client.on_disconnect = self.on_disconnect
         if self._brocker_client.establish_connection() != 0:
             self._logger.error("MQTT Brocker connection failure !")
