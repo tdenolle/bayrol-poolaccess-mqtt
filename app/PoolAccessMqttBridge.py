@@ -193,6 +193,8 @@ def load_entities(filepath: str) -> []:
     entities = []
     with open(filepath, 'r') as fp:
         for s in json.load(fp):
+            if "disabled" in s and s["disabled"]:
+                continue
             class_type = "Sensor"
             if "__class__" in s :
                 class_type = s["__class__"]
