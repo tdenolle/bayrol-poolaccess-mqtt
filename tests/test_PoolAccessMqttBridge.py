@@ -135,7 +135,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         message.payload = b"{\"v\" : \"on\"}"
         self.bridge.on_brocker_message(self.brocker_client, None, message)
         (self.poolaccess_client.publish
-         .assert_called_once_with("d02/24ASE2-45678/s/789", qos=0, payload=b'{"v" : "on"}', retain=True))
+         .assert_called_once_with("d02/24ASE2-45678/s/789", qos=0, payload=b'{"v" : "on"}', retain=False))
 
     def test_on_brocker_message_with_not_set(self):
         message = MagicMock(spec=MQTTMessage)
