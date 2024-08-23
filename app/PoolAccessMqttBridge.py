@@ -126,7 +126,7 @@ class PoolAccessMqttBridge:
             if re.match(".+/%s/set$" % e.key, message.topic):
                 poolaccess_topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid)
                 self._logger.info("Publishing to poolaccess: %s", poolaccess_topic)
-                self._poolaccess_client.publish(poolaccess_topic, qos=0, payload=message.payload, retain=True)
+                self._poolaccess_client.publish(poolaccess_topic, qos=0, payload=message.payload, retain=False)
 
     def on_disconnect(self, client, userdata, flags, rc, properties):
         self._logger.warning("[mqtt] disconnect: %s  [%s][%s][%s]", type(client).__name__, str(rc), str(userdata),
