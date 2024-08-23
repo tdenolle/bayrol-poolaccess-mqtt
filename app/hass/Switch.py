@@ -6,6 +6,11 @@ from app.hass.Entity import Entity
 class Switch(Entity):
     def __init__(self, data: dict):
         super().__init__(data)
+        data["qos"] = 0
+        data["optimistic"] = False
+        data["retain"] = True
+        data["payload_on"] = "on"
+        data["payload_off"] = "off"
 
     @property
     def type(self) -> str:

@@ -15,7 +15,12 @@ class TestSwitch(unittest.TestCase):
         self.assertEqual(switch.key, "sw_on_off")
         self.assertEqual(switch.type, "switch")
         self.assertEqual(switch.name, "Switch ON/OFF")
-        self.assertEqual(switch.attributes, {"json_attributes_template": "{}"})
+        self.assertEqual(switch.attributes, {'json_attributes_template': '{}',
+                                             'optimistic': False,
+                                             'payload_off': 'off',
+                                             'payload_on': 'on',
+                                             'qos': 0,
+                                             'retain': True})
 
     def test_switch_config(self):
         # Test building switch configuration
@@ -33,7 +38,12 @@ class TestSwitch(unittest.TestCase):
             'name': 'Switch ON/OFF',
             'state_topic': 'homeassistant/switch/22ASE-12343/sw_on_off',
             'unique_id': 'bayrol_22ase12343_sw_on_off',
-            'value_template': '{{ value_json.v }}'
+            'value_template': '{{ value_json.v }}',
+            'optimistic': False,
+            'payload_off': 'off',
+            'payload_on': 'on',
+            'qos': 0,
+            'retain': True,
         }
         self.assertEqual(config_topic, "homeassistant/switch/22ASE-12343/sw_on_off/config")
         self.assertEqual(config, expected_config)

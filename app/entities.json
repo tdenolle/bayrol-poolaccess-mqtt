@@ -89,7 +89,6 @@
 	"key": "se_on_off",
 	"name": "Electrolyse de sel",
 	"icon": "mdi:water-opacity",
-	"retain": "true",
 	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
 	"command_template" : "{ \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
@@ -100,7 +99,6 @@
 	"key": "ph_on_off",
 	"name": "Dosage Automatique pH",
 	"icon": "mdi:beaker",
-	"retain": "true",
 	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
 	"command_template" : "{ \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
@@ -111,7 +109,6 @@
 	"key": "se_activate_boost",
 	"name": "Boost Electrolyse",
 	"icon": "mdi:map-marker-up",
-	"retain": "true",
 	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
 	"command_template" : "{ \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
