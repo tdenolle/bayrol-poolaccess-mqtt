@@ -91,7 +91,8 @@
 	"icon": "mdi:water-opacity",
 	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"command_template" : "{ \"t\":\"5.40\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
+	"command_template" : "{ \"t\":\"5.40\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
+	"retain" : false
   },
   {
 	"__class__" : "Switch",
@@ -101,7 +102,8 @@
 	"icon": "mdi:beaker",
 	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"command_template" : "{ \"t\":\"5.42\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
+	"command_template" : "{ \"t\":\"5.42\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
+	"retain" : true
   },
   {
 	"__class__" : "Switch",
