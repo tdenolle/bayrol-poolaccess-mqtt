@@ -50,10 +50,11 @@ class Entity:
         config["unique_id"] = ("bayrol_%s_%s" % (normalize(device_id), self.key))
         config["name"] = self.name
         config["state_topic"] = state_topic
-        config["availability"] = [{
-            "topic": "%s/sensor/%s/status" % (hass_dicovery_prefix, device_id),
-            "value_template": "{{ 'online' if value_json.v | float > 17.0 else 'offline' }}"
-        }]
+        if "availability" not in config:
+            config["availability"] = [{
+                "topic": "%s/sensor/%s/status" % (hass_dicovery_prefix, device_id),
+                "value_template": "{{ 'online' if value_json.v | float > 17.0 else 'offline' }}"
+            }]
         if "value_template" not in config:
             config["value_template"] = "{{ value_json.v }}"
         config["device"] = device

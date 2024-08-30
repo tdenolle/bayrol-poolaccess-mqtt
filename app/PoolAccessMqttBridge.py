@@ -62,10 +62,10 @@ class PoolAccessMqttBridge:
         self._brocker_client = brocker_client
 
     def on_poolaccess_message(self, client: PoolAccessClient, userdata, message: MQTTMessage):
-        self._logger.debug("[poolaccess] message [%s]", str(message.topic))
+        self._logger.info("[poolaccess] message [%s]", str(message.topic))
         for e in self._hass_entities:  # type: Entity
             if re.match(".+/v/%s$" % e.uid, message.topic):
-                self._logger.debug("Reading %s %s", message.topic, str(message.payload))
+                self._logger.info("Reading %s %s", message.topic, str(message.payload))
                 payload = e.get_payload(message.payload)
                 topic = self.get_entity_topic(e)
                 self._brocker_client.publish(topic, payload, message.qos, retain=True)
