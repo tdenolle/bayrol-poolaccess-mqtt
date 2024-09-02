@@ -2,6 +2,7 @@ import re
 import unittest
 import json
 
+from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from app.hass.MessagesSensor import MessagesSensor
 
 
@@ -10,9 +11,10 @@ class TestMessagesSensor(unittest.TestCase):
     def setUp(self):
         # Example JSON data for testing
         self.json_data = {"uid": "123", "key": "test", "name": "Test", "test": "test"}
+        self.device = BayrolPoolaccessDevice("1.0")
 
     def test_get_payload_with_valid_message(self):
-        sensor = MessagesSensor(self.json_data)
+        sensor = MessagesSensor(self.json_data,self.device)
         message = b'{"v": ["8.33"]}'
         actual_payload = sensor.get_payload(message)
         updatedAt = self.get_attribute_value_in_payload(actual_payload, "updatedAt")
@@ -21,7 +23,7 @@ class TestMessagesSensor(unittest.TestCase):
         self.assertEqual(actual_payload, expected_payload)
 
     def test_get_payload_with_multiple_messages(self):
-        sensor = MessagesSensor(self.json_data)
+        sensor = MessagesSensor(self.json_data, self.device)
         message = b'{"v": ["8.33", "8.19"]}'
         actual_payload = sensor.get_payload(message)
         updatedAt = self.get_attribute_value_in_payload(actual_payload,"updatedAt")
@@ -32,12 +34,12 @@ class TestMessagesSensor(unittest.TestCase):
         self.assertEqual(actual_payload, expected_payload)
 
     def test_get_payload_with_invalid_message(self):
-        sensor = MessagesSensor(self.json_data)
+        sensor = MessagesSensor(self.json_data,self.device)
         message = '{"v": ["8.99"]}'
         self.assertIsNotNone(sensor.get_payload(message))
 
     def test_get_payload_with_no_message(self):
-        sensor = MessagesSensor(self.json_data)
+        sensor = MessagesSensor(self.json_data,self.device)
         self.assertIsNone(sensor.get_payload())
 
     def get_attribute_value_in_payload(self, payload, attr_name):
