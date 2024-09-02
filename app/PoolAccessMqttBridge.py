@@ -85,7 +85,7 @@ class PoolAccessMqttBridge:
                 # Publish Get topic to Poolaccess
                 topic = "d02/%s/g/%s" % (self._poolaccess_device_serial, e.uid)
                 self._logger.info("Publishing to poolaccess: %s", topic)
-                self._poolaccess_client.publish(topic, qos=0, payload=e.get_payload())
+                self._poolaccess_client.publish(topic, qos=0, payload=e.get_payload(), retain=False)
         else:
             self._logger.info("[poolaccess] connect: Connection failed [%s]", str(rc))
             exit(1)
@@ -119,7 +119,7 @@ class PoolAccessMqttBridge:
                 topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid)
                 payload = str(json.dumps(data))
                 self._logger.info("Publishing to poolaccess %s %s", topic, payload)
-                self._poolaccess_client.publish(topic, qos=0, payload=payload, retain=True)
+                self._poolaccess_client.publish(topic, qos=0, payload=payload, retain=False)
 
     def on_disconnect(self, client, userdata, flags, rc, properties):
         self._logger.warning("[mqtt] disconnect: %s  [%s][%s][%s]", type(client).__name__, str(rc), str(userdata),
