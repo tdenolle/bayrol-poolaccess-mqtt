@@ -116,9 +116,10 @@ class PoolAccessMqttBridge:
         # finding corresponding entity and publishing to poolaccess client
         for e in self._hass_entities:  # type: Entity
             if re.match(".+/%s$" % e.key, message.topic):
-                poolaccess_topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid)
-                self._logger.info("Publishing to poolaccess: %s", poolaccess_topic)
-                self._poolaccess_client.publish(poolaccess_topic, qos=0, payload=json.dumps(data), retain=False)
+                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid)
+                payload = str(json.dumps(data))
+                self._logger.info("Publishing to poolaccess %s %s", topic, payload)
+                self._poolaccess_client.publish(topic, qos=0, payload=payload, retain=True)
 
     def on_disconnect(self, client, userdata, flags, rc, properties):
         self._logger.warning("[mqtt] disconnect: %s  [%s][%s][%s]", type(client).__name__, str(rc), str(userdata),
@@ -176,7 +177,6 @@ class PoolAccessMqttBridge:
             self._logger.info("Starting Multithreading")
             t = threading.Thread(target=self._multi_loop, args=())  # start multi loop
             t.start()
-
 
 def load_entities(filepath: str, device_serial: str, hass_discovery_prefix: str = "homeassistant") -> []:
     device = BayrolPoolaccessDevice(device_serial)
