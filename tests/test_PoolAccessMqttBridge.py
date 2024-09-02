@@ -155,8 +155,8 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
     def test_on_poolaccess_connect(self):
         self.bridge.on_poolaccess_connect(None, None, None, 0, None)
         self.poolaccess_client.publish.assert_has_calls([
-            unittest.mock.call("d02/24ASE2-45678/g/123", qos=0, payload=None),
-            unittest.mock.call("d02/24ASE2-45678/g/456", qos=0, payload=None)
+            unittest.mock.call("d02/24ASE2-45678/g/123", qos=0, payload=None,retain=False),
+            unittest.mock.call("d02/24ASE2-45678/g/456", qos=0, payload=None,retain=False)
         ])
         self.brocker_client.publish.assert_has_calls([
             unittest.mock.call('bayrol/sensor/24ASE2-45678/temperature/config', qos=1, payload=json.dumps({
