@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import json
 
+from .BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from .Sensor import Sensor
 
 MESSAGES = {
@@ -136,8 +137,8 @@ MESSAGES = {
 
 
 class MessagesSensor(Sensor):
-    def __init__(self, data: dict):
-        super().__init__(data)
+    def __init__(self, data: dict, device: BayrolPoolaccessDevice, dicovery_prefix: str = "homeassistant"):
+        super().__init__(data, device, dicovery_prefix)
 
     def build_payload(self, json_object):
         super().build_payload(json_object)

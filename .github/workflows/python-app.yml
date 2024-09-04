@@ -8,7 +8,7 @@ env:
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "develop" ]
   pull_request:
     branches: [ "master" ]
 
@@ -66,15 +66,15 @@ jobs:
         run: |
            pytest --cov=app
 
-      - name: Combine coverage and fail it it’s under 90 %
+      - name: Combine coverage and fail it it’s under 95 %
         run: |
           python -m coverage html --skip-covered --skip-empty
           
           # Report and write to summary.
           python -m coverage report | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
           
-          # Report again and fail if under 90%.
-          python -Im coverage report --fail-under=90
+          # Report again and fail if under 95%.
+          python -Im coverage report --fail-under=95
 
       - name: Upload HTML report if check failed
         uses: actions/upload-artifact@v4
@@ -88,6 +88,7 @@ jobs:
     needs:
       - build
       - coverage
+    if: github.event_name != 'pull_request'
     outputs:
       tag_name: ${{ steps.tag_name.outputs.value }}
     runs-on: ubuntu-latest

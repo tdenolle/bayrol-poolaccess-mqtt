@@ -4,7 +4,7 @@
 	"key": "status",
 	"name": "Status",
 	"value_template": "{{ 'Online' if value_json.v | float > 17.0 else 'Offline' }}",
-  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\"}"
+	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
 	"uid": "4.78",
@@ -34,6 +34,7 @@
 	"unit_of_measurement": "°C",
 	"value_template": "{{ value_json.v | float / 10 }}",
 	"json_attributes_template": "{ \"min\": \"{{ value_json.min | float / 10 }}\", \"max\": \"{{ value_json.max | float / 10 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
+
   },
   {
 	"uid": "4.100",
@@ -54,6 +55,7 @@
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
   },
   {
+	"__class__" : "MessagesSensor",
 	"uid": "10",
 	"key": "messages",
 	"name": "Messages",
@@ -80,5 +82,36 @@
 	"icon": "mdi:beaker",
 	"value_template": "{{ value_json.v }}",
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
+  },
+  {
+	"__class__" : "Switch",
+	"uid": "5.40",
+	"key": "se_on_off",
+	"name": "Electrolyse de sel",
+	"icon": "mdi:water-opacity",
+	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
+  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+	"command_template" : "{ \"t\":\"5.40\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
+  },
+  {
+	"__class__" : "Switch",
+	"uid": "5.42",
+	"key": "ph_on_off",
+	"name": "Dosage Automatique pH",
+	"icon": "mdi:beaker",
+	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
+  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+	"command_template" : "{ \"t\":\"5.42\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
+  },
+  {
+	"__class__" : "Switch",
+	"uid": "5.130",
+	"key": "se_activate_boost",
+	"name": "Boost Electrolyse",
+	"icon": "mdi:map-marker-up",
+	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
+  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+	"command_template" : "{ \"t\":\"5.130\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
+	"disabled" : true
   }
 ]
