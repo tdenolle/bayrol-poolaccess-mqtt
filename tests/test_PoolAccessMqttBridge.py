@@ -132,11 +132,11 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
 
     def test_on_brocker_message(self):
         message = MagicMock(spec=MQTTMessage)
-        message.topic = "bayrol/switch/24ASE2-45678/ph_switch"
-        message.payload = b"{\"v\" : \"on\", \"command\" : \"set\"}"
+        message.topic = "bayrol/switch/24ASE2-45678/ph_switch/set"
+        message.payload = b"{\"v\" : \"on\"}"
         self.bridge.on_brocker_message(self.brocker_client, None, message)
         (self.poolaccess_client.publish
-         .assert_called_once_with("d02/24ASE2-45678/s/789", qos=0, payload='{"v": "on"}', retain=False))
+         .assert_called_once_with("d02/24ASE2-45678/s/789", payload=b'{"v" : "on"}'))
 
     def test_on_brocker_message_with_not_set(self):
         message = MagicMock(spec=MQTTMessage)
@@ -155,11 +155,11 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
     def test_on_poolaccess_connect(self):
         self.bridge.on_poolaccess_connect(None, None, None, 0, None)
         self.poolaccess_client.publish.assert_has_calls([
-            unittest.mock.call("d02/24ASE2-45678/g/123", qos=0, payload=None,retain=False),
-            unittest.mock.call("d02/24ASE2-45678/g/456", qos=0, payload=None,retain=False)
+            unittest.mock.call("d02/24ASE2-45678/g/123", payload=None),
+            unittest.mock.call("d02/24ASE2-45678/g/456", payload=None)
         ])
         self.brocker_client.publish.assert_has_calls([
-            unittest.mock.call('bayrol/sensor/24ASE2-45678/temperature/config', qos=1, payload=json.dumps({
+            unittest.mock.call('bayrol/sensor/24ASE2-45678/temperature/config', payload=json.dumps({
                 "name": "Température",
                 "unique_id": "bayrol_24ase245678_temperature",
                 "state_topic": "bayrol/sensor/24ASE2-45678/temperature",
@@ -168,7 +168,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
                 "value_template": "{{ value_json.v }}",
                 "device": self.device
             }), retain=True),
-            unittest.mock.call('bayrol/sensor/24ASE2-45678/ph/config', qos=1, payload=json.dumps({
+            unittest.mock.call('bayrol/sensor/24ASE2-45678/ph/config', payload=json.dumps({
                 "name": "pH",
                 "unique_id": "bayrol_24ase245678_ph",
                 "state_topic": "bayrol/sensor/24ASE2-45678/ph",
@@ -178,7 +178,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
                 "device": self.device
             }), retain=True)
         ])
-        self.poolaccess_client.subscribe.assert_called_once_with("d02/24ASE2-45678/v/#", qos=1)
+        self.poolaccess_client.subscribe.assert_called_once_with("d02/24ASE2-45678/v/#")
 
     def test_on_brocker_connect(self):
         self.bridge.on_brocker_connect(self.brocker_client, None, None, 0, None)

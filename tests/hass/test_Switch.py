@@ -28,7 +28,7 @@ class TestSwitch(unittest.TestCase):
             'availability': [{'topic': 'homeassistant/sensor/22ASE-12343/status',
                               'value_template': "{{ 'online' if value_json.v | float > "
                                                 "17.0 else 'offline' }}"}],
-            'command_topic': 'homeassistant/switch/22ASE-12343/sw_on_off',
+            'command_topic': 'homeassistant/switch/22ASE-12343/sw_on_off/set',
             'device': self.device,
             'json_attributes_template': '{}',
             'json_attributes_topic': 'homeassistant/switch/22ASE-12343/sw_on_off',

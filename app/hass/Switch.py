@@ -9,7 +9,7 @@ class Switch(Entity):
         data["payload_on"] = "on"
         data["payload_off"] = "off"
         if "command_topic" not in data:
-            data["command_topic"] = data["state_topic"]
+            data["command_topic"] = "%s/set" % data["state_topic"]
 
     @property
     def type(self) -> str:

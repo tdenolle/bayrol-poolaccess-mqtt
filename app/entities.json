@@ -91,8 +91,7 @@
 	"icon": "mdi:water-opacity",
 	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"command_template" : "{ \"t\":\"5.40\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\", \"command\":\"set\" }",
-	"retain" : false
+	"command_template" : "{ \"t\":\"5.40\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
   },
   {
 	"__class__" : "Switch",
@@ -102,8 +101,7 @@
 	"icon": "mdi:beaker",
 	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"command_template" : "{ \"t\":\"5.42\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\", \"command\":\"set\" }",
-	"retain" : true
+	"command_template" : "{ \"t\":\"5.42\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
   },
   {
 	"__class__" : "Switch",
@@ -113,7 +111,7 @@
 	"icon": "mdi:map-marker-up",
 	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"command_template" : "{ \"t\":\"5.130\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\", \"command\":\"set\" }",
+	"command_template" : "{ \"t\":\"5.130\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
 	"disabled" : true
   }
 ]

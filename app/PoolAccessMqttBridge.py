@@ -58,7 +58,7 @@ class PoolAccessMqttBridge:
         self._poolaccess_device_serial = poolaccess_device_serial
 
     def on_poolaccess_message(self, client: PoolAccessClient, userdata, message: MQTTMessage):
-        self._logger.info("[poolaccess] message [%s]", str(message.topic))
+        self._logger.debug("[poolaccess] message [%s][%s]", str(message.topic), str(message.payload))
         for e in self._hass_entities:  # type: Entity
             if re.match(".+/v/%s$" % e.uid, message.topic):
                 self._logger.info("Reading %s %s", message.topic, str(message.payload))
@@ -72,7 +72,7 @@ class PoolAccessMqttBridge:
             # Subscribing to PoolAccess Messages
             topic = "d02/%s/v/#" % self._poolaccess_device_serial
             self._logger.info("Subscribing to topic: %s", topic)
-            self._poolaccess_client.subscribe(topic, qos=1)
+            self._poolaccess_client.subscribe(topic)
 
             # Looping on entities
             for e in self._hass_entities:  # type: Entity
@@ -80,12 +80,12 @@ class PoolAccessMqttBridge:
                 (topic, cfg) = e.build_config()
                 payload = str(json.dumps(cfg))
                 self._logger.info("Publishing to brocker: %s %s", topic, payload)
-                self._brocker_client.publish(topic, qos=1, payload=payload, retain=True)
+                self._brocker_client.publish(topic, payload=payload, retain=True)
 
                 # Publish Get topic to Poolaccess
                 topic = "d02/%s/g/%s" % (self._poolaccess_device_serial, e.uid)
                 self._logger.info("Publishing to poolaccess: %s", topic)
-                self._poolaccess_client.publish(topic, qos=0, payload=e.get_payload(), retain=False)
+                self._poolaccess_client.publish(topic, payload=e.get_payload())
         else:
             self._logger.info("[poolaccess] connect: Connection failed [%s]", str(rc))
             exit(1)
@@ -98,28 +98,33 @@ class PoolAccessMqttBridge:
                 if isinstance(e, Switch):
                     # Subscribing to Entity Messages
                     self._logger.info("Subscribing to topic: %s", e.command_topic)
-                    self._brocker_client.subscribe(e.command_topic, qos=1)
+                    self._brocker_client.subscribe(e.command_topic)
         else:
             self._logger.info("[mqtt] connect: Connection failed [%s]", str(rc))
             exit(1)
 
     def on_brocker_message(self, client: MqttClient, userdata, message: MQTTMessage):
         self._logger.info("[mqtt] message [%s][%s]", str(message.topic), str(message.payload))
-        if not message or not message.payload:
-            return
         # only dealing with set commands
-        data = json.loads(message.payload)
-        if "command" not in data or data["command"] != "set":
+        if not (message
+                and message.payload
+                and message.topic
+                and message.topic.endswith("/set")):
             return
-        # removing command to not send it to poolaccess
-        del data["command"]
         # finding corresponding entity and publishing to poolaccess client
         for e in self._hass_entities:  # type: Entity
-            if re.match(".+/%s$" % e.key, message.topic):
+            if re.match(".+/%s/set$" % e.key, message.topic):
+                # Publish data to brocker to persist it
+                topic = e.state_topic
+                payload = message.payload
+                self._logger.info("Publishing to brocker %s %s", topic, payload)
+                self._brocker_client.publish(topic, payload=payload, retain=True)
+                # Publish data to poolaccess
                 topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid)
-                payload = str(json.dumps(data))
+                payload = message.payload
                 self._logger.info("Publishing to poolaccess %s %s", topic, payload)
-                self._poolaccess_client.publish(topic, qos=0, payload=payload, retain=False)
+                self._poolaccess_client.publish(topic, payload=payload)
+
 
     def on_disconnect(self, client, userdata, flags, rc, properties):
         self._logger.warning("[mqtt] disconnect: %s  [%s][%s][%s]", type(client).__name__, str(rc), str(userdata),
@@ -177,6 +182,7 @@ class PoolAccessMqttBridge:
             self._logger.info("Starting Multithreading")
             t = threading.Thread(target=self._multi_loop, args=())  # start multi loop
             t.start()
+
 
 def load_entities(filepath: str, device_serial: str, hass_discovery_prefix: str = "homeassistant") -> []:
     device = BayrolPoolaccessDevice(device_serial)
