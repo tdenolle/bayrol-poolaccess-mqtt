@@ -47,6 +47,14 @@
 	"json_attributes_template": "{ \"min\": \"{{ value_json.min | int * 100 }}\", \"max\": \"{{ value_json.max | int * 100 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
+	"uid": "5.2",
+	"key": "language",
+	"name": "Langue",
+	"icon": "mdi:translate",
+	"value_template": "{% set lang = { \"19.19\": \"de\", \"19.21\": \"fr\", \"19.22\": \"es\" } %}{{ lang[value_json.v]|default(\"en\")}}",
+	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\"}"
+  },
+  {
 	"uid": "5.29",
 	"key": "flow_in",
 	"name": "Filtration",
