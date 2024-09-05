@@ -20,6 +20,7 @@ import re
 import threading
 import sys
 import time
+from json import JSONDecodeError
 
 from docopt import docopt
 from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS
@@ -58,13 +59,18 @@ class PoolAccessMqttBridge:
         self._poolaccess_device_serial = poolaccess_device_serial
 
     def on_poolaccess_message(self, client: PoolAccessClient, userdata, message: MQTTMessage):
+        if not (message and message.payload and message.topic):
+            return
         self._logger.debug("[poolaccess] message [%s][%s]", str(message.topic), str(message.payload))
         for e in self._hass_entities:  # type: Entity
             if re.match(".+/v/%s$" % e.uid, message.topic):
                 self._logger.info("Reading %s %s", message.topic, str(message.payload))
-                payload = e.get_payload(message.payload)
-                self._brocker_client.publish(e.state_topic, payload, message.qos, retain=True)
-                self._logger.info("Publishing to brocker %s %s", e.state_topic, str(payload))
+                try:
+                    payload = e.get_payload(message.payload)
+                    self._brocker_client.publish(e.state_topic, payload, message.qos, retain=True)
+                    self._logger.info("Publishing to brocker %s %s", e.state_topic, str(payload))
+                except JSONDecodeError as e:
+                    self._logger.error(e)
 
     def on_poolaccess_connect(self, client: PoolAccessClient, userdata, flags, rc, properties):
         if rc == 0:
