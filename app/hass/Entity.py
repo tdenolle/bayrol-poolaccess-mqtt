@@ -26,7 +26,7 @@ class Entity:
         self._discovery_prefix = discovery_prefix
 
         # config variables
-        self._attributes["unique_id"] = ("%s_%s_%s" % (norm(device.manufacturer), norm(self._device.id),self.key))
+        self._attributes["unique_id"] = ("%s_%s_%s" % (norm(device.manufacturer), norm(self._device.id), self.key))
         self._attributes["state_topic"] = "%s/%s/%s/%s" % (discovery_prefix, self.type, device.id, self.key)
 
         if "name" not in data:
@@ -65,7 +65,7 @@ class Entity:
         raise NotImplementedError
 
     def get_payload(self, message: bytes = None):
-        if message is None:
+        if message is None or len(message) == 0:
             return None
         json_object = json.loads(message)
         self.build_payload(json_object)
@@ -75,4 +75,4 @@ class Entity:
         json_object["updatedAt"] = f"{datetime.utcnow().isoformat()[:-3]}Z"
 
     def build_config(self):
-        return "%s/config" % self.state_topic, { **self._attributes, "device": self._device }
+        return "%s/config" % self.state_topic, {**self._attributes, "device": self._device}
