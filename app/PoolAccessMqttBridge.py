@@ -59,7 +59,7 @@ class PoolAccessMqttBridge:
         self._poolaccess_device_serial = poolaccess_device_serial
 
     def on_poolaccess_message(self, client: PoolAccessClient, userdata, message: MQTTMessage):
-        if not (message and message.payload and message.topic):
+        if not message or message.payload is None or message.topic is None:
             return
         self._logger.debug("[poolaccess] message [%s][%s]", str(message.topic), str(message.payload))
         for e in self._hass_entities:  # type: Entity
