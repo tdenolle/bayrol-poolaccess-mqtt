@@ -25,6 +25,7 @@ from json import JSONDecodeError
 from docopt import docopt
 from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS
 
+from app.Translation import LanguageManager
 from .hass.Switch import Switch
 from .hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from .hass.Entity import Entity
@@ -210,6 +211,7 @@ def load_entities(filepath: str, device_serial: str, hass_discovery_prefix: str 
 
 
 def main(config: dict):
+    LanguageManager().setup(config["LANGUAGE"] if "LANGUAGE" in config else "fr")
     brocker_client = MqttClient(config["MQTT_HOST"], config["MQTT_PORT"], config["MQTT_USER"], config["MQTT_PASSWORD"])
     poolaccess_client = PoolAccessClient(config["DEVICE_TOKEN"])
     hass_entities = load_entities(
