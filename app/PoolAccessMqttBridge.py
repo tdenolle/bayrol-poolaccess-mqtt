@@ -25,6 +25,7 @@ from json import JSONDecodeError
 from docopt import docopt
 from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS
 
+from app.Translation import LanguageManager
 from .hass.Switch import Switch
 from .hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from .hass.Entity import Entity
@@ -59,7 +60,7 @@ class PoolAccessMqttBridge:
         self._poolaccess_device_serial = poolaccess_device_serial
 
     def on_poolaccess_message(self, client: PoolAccessClient, userdata, message: MQTTMessage):
-        if not (message and message.payload and message.topic):
+        if not message or message.payload is None or message.topic is None:
             return
         self._logger.debug("[poolaccess] message [%s][%s]", str(message.topic), str(message.payload))
         for e in self._hass_entities:  # type: Entity
@@ -130,7 +131,6 @@ class PoolAccessMqttBridge:
                 payload = message.payload
                 self._logger.info("Publishing to poolaccess %s %s", topic, payload)
                 self._poolaccess_client.publish(topic, payload=payload)
-
 
     def on_disconnect(self, client, userdata, flags, rc, properties):
         self._logger.warning("[mqtt] disconnect: %s  [%s][%s][%s]", type(client).__name__, str(rc), str(userdata),
@@ -211,6 +211,7 @@ def load_entities(filepath: str, device_serial: str, hass_discovery_prefix: str 
 
 
 def main(config: dict):
+    LanguageManager().setup(config["LANGUAGE"] if "LANGUAGE" in config else "fr")
     brocker_client = MqttClient(config["MQTT_HOST"], config["MQTT_PORT"], config["MQTT_USER"], config["MQTT_PASSWORD"])
     poolaccess_client = PoolAccessClient(config["DEVICE_TOKEN"])
     hass_entities = load_entities(

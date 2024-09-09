@@ -1,144 +1,53 @@
 #!/usr/bin/env python
-import json
+import copy
 
 from .BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from .Sensor import Sensor
 
-MESSAGES = {
-    "8.5": {
-        "message": "Pompe de filtration arrêtée",
-        "type": "warning"
-    },
-    "8.6": {
-        "message": "Pompe de filtration arrêtée\n(pas de signal 230V~ de la pompe de filtration)",
-        "type": "warning"
-    },
-    "8.7": {
-        "message": "Délai de démarrage",
-        "type": "info"
-    },
-    "8.8": {
-        "message": "Gaz détecté dans la cellule\n! Electrolyse de sel arrêtée !",
-        "type": "warning"
-    },
-    "8.9": {
-        "message": "Mesure redox trop basse depuis plusieurs jours\n! Electrolyse en mode \"Safe\" !",
-        "type": "warning"
-    },
-    "8.10": {
-        "message": "Mesure redox trop basse depuis plusieurs jours\n! Electrolyse arrêtée !",
-        "type": "warning"
-    },
-    "8.11": {
-        "message": "Mesure redox trop basse\ndepuis plusieurs jours",
-        "type": "warning"
-    },
-    "8.12": {
-        "message": "La mesure redox n'augmente pas comme prévu\n! Electrolyse en mode \"Safe\" !",
-        "type": "warning"
-    },
-    "8.13": {
-        "message": "La mesure redox n'augmente pas comme prévu\n! Electrolyse arrêtée !",
-        "type": "warning"
-    },
-    "8.14": {
-        "message": "La mesure redox n'augmente pas comme prévu",
-        "type": "warning"
-    },
-    "8.15": {
-        "message": "La mesure pH ne réagit pas comme prévu\n! Dosage pH arrêté !",
-        "type": "warning"
-    },
-    "8.16": {
-        "message": "La mesure redox ne réagit pas comme prévu\n! Dosage chlore arrêté !",
-        "type": "warning"
-    },
-    "8.17": {
-        "message": "Bidon de pH-Minus vide",
-        "type": "warning"
-    },
-    "8.18": {
-        "message": "Bidon de pH-Plus vide",
-        "type": "warning"
-    },
-    "8.19": {
-        "message": "Taux de sel trop bas\n! Electrolyse arrêtée !",
-        "type": "warning"
-    },
-    "8.20": {
-        "message": "Taux de sel trop faible\n! Production réduite (protection cellule)  !",
-        "type": "warning"
-    },
-    "8.21": {
-        "message": "Taux de sel inférieur au taux préféré",
-        "type": "warning"
-    },
-    "8.22": {
-        "message": "Production par électrolyse trop faible",
-        "type": "warning"
-    },
-    "8.23": {
-        "message": "Mesure pH trop haute",
-        "type": "warning"
-    },
-    "8.24": {
-        "message": "Mesure pH trop basse",
-        "type": "warning"
-    },
-    "8.25": {
-        "message": "Température de l'eau trop basse\nElectrolyse arrêtée",
-        "type": "warning"
-    },
-    "8.26": {
-        "message": "Température de l'eau basse\nElectrolyse arrêtée",
-        "type": "warning"
-    },
-    "8.27": {
-        "message": "Température de l'eau trop basse\nProduction réduite (protection cellule)",
-        "type": "warning"
-    },
-    "8.28": {
-        "message": "Mesure redox trop haute",
-        "type": "warning"
-    },
-    "8.29": {
-        "message": "Mesure redox trop basse",
-        "type": "warning"
-    },
-    "8.30": {
-        "message": "Pas de courant cellule",
-        "type": "warning"
-    },
-    "8.31": {
-        "message": "Temps de filtration journalier\npotentiellement trop faible",
-        "type": "warning"
-    },
-    "8.32": {
-        "message": "Bidon de Chloriliquide vide",
-        "type": "warning"
-    },
-    "8.33": {
-        "message": "Tout va bien. Profitez de votre piscine !",
-        "type": "success"
-    },
-    "8.34": {
-        "message": "Software reset",
-        "type": "warning"
-    },
-    "8.35": {
-        "message": "Power on",
-        "type": "info"
-    },
-    "8.36": {
-        "message": "Default reset",
-        "type": "info"
-    }
-}
+MESSAGES = {"8.5": {"key": "al_no_flow_bnc", "type": "warning"},
+            "8.6": {"key": "al_no_flow_230V", "type": "warning"},
+            "8.7": {"key": "al_start_delay", "type": "info"},
+            "8.8": {"key": "al_se_gas_detected", "type": "warning"},
+            "8.9": {"key": "al_se_err_setpoint_safe_mode", "type": "warning"},
+            "8.10": {"key": "al_se_err_setpoint_stopped", "type": "warning"},
+            "8.11": {"key": "al_se_err_setpoint", "type": "warning"},
+            "8.12": {"key": "al_se_err_rise_safe_mode", "type": "warning"},
+            "8.13": {"key": "al_se_err_rise_stopped", "type": "warning"},
+            "8.14": {"key": "al_se_err_rise", "type": "warning"},
+            "8.15": {"key": "al_ph_dosing_stopped", "type": "warning"},
+            "8.16": {"key": "al_mv_dosing_stopped","type": "warning"},
+            "8.17": {"key": "al_ph_minus_empty", "type": "warning"},
+            "8.18": {"key": "al_ph_plus_empty", "type": "warning"},
+            "8.19": {"key": "al_salt_low_stopped", "type": "warning"},
+            "8.20": {"key": "al_salt_low_cell_protection","type": "warning"},
+            "8.21": {"key": "al_salt_low_pre_warning", "type": "warning"},
+            "8.22": {"key": "al_se_production_low", "type": "warning"},
+            "8.23": {"key": "al_ph_too_high", "type": "warning"},
+            "8.24": {"key": "al_ph_too_low","type": "warning"},
+            "8.25": {"key": "al_se_t_low_stopped", "type": "warning"},
+            "8.26": {"key": "al_se_t_low_stopped_user", "type": "warning"},
+            "8.27": {"key": "al_se_t_low_cell_protection", "type": "warning"},
+            "8.28": {"key": "al_mv_too_high","type": "warning"},
+            "8.29": {"key": "al_mv_too_low", "type": "warning"},
+            "8.30": {"key": "al_se_no_current", "type": "warning"},
+            "8.31": {"key": "al_filtration_short", "type": "warning"},
+            "8.32": {"key": "al_cl_empty","type": "warning"},
+            "8.33": {"key": "enjoy", "type": "success"},
+            "8.34": {"key": "ev_sw_reset", "type": "warning"},
+            "8.35": {"key": "ev_system_start", "type": "info"},
+            "8.36": {"key": "ev_default_reset", "type": "info"}}
 
 
 class MessagesSensor(Sensor):
     def __init__(self, data: dict, device: BayrolPoolaccessDevice, dicovery_prefix: str = "homeassistant"):
         super().__init__(data, device, dicovery_prefix)
+        # Build Messages array
+        self._messages = copy.deepcopy(MESSAGES)
+        for uid in self._messages:
+            m = self._messages[uid]
+            k = m["key"]
+            m["message"] = self._lang.get_string(k,k)
+            del m["key"]
 
     def build_payload(self, json_object):
         super().build_payload(json_object)
@@ -146,5 +55,5 @@ class MessagesSensor(Sensor):
         if "v" in json_object:
             ar = json_object["v"]
             for i in range(len(ar)):
-                if ar[i] in MESSAGES:
-                    ar[i] = MESSAGES[ar[i]]
+                if ar[i] in self._messages:
+                    ar[i] = self._messages[ar[i]]

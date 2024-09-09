@@ -2,14 +2,12 @@
   {
 	"uid": "1",
 	"key": "status",
-	"name": "Status",
 	"value_template": "{{ 'Online' if value_json.v | float > 17.0 else 'Offline' }}",
 	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
 	"uid": "4.78",
 	"key": "ph",
-	"name": "pH",
 	"icon": "mdi:ph",
 	"state_class": "measurement",
 	"unit_of_measurement": "pH",
@@ -19,7 +17,6 @@
   {
 	"uid": "4.82",
 	"key": "mv_se",
-	"name": "Redox",
 	"icon": "mdi:water-opacity",
 	"state_class": "measurement",
 	"unit_of_measurement": "mv",
@@ -29,7 +26,6 @@
   {
 	"uid": "4.98",
 	"key": "temperature",
-	"name": "Température",
 	"device_class": "temperature",
 	"unit_of_measurement": "°C",
 	"value_template": "{{ value_json.v | float / 10 }}",
@@ -39,7 +35,6 @@
   {
 	"uid": "4.100",
 	"key": "salt",
-	"name": "Sel",
 	"icon": "mdi:water-sync",
 	"state_class": "measurement",
 	"unit_of_measurement": "mg/L",
@@ -49,7 +44,6 @@
   {
 	"uid": "5.2",
 	"key": "language",
-	"name": "Langue",
 	"icon": "mdi:translate",
 	"value_template": "{% set lang = { \"19.19\": \"de\", \"19.21\": \"fr\", \"19.22\": \"es\" } %}{{ lang[value_json.v]|default(\"en\")}}",
 	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\"}"
@@ -57,7 +51,6 @@
   {
 	"uid": "5.29",
 	"key": "flow_in",
-	"name": "Filtration",
 	"icon": "mdi:water-pump",
 	"value_template": "{{ 'on' if value_json.v | float == 19.96 else 'off' }}",
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
@@ -66,7 +59,6 @@
 	"__class__" : "MessagesSensor",
 	"uid": "10",
 	"key": "messages",
-	"name": "Messages",
 	"icon": "mdi:message-bulleted",
 	"value_template": "{{ value_json.v | length }}",
 	"json_attributes_template": "{ \"data\": {{ value_json.v | to_json }}, \"updated\": \"{{ value_json.updatedAt }}\"}"
@@ -74,7 +66,6 @@
   {
 	"uid": "4.89",
 	"key": "ph_dos_rate",
-	"name": "pH Dosage",
 	"state_class": "measurement",
 	"unit_of_measurement": "%",
 	"icon": "mdi:beaker",
@@ -84,7 +75,6 @@
   {
 	"uid": "4.91",
 	"key": "se_production_rate",
-	"name": "Chlore Production",
 	"state_class": "measurement",
 	"unit_of_measurement": "%",
 	"icon": "mdi:beaker",
@@ -95,7 +85,6 @@
 	"__class__" : "Switch",
 	"uid": "5.40",
 	"key": "se_on_off",
-	"name": "Electrolyse de sel",
 	"icon": "mdi:water-opacity",
 	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
@@ -105,7 +94,6 @@
 	"__class__" : "Switch",
 	"uid": "5.42",
 	"key": "ph_on_off",
-	"name": "Dosage Automatique pH",
 	"icon": "mdi:beaker",
 	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
@@ -115,7 +103,6 @@
 	"__class__" : "Switch",
 	"uid": "5.130",
 	"key": "se_activate_boost",
-	"name": "Boost Electrolyse",
 	"icon": "mdi:map-marker-up",
 	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",

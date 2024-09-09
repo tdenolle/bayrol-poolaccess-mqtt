@@ -126,9 +126,30 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         (self.brocker_client.publish
          .assert_called_once_with("bayrol/sensor/24ASE2-45678/temperature", ANY, ANY, retain=True))
         # Check payload via args manually because of createdAt date value
-        #payload = str(self.brocker_client.publish.call_args[0][1])
-        #self.assertIn("v", payload)
-        #self.assertIn("updatedAt", payload)
+        payload = str(self.brocker_client.publish.call_args[0][1])
+        self.assertIn("v", payload)
+        self.assertIn("updatedAt", payload)
+
+    def test_on_poolaccess_message_with_empty_payload(self):
+        message = MagicMock(spec=MQTTMessage)
+        message.topic = "d02/24ASE2-45678/v/123"
+        message.payload = b""
+        self.bridge.on_poolaccess_message(self.poolaccess_client, None, message)
+        self.brocker_client.publish.assert_called_once()
+
+    def test_on_poolaccess_message_with_no_payload(self):
+        message = MagicMock(spec=MQTTMessage)
+        message.topic = "d02/24ASE2-45678/v/123"
+        message.payload = None
+        self.bridge.on_poolaccess_message(self.poolaccess_client, None, message)
+        self.brocker_client.publish.assert_not_called()
+
+    def test_on_poolaccess_message_with_malformed_payload(self):
+        message = MagicMock(spec=MQTTMessage)
+        message.topic = "d02/24ASE2-45678/v/123"
+        message.payload = b"{"
+        self.bridge.on_poolaccess_message(self.poolaccess_client, None, message)
+        self.brocker_client.publish.assert_not_called()
 
     def test_on_brocker_message(self):
         message = MagicMock(spec=MQTTMessage)
@@ -208,7 +229,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
             json.dump([
                 {"uid": "1", "key": "temperature", "unit_of_measurement": "°C"},
                 {"uid": "10", "key": "messages", "__class__": "MessagesSensor"},
-                {"uid": "15", "key": "sw", "__class__": "Switch"}
+                {"uid": "15", "key": "se_on_off", "__class__": "Switch"}
             ], f)
 
         # Load entities
