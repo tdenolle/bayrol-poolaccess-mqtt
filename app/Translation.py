@@ -20,7 +20,7 @@ class LanguageManager(metaclass=Singleton):
 
     def setup(self, language: str):
         # load language file
-        filepath = os.path.join(os.path.dirname(__file__), "..", "translations", "%s.json" % language)
+        filepath = os.path.join(os.path.dirname(__file__), "translations", "%s.json" % language)
         if not os.path.exists(filepath):
             raise FileNotFoundError(filepath)
 
