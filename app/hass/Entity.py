@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 
 from .BayrolPoolaccessDevice import BayrolPoolaccessDevice
+from ..Translation import LanguageManager
 
 
 def norm(s: str):
@@ -24,13 +25,14 @@ class Entity:
         self._attributes = data
         self._device = device
         self._discovery_prefix = discovery_prefix
+        self._lang = LanguageManager()
 
         # config variables
         self._attributes["unique_id"] = ("%s_%s_%s" % (norm(device.manufacturer), norm(self._device.id), self.key))
         self._attributes["state_topic"] = "%s/%s/%s/%s" % (discovery_prefix, self.type, device.id, self.key)
 
         if "name" not in data:
-            self._attributes["name"] = self._key
+            self._attributes["name"] = self._lang.get_string(self._key)
 
         if "availability" not in data:
             self._attributes["availability"] = [{

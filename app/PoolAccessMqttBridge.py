@@ -131,7 +131,6 @@ class PoolAccessMqttBridge:
                 self._logger.info("Publishing to poolaccess %s %s", topic, payload)
                 self._poolaccess_client.publish(topic, payload=payload)
 
-
     def on_disconnect(self, client, userdata, flags, rc, properties):
         self._logger.warning("[mqtt] disconnect: %s  [%s][%s][%s]", type(client).__name__, str(rc), str(userdata),
                              str(flags))
