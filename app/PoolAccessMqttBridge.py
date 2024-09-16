@@ -194,6 +194,9 @@ def load_entities(filepath: str, device_serial: str, hass_discovery_prefix: str 
     device = BayrolPoolaccessDevice(device_serial)
     entities = []
     with open(filepath, 'r') as fp:
+        # replace variables in whole file
+        # #HASS_DISCOVERY_PREFIX & #DEVICE SERIAL by corresponding values
+        # use json.loads instead
         for e in json.load(fp):
             if "disabled" in e and e["disabled"]:
                 continue
@@ -212,7 +215,9 @@ def load_entities(filepath: str, device_serial: str, hass_discovery_prefix: str 
 
 def main(config: dict):
     LanguageManager().setup(config["LANGUAGE"] if "LANGUAGE" in config else "fr")
-    brocker_client = MqttClient(config["MQTT_HOST"], config["MQTT_PORT"], config["MQTT_USER"], config["MQTT_PASSWORD"])
+    brocker_client = MqttClient(config["MQTT_HOST"], config["MQTT_PORT"],
+                                config["MQTT_USER"] if "MQTT_USER" in config else None,
+                                config["MQTT_PASSWORD"] if "MQTT_PASSWORD" in config else None)
     poolaccess_client = PoolAccessClient(config["DEVICE_TOKEN"])
     hass_entities = load_entities(
         os.path.join(os.path.dirname(__file__), "entities.json"),
