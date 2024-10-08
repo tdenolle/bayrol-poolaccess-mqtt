@@ -190,14 +190,19 @@ class PoolAccessMqttBridge:
             t.start()
 
 
-def load_entities(filepath: str, device_serial: str, hass_discovery_prefix: str = "homeassistant") -> []:
-    device = BayrolPoolaccessDevice(device_serial)
+def load_entities(filepath: str, config) -> []:
+    if "DEVICE_SERIAL" not in config:
+        raise KeyError("DEVICE_SERIAL option can not be found in configuration.")
+    device = BayrolPoolaccessDevice(config["DEVICE_SERIAL"])
+    hass_discovery_prefix = config["HASS_DISCOVERY_PREFIX"] if "HASS_DISCOVERY_PREFIX" in config else "homeassistant"
     entities = []
     with open(filepath, 'r') as fp:
-        # replace variables in whole file
-        # #HASS_DISCOVERY_PREFIX & #DEVICE SERIAL by corresponding values
-        # use json.loads instead
-        for e in json.load(fp):
+        content = fp.read()
+        # Replace config value in entities file
+        for k in config:
+            content = content.replace("#%s" % k, str(config[k]))
+        # Instanciate entities
+        for e in json.loads(content):
             if "disabled" in e and e["disabled"]:
                 continue
             class_type = "Sensor"
@@ -219,10 +224,7 @@ def main(config: dict):
                                 config["MQTT_USER"] if "MQTT_USER" in config else None,
                                 config["MQTT_PASSWORD"] if "MQTT_PASSWORD" in config else None)
     poolaccess_client = PoolAccessClient(config["DEVICE_TOKEN"])
-    hass_entities = load_entities(
-        os.path.join(os.path.dirname(__file__), "entities.json"),
-        config["DEVICE_SERIAL"],
-        config["HASS_DISCOVERY_PREFIX"])
+    hass_entities = load_entities(os.path.join(os.path.dirname(__file__), "entities.json"), config)
     logger = logging.getLogger()
     logger.info("Starting Bridge")
     bridge = PoolAccessMqttBridge(

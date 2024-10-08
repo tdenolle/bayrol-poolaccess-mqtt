@@ -47,7 +47,6 @@ class MessagesSensor(Sensor):
             m = self._messages[uid]
             k = m["key"]
             m["message"] = self._lang.get_string(k,k)
-            del m["key"]
 
     def build_payload(self, json_object):
         super().build_payload(json_object)

@@ -43,5 +43,6 @@
   "ph_dos_rate": "pH Dosage",
   "se_production_rate": "Chlorine Production",
   "se_on_off": "Salt Electrolysis",
-  "ph_on_off": "Automatic pH Dosing"
+  "ph_on_off": "Automatic pH Dosing",
+  "sw_version": "Version"
 }

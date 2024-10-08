@@ -60,7 +60,7 @@
 	"uid": "10",
 	"key": "messages",
 	"icon": "mdi:message-bulleted",
-	"value_template": "{{ value_json.v | length }}",
+	"value_template": "{{ value_json.v | map(attribute='key') | list }}",
 	"json_attributes_template": "{ \"data\": {{ value_json.v | to_json }}, \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
@@ -107,6 +107,17 @@
 	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
 	"command_template" : "{ \"t\":\"5.130\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
-	"disabled" : true
+	"availability" : {
+		"topic": "#HASS_DISCOVERY_PREFIX/sensor/#DEVICE_SERIAL/se_on_off",
+		"value_template": "{{ 'online' if value_json.v == '19.17' else 'offline' }}"
+	}
+  },
+  {
+	"__class__" : "Update",
+	"uid": "4.67",
+	"key": "sw_version",
+	"icon": "mdi:update",
+	"value_template": "{{ value_json.v }}",
+  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
   }
 ]

@@ -227,16 +227,18 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         entities_json_path = os.path.join(os.path.dirname(__file__), "entities.json")
         with open(entities_json_path, 'w') as f:
             json.dump([
-                {"uid": "1", "key": "temperature", "unit_of_measurement": "°C"},
+                {"uid": "1", "key": "temperature", "unit_of_measurement": "°C", "attr_dyn" : "#XXX/#DEVICE_SERIAL/on"},
                 {"uid": "10", "key": "messages", "__class__": "MessagesSensor"},
                 {"uid": "15", "key": "se_on_off", "__class__": "Switch"}
             ], f)
 
         # Load entities
-        entities = load_entities(entities_json_path, "1.0")
+        entities = load_entities(entities_json_path, { "DEVICE_SERIAL" : "1.0", "XXX" : "YYY" })
 
         # Assert sensor types
         self.assertIsInstance(entities[0], Sensor)
+        self.assertEqual(entities[0].get_attr("attr_dyn"),"YYY/1.0/on")
+
         self.assertIsInstance(entities[1], MessagesSensor)
         self.assertIsInstance(entities[2], Switch)
 

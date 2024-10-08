@@ -66,6 +66,9 @@ class Entity:
     def type(self) -> str:
         raise NotImplementedError
 
+    def get_attr(self, key: str):
+        return self._attributes[key]
+
     def get_payload(self, message: bytes = None):
         if message is None or len(message) == 0:
             return None
