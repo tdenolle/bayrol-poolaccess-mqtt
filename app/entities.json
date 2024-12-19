@@ -108,13 +108,13 @@
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
 	"command_template" : "{ \"t\":\"5.130\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
 	"availability" : {
-		"topic": "#HASS_DISCOVERY_PREFIX/sensor/#DEVICE_SERIAL/se_on_off",
+		"topic": "#HASS_DISCOVERY_PREFIX/switch/#DEVICE_SERIAL/se_on_off",
 		"value_template": "{{ 'online' if value_json.v == '19.17' else 'offline' }}"
 	}
   },
   {
 	"__class__" : "Update",
-	"uid": "4.67",
+	"uid": "6.15",
 	"key": "sw_version",
 	"icon": "mdi:update",
 	"value_template": "{{ value_json.v }}",
