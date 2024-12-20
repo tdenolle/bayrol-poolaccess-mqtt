@@ -35,6 +35,7 @@ class TestSwitch(unittest.TestCase):
             'name': 'Switch ON/OFF',
             'state_topic': 'homeassistant/switch/22ASE-12343/sw_on_off',
             'unique_id': 'bayrol_22ase12343_sw_on_off',
+            'object_id': 'bayrol_22ase12343_sw_on_off',
             'value_template': '{{ value_json.v }}',
             'payload_off': 'off',
             'payload_on': 'on'
