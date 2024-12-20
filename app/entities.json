@@ -118,6 +118,6 @@
 	"key": "sw_version",
 	"icon": "mdi:update",
 	"value_template": "{{ value_json.v }}",
-  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
+  	"json_attributes_template": "{ \"installed_version\": \"{{ value_json.v }}\" }"
   }
 ]
