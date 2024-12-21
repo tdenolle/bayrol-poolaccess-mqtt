@@ -19,8 +19,7 @@ class Update(Entity):
                                               "\"latest_version\": \"%s\","
                                               "\"title\": \"Bayrol Firmware\","
                                               "\"release_url\": \"%s\","
-                                              "\"release_summary\": \"A new version of Bayrol firmware\","
-                                              "\"entity_picture\": \"\" }" %
+                                              "\"release_summary\": \"A new version of Bayrol firmware\" }" %
                                               (update_data.get("version", "{{ value_json.v }}"),
                                                update_data.get("url", "")))
 
