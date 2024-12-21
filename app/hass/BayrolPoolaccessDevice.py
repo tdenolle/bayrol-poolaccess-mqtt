@@ -22,7 +22,6 @@ class BayrolPoolaccessDevice(dict):
         self["manufacturer"] = BAYROL_MANUFACTURER_NAME
         self["model"] = get_device_model_from_serial(serial)
         self["name"] = "%s %s" % (BAYROL_MANUFACTURER_NAME, serial)
-        self["serial"] = serial
 
     @property
     def id(self) -> str:
@@ -36,6 +35,3 @@ class BayrolPoolaccessDevice(dict):
     def model(self) -> str:
         return self["model"]
 
-    @property
-    def serial(self) -> str:
-        return self["serial"]

@@ -117,7 +117,6 @@
 	"uid": "6.15",
 	"key": "sw_version",
 	"icon": "mdi:update",
-	"device_class": "firmware",
-	"entity_picture": null
+	"device_class": "firmware"
   }
 ]
