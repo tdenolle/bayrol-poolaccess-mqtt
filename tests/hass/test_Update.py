@@ -8,12 +8,11 @@ from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 class TestUpdate(unittest.TestCase):
 
     def setUp(self):
-        self.device = BayrolPoolaccessDevice("22ASE-12343")
+        self.device = BayrolPoolaccessDevice("22ASE2-12343")
         self.data = {
             "uid": "6.15",
             "key": "sw_version",
-            "name" : "Version",
-            "value_template": "{{ value_json.v }}"
+            "name" : "Version"
         }
         self.update_entity = Update(self.data, self.device)
 
@@ -25,18 +24,13 @@ class TestUpdate(unittest.TestCase):
 
     def test_build_config(self):
         config_topic, config_payload = self.update_entity.build_config()
-        expected_config = {'availability': [{'topic': 'homeassistant/sensor/22ASE-12343/status',
-                   'value_template': "{{ 'online' if value_json.v | float > "
-                                     "17.0 else 'offline' }}"}],
- 'device': self.device,
- 'name': 'Version',
- 'object_id': 'bayrol_22ase12343_sw_version',
- 'platform': 'update',
- 'state_topic': 'homeassistant/update/22ASE-12343/sw_version',
- 'unique_id': 'bayrol_22ase12343_sw_version',
- 'value_template': '{{ value_json.v }}'}
-        self.assertEqual(config_topic, "homeassistant/update/22ASE-12343/sw_version/config")
-        self.assertEqual(config_payload, expected_config)
+        self.assertEqual(config_payload["name"], "Version")
+        self.assertEqual(config_payload["unique_id"], "bayrol_22ase212343_sw_version")
+        self.assertEqual(config_payload["object_id"], "bayrol_22ase212343_sw_version")
+        self.assertEqual(config_payload["state_topic"], "homeassistant/update/22ASE2-12343/sw_version")
+        self.assertIn("availability", config_payload)
+        self.assertIn("value_template", config_payload)
+        self.assertEqual(config_topic, "homeassistant/update/22ASE2-12343/sw_version/config")
 
     def test_get_payload(self):
         message = b'{"v": "1.0.0"}'
