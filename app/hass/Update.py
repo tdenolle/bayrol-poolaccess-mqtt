@@ -15,15 +15,14 @@ class Update(Entity):
 
         update_data = self._get_update_data(device)
 
-        if "value_template" not in data:
-            self._attributes["value_template"] = ("{ \"installed_version\": \"{{ value_json.v }}\","
-                                                  "\"latest_version\": \"%s\","
-                                                  "\"title\": \"Bayrol Firmware\","
-                                                  "\"release_url\": \"%s\","
-                                                  "\"release_summary\": \"A new version of Bayrol firmware\","
-                                                  "\"entity_picture\": null }" %
-                                                  (update_data.get("version", "{{ value_json.v }}"),
-                                                   update_data.get("url", "")))
+        self._attributes["value_template"] = ("{ \"installed_version\": \"{{ value_json.v }}\","
+                                              "\"latest_version\": \"%s\","
+                                              "\"title\": \"Bayrol Firmware\","
+                                              "\"release_url\": \"%s\","
+                                              "\"release_summary\": \"A new version of Bayrol firmware\","
+                                              "\"entity_picture\": null }" %
+                                              (update_data.get("version", "{{ value_json.v }}"),
+                                               update_data.get("url", "")))
 
     @property
     def type(self) -> str:
