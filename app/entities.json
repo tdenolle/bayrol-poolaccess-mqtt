@@ -117,6 +117,7 @@
 	"uid": "6.15",
 	"key": "sw_version",
 	"icon": "mdi:update",
-	"device_class": "firmware"
+	"device_class": "firmware",
+	"entity_picture": "https://raw.githubusercontent.com/tdenolle/bayrol-poolaccess-mqtt/refs/heads/master/docs/bayrol_icon.png"
   }
 ]

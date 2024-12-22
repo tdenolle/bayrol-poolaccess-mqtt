@@ -8,6 +8,7 @@ from app.hass.Entity import Entity
 class Update(Entity):
     ENTITY_PLATFORM = "update"
     BAYROL_UPDATE_URL = "https://www.denolle.fr/bayrol/update.json"
+    BAYROL_SUPPORT_URL = "https://www.bayrol.fr/bayrol-technik-support"
 
     def __init__(self, data: dict, device: BayrolPoolaccessDevice, dicovery_prefix: str = "homeassistant"):
         super().__init__(data, device, dicovery_prefix)
@@ -17,11 +18,9 @@ class Update(Entity):
 
         self._attributes["value_template"] = ("{ \"installed_version\": \"{{ value_json.v }}\","
                                               "\"latest_version\": \"%s\","
-                                              "\"title\": \"Bayrol Firmware\","
-                                              "\"release_url\": \"%s\","
-                                              "\"release_summary\": \"A new version of Bayrol firmware\" }" %
+                                              "\"release_url\": \"%s\" }" %
                                               (update_data.get("version", "{{ value_json.v }}"),
-                                               update_data.get("url", "")))
+                                               update_data.get("url", self.BAYROL_SUPPORT_URL)))
 
     @property
     def type(self) -> str:
