@@ -22,8 +22,8 @@ class TestMessagesSensor(unittest.TestCase):
         message = b'{"v": ["8.33"]}'
         actual_payload = sensor.get_payload(message)
         updatedAt = self.get_attribute_value_in_payload(actual_payload, "updatedAt")
-        expected_payload = ('{"v": [{"type": "success", "message": "Tout va bien. Profitez de votre piscine !"}], '
-                            '"updatedAt": "%s"}') % updatedAt
+        expected_payload = ('{"v": [{"key": "enjoy", "type": "success", "message": "Tout va bien. Profitez de votre '
+                            'piscine !"}], "updatedAt": "%s"}') % updatedAt
         self.assertEqual(actual_payload, expected_payload)
 
     def test_get_payload_with_multiple_messages(self):
@@ -31,8 +31,8 @@ class TestMessagesSensor(unittest.TestCase):
         message = b'{"v": ["8.33", "8.19"]}'
         actual_payload = sensor.get_payload(message)
         updatedAt = self.get_attribute_value_in_payload(actual_payload,"updatedAt")
-        expected_payload = ('{"v": [{"type": "success", "message": "Tout va bien. Profitez de votre piscine !"}, '
-                            '{"type": "warning", "message": "Taux de sel trop bas\\n! Electrolyse arr\\u00eat\\u00e9e '
+        expected_payload = ('{"v": [{"key": "enjoy", "type": "success", "message": "Tout va bien. Profitez de votre piscine !"}, '
+                            '{"key": "al_salt_low_stopped", "type": "warning", "message": "Taux de sel trop bas\\n! Electrolyse arr\\u00eat\\u00e9e '
                             '!"}], "updatedAt": "%s"}') % updatedAt
 
         self.assertEqual(actual_payload, expected_payload)

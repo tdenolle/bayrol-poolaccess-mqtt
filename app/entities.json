@@ -60,7 +60,7 @@
 	"uid": "10",
 	"key": "messages",
 	"icon": "mdi:message-bulleted",
-	"value_template": "{{ value_json.v | length }}",
+	"value_template": "{{ value_json.v | map(attribute='key') | list }}",
 	"json_attributes_template": "{ \"data\": {{ value_json.v | to_json }}, \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
@@ -83,6 +83,19 @@
   },
   {
 	"__class__" : "Switch",
+	"uid": "5.130",
+	"key": "se_activate_boost",
+	"icon": "mdi:map-marker-up",
+	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
+  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+	"command_template" : "{ \"t\":\"5.130\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
+	"availability" : {
+		"topic": "#HASS_DISCOVERY_PREFIX/switch/#DEVICE_SERIAL/se_on_off",
+		"value_template": "{{ 'online' if value_json.v == '19.17' else 'offline' }}"
+	}
+  },
+  {
+	"__class__" : "Switch",
 	"uid": "5.40",
 	"key": "se_on_off",
 	"icon": "mdi:water-opacity",
@@ -100,13 +113,11 @@
 	"command_template" : "{ \"t\":\"5.42\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
   },
   {
-	"__class__" : "Switch",
-	"uid": "5.130",
-	"key": "se_activate_boost",
-	"icon": "mdi:map-marker-up",
-	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
-  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"command_template" : "{ \"t\":\"5.130\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
-	"disabled" : true
+	"__class__" : "Update",
+	"uid": "6.15",
+	"key": "sw_version",
+	"icon": "mdi:update",
+	"device_class": "firmware",
+	"entity_picture": "https://raw.githubusercontent.com/tdenolle/bayrol-poolaccess-mqtt/refs/heads/master/docs/bayrol_icon.png"
   }
 ]

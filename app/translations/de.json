@@ -43,5 +43,6 @@
   "ph_dos_rate": "pH-Dosierung",
   "se_production_rate": "Chlorproduktion",
   "se_on_off": "Salzelektrolyse",
-  "ph_on_off": "Automatische pH-Dosierung"
+  "ph_on_off": "Automatische pH-Dosierung",
+  "sw_version": "Firmware"
 }

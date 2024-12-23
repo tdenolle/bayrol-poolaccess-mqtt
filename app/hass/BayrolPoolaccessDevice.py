@@ -30,3 +30,8 @@ class BayrolPoolaccessDevice(dict):
     @property
     def manufacturer(self) -> str:
         return BAYROL_MANUFACTURER_NAME
+
+    @property
+    def model(self) -> str:
+        return self["model"]
+

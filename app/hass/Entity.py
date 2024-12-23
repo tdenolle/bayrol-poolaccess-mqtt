@@ -29,6 +29,7 @@ class Entity:
 
         # config variables
         self._attributes["unique_id"] = ("%s_%s_%s" % (norm(device.manufacturer), norm(self._device.id), self.key))
+        self._attributes["object_id"] = self._attributes["unique_id"]
         self._attributes["state_topic"] = "%s/%s/%s/%s" % (discovery_prefix, self.type, device.id, self.key)
 
         if "name" not in data:
@@ -65,6 +66,9 @@ class Entity:
     @property
     def type(self) -> str:
         raise NotImplementedError
+
+    def get_attr(self, key: str):
+        return self._attributes[key]
 
     def get_payload(self, message: bytes = None):
         if message is None or len(message) == 0:

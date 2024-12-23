@@ -183,6 +183,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
             unittest.mock.call('bayrol/sensor/24ASE2-45678/temperature/config', payload=json.dumps({
                 "name": "Température",
                 "unique_id": "bayrol_24ase245678_temperature",
+                "object_id": "bayrol_24ase245678_temperature",
                 "state_topic": "bayrol/sensor/24ASE2-45678/temperature",
                 "availability": [{"topic": "bayrol/sensor/24ASE2-45678/status",
                                   "value_template": "{{ \'online\' if value_json.v | float > 17.0 else \'offline\' }}"}],
@@ -192,6 +193,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
             unittest.mock.call('bayrol/sensor/24ASE2-45678/ph/config', payload=json.dumps({
                 "name": "pH",
                 "unique_id": "bayrol_24ase245678_ph",
+                "object_id": "bayrol_24ase245678_ph",
                 "state_topic": "bayrol/sensor/24ASE2-45678/ph",
                 "availability": [{"topic": "bayrol/sensor/24ASE2-45678/status",
                                   "value_template": "{{ \'online\' if value_json.v | float > 17.0 else \'offline\' }}"}],
@@ -227,16 +229,18 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         entities_json_path = os.path.join(os.path.dirname(__file__), "entities.json")
         with open(entities_json_path, 'w') as f:
             json.dump([
-                {"uid": "1", "key": "temperature", "unit_of_measurement": "°C"},
+                {"uid": "1", "key": "temperature", "unit_of_measurement": "°C", "attr_dyn" : "#XXX/#DEVICE_SERIAL/on"},
                 {"uid": "10", "key": "messages", "__class__": "MessagesSensor"},
                 {"uid": "15", "key": "se_on_off", "__class__": "Switch"}
             ], f)
 
         # Load entities
-        entities = load_entities(entities_json_path, "1.0")
+        entities = load_entities(entities_json_path, { "DEVICE_SERIAL" : "1.0", "XXX" : "YYY" })
 
         # Assert sensor types
         self.assertIsInstance(entities[0], Sensor)
+        self.assertEqual(entities[0].get_attr("attr_dyn"),"YYY/1.0/on")
+
         self.assertIsInstance(entities[1], MessagesSensor)
         self.assertIsInstance(entities[2], Switch)
 
