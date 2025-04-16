@@ -113,6 +113,15 @@
 	"command_template" : "{ \"t\":\"5.42\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
   },
   {
+	"__class__" : "Switch",
+	"uid": "5.98",
+	"key": "filtration_on_off",
+	"icon": "mdi:pump",
+	"value_template": "{{ 'on' if value_json.v | float == 19.177 else 'off' }}",
+  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+	"command_template" : "{ \"t\":\"5.92\", \"v\":\"{{ '19.177' if value=='on' else '19.178' }}\" }"
+  },
+  {
 	"__class__" : "Update",
 	"uid": "6.15",
 	"key": "sw_version",
