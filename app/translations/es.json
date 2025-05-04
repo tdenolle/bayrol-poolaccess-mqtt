@@ -44,5 +44,6 @@
   "se_production_rate": "Producción de Cloro",
   "se_on_off": "Electrólisis de Sal",
   "ph_on_off": "Dosificación Automática de pH",
-  "sw_version": "Firmware"
+  "sw_version": "Firmware",
+  "filtration_on_off" : "Filtration"
 }

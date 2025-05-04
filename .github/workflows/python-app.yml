@@ -61,8 +61,32 @@ jobs:
           python -m pip install --upgrade pytest-cov coverage[toml]
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
+      - name: Run coverage
+        run: |
+           pytest --cov=app
+
+      - name: Combine coverage and fail it it’s under ${{ env.COVERAGE_THRESHOLD }}%
+        run: |
+          python -m coverage html --skip-covered --skip-empty
+          
+          # Report and write to summary.
+          python -m coverage report | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
+          
+          # Report again and fail if under threshold.
+          python -Im coverage report --fail-under=${{ env.COVERAGE_THRESHOLD }}
+
+      - name: Upload HTML report if check failed
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report
+          path: htmlcov
+        if: ${{ failure() }}
+
   tag:
     name: Generate Tag
+    needs:
+      - build
+      - coverage
     if: github.event_name != 'pull_request'
     outputs:
       tag_name: ${{ steps.tag_name.outputs.value }}
