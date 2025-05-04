@@ -44,5 +44,6 @@
   "se_production_rate": "Chlorine Production",
   "se_on_off": "Salt Electrolysis",
   "ph_on_off": "Automatic pH Dosing",
-  "sw_version": "Firmware"
+  "sw_version": "Firmware",
+  "filtration_on_off" : "Filtration"
 }
