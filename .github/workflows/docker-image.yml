@@ -31,4 +31,4 @@ jobs:
           platforms: linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/amd64
           build-args: |
             BUILD_FROM=python:3.11-alpine
-          tags: "tdenolle/bayrol-poolaccess-mqtt:latest,tdenolle/bayrol-poolaccess-mqtt:${{github.ref_name}}"
+          tags: "zoic21/bayrol-poolaccess-mqtt:latest,zoic21/bayrol-poolaccess-mqtt:${{github.ref_name}}"
