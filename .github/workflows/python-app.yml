@@ -9,8 +9,6 @@ env:
 
 on:
   push:
-    branches: [ "develop" ]
-  pull_request:
     branches: [ "master" ]
 
 permissions:
