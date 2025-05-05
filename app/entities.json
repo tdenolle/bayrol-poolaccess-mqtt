@@ -122,7 +122,7 @@
 	"command_template" : "{ \"t\":\"5.92\", \"v\":\"{{ '19.177' if value=='on' else '19.178' }}\" }"
   },
   {
-	"__class__" : "Light",
+	"__class__" : "Switch",
 	"uid": "5.186",
 	"key": "light_on_off",
 	"icon": "mdi:lightbulb-outline",
