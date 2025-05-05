@@ -122,6 +122,24 @@
 	"command_template" : "{ \"t\":\"5.92\", \"v\":\"{{ '19.177' if value=='on' else '19.178' }}\" }"
   },
   {
+	"__class__" : "Switch",
+	"uid": "5.186",
+	"key": "light_on_off",
+	"icon": "mdi:light",
+	"value_template": "{{ 'on' if value_json.v | float == 19.311 else 'off' }}",
+  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+	"command_template" : "{ \"t\":\"5.186\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }"
+  },
+  {
+	"__class__" : "Switch",
+	"uid": "5.185",
+	"key": "heater_on_off",
+	"icon": "mdi:light",
+	"value_template": "{{ 'on' if value_json.v | float == 19.101 else 'off' }}",
+  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+	"command_template" : "{ \"t\":\"5.185\", \"v\":\"{{ '19.101' if value=='on' else '19.100' }}\" }"
+  },
+  {
 	"__class__" : "Update",
 	"uid": "6.15",
 	"key": "sw_version",

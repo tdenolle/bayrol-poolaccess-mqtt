@@ -46,5 +46,7 @@
   "se_on_off": "Electrolyse de sel",
   "ph_on_off": "Dosage Automatique pH",
   "sw_version": "Firmware",
-  "filtration_on_off" : "Filtration"
+  "filtration_on_off" : "Filtration",
+  "light_on_off" : "Lumière",
+  "heater_on_off" : "Chauffage"
 }
