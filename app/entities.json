@@ -148,10 +148,10 @@
   	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
 	"temperature_command_template" : "{ \"t\":\"4.123\", \"v\":\"{{ value * 100 }}\" }",
 	"temperature_command_topic" : "4.123",
-	"modes": ["off","heating"],
+	"modes": ["off","auto"],
 	"mode_command_topic": "5.185",
-    "mode_command_template" : "{ \"t\":\"5.185\", \"v\":\"{{ '19.101' if value=='heating' else '19.100' }}\" }",
-	"mode_state_template" : "{{ 'heating' if value_json.v | float == 19.101 else 'off' }}"
+    "mode_command_template" : "{ \"t\":\"5.185\", \"v\":\"{{ '19.101' if value=='auto' else '19.100' }}\" }",
+	"mode_state_template" : "{{ 'auto' if value_json.v | float == 19.101 else 'off' }}"
   },
   {
 	"__class__" : "Update",
