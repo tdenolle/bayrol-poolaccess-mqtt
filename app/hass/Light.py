@@ -3,7 +3,7 @@ from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from app.hass.Entity import Entity
 
 
-class Switch(Entity):
+class Light(Entity):
     def __init__(self, data: dict, device: BayrolPoolaccessDevice, dicovery_prefix: str = "homeassistant"):
         super().__init__(data, device, dicovery_prefix)
         data["payload_on"] = "on"
