@@ -45,5 +45,7 @@
   "se_on_off": "Salzelektrolyse",
   "ph_on_off": "Automatische pH-Dosierung",
   "sw_version": "Firmware",
-  "filtration_on_off" : "Filtration"
+  "filtration_on_off" : "Filtration",
+  "light_on_off" : "Lumière",
+  "heater_on_off" : "Chauffage"
 }
