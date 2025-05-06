@@ -146,7 +146,8 @@ class PoolAccessMqttBridge:
                 self._brocker_client.publish(topic, payload=payload, retain=True)
                 # Publish data to poolaccess
                 payload = message.payload
-                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, payload.t)
+                data = json.loads(payload.decode('utf-8'))
+                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, data.t)
                 self._logger.info("Publishing to poolaccess %s %s", topic, payload)
                 self._poolaccess_client.publish(topic, payload=payload)
 
@@ -158,7 +159,8 @@ class PoolAccessMqttBridge:
                 self._brocker_client.publish(topic, payload=payload, retain=True)
                 # Publish data to poolaccess
                 payload = message.payload
-                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, payload.t)
+                data = json.loads(payload.decode('utf-8'))
+                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, data.t)
                 self._logger.info("Publishing to poolaccess %s %s", topic, payload)
                 self._poolaccess_client.publish(topic, payload=payload)
 
