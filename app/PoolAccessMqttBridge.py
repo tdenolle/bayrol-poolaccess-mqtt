@@ -77,17 +77,16 @@ class PoolAccessMqttBridge:
                 self._logger.info("Reading %s %s", message.topic, str(message.payload))
                 try:
                     payload = e.get_payload(message.payload)
-                    self._brocker_client.publish(e.state_topic, payload, message.qos, retain=True)
-                    self._logger.info("Publishing to brocker %s %s", e.state_topic, str(payload))
+                    self._brocker_client.publish(e.mode_state_topic, payload, message.qos, retain=True)
+                    self._logger.info("Publishing to brocker %s %s", e.mode_state_topic, str(payload))
                 except JSONDecodeError as expc:
                     self._logger.error(expc)
-
-            if hasattr(e, 'uid_temp') and re.match(".+/v/%s$" % e.uid_temp, message.topic):
+            if hasattr(e,'uid_temp') and re.match(".+/v/%s$" % e.uid_temp, message.topic):
                 self._logger.info("Reading %s %s", message.topic, str(message.payload))
                 try:
                     payload = e.get_payload(message.payload)
-                    self._brocker_client.publish(e.state_topic, payload, message.qos, retain=True)
-                    self._logger.info("Publishing to brocker %s %s", e.state_topic, str(payload))
+                    self._brocker_client.publish(e.temperature_state_topic, payload, message.qos, retain=True)
+                    self._logger.info("Publishing to brocker %s %s", e.temperature_state_topic, str(payload))
                 except JSONDecodeError as expc:
                     self._logger.error(expc)
 
@@ -152,11 +151,11 @@ class PoolAccessMqttBridge:
                 topic_poolaccess = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid)
 
             if re.match(".+/%s/set_temp$" % e.key, message.topic):
-                topic_brocker = e.temperature_command_topic
+                topic_brocker = e.temperature_state_topic
                 topic_poolaccess = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid_temp)
                 
             if re.match(".+/%s/set_mode$" % e.key, message.topic):
-                topic_brocker = e.mode_command_topic
+                topic_brocker = e.mode_state_topic
                 topic_poolaccess = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid_mode)
                 
             if topic_brocker is not None:
