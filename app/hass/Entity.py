@@ -4,6 +4,8 @@ from datetime import datetime
 
 from .BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from ..Translation import LanguageManager
+from Switch import Switch
+from Climate import Climate
 
 
 def norm(s: str):
