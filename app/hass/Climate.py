@@ -7,16 +7,23 @@ class Climate(Entity):
     def __init__(self, data: dict, device: BayrolPoolaccessDevice, dicovery_prefix: str = "homeassistant"):
         super().__init__(data, device, dicovery_prefix)
 
-        if "config_topic" not in data:
-            data["config_topic"] = "%s/config" % data["state_topic"]
+        if "temperature_command_topic" not in data:
+            data["temperature_command_topic"] = "%s/set_temp" % data["state_topic"]
+
+        if "mode_command_topic" not in data:
+            data["mode_command_topic"] = "%s/set_mode" % data["state_topic"]
         
     @property
     def type(self) -> str:
         return "climate"
 
     @property
-    def config_topic(self) -> str:
-        return self._attributes["config_topic"]
+    def temperature_command_topic(self) -> str:
+        return self._attributes["temperature_command_topic"]
+
+    @property
+    def mode_command_topic(self) -> str:
+        return self._attributes["mode_command_topic"]
 
     def build_config(self):
         return super().build_config()
