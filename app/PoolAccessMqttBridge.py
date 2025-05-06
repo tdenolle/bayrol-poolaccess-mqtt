@@ -109,8 +109,10 @@ class PoolAccessMqttBridge:
                     self._brocker_client.subscribe(e.command_topic)
                 if isinstance(e, Climate):
                     # Subscribing to Entity Messages
-                    self._logger.info("Subscribing to topic: %s", e.config_topic)
-                    self._brocker_client.subscribe(e.config_topic)
+                    self._logger.info("Subscribing to topic: %s", e.temperature_command_topic)
+                    self._brocker_client.subscribe(e.temperature_command_topic)
+                    self._logger.info("Subscribing to topic: %s", e.mode_command_topic)
+                    self._brocker_client.subscribe(e.mode_command_topic)
         else:
             self._logger.info("[mqtt] connect: Connection failed [%s]", str(rc))
             exit(1)
