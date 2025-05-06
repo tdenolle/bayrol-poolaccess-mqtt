@@ -73,6 +73,23 @@ class PoolAccessMqttBridge:
                     self._logger.info("Publishing to brocker %s %s", e.state_topic, str(payload))
                 except JSONDecodeError as e:
                     self._logger.error(e)
+            if re.match(".+/v/%s$" % e.uid_mode, message.topic):
+                self._logger.info("Reading %s %s", message.topic, str(message.payload))
+                try:
+                    payload = e.get_payload(message.payload)
+                    self._brocker_client.publish(e.state_topic, payload, message.qos, retain=True)
+                    self._logger.info("Publishing to brocker %s %s", e.state_topic, str(payload))
+                except JSONDecodeError as e:
+                    self._logger.error(e)
+
+            if re.match(".+/v/%s$" % e.uid_temp, message.topic):
+                self._logger.info("Reading %s %s", message.topic, str(message.payload))
+                try:
+                    payload = e.get_payload(message.payload)
+                    self._brocker_client.publish(e.state_topic, payload, message.qos, retain=True)
+                    self._logger.info("Publishing to brocker %s %s", e.state_topic, str(payload))
+                except JSONDecodeError as e:
+                    self._logger.error(e)
 
     def on_poolaccess_connect(self, client: PoolAccessClient, userdata, flags, rc, properties):
         if rc == 0:
@@ -127,22 +144,19 @@ class PoolAccessMqttBridge:
         # finding corresponding entity and publishing to poolaccess client
 
         for e in self._hass_entities:  # type: Entity
-            topic = null
+            topic = None
+            payload = message.payload
             if re.match(".+/%s/set$" % e.key, message.topic):
-                # Publish data to brocker to persist it
                 topic = e.state_topic
 
             if re.match(".+/%s/set_temp$" % e.key, message.topic):
-                 # Publish data to brocker to persist it
                 topic = e.temperature_command_topic
                 
             if re.match(".+/%s/set_mode$" % e.key, message.topic):
-                 # Publish data to brocker to persist it
                 topic = e.mode_command_topic
                 
-            if topic is not null:
+            if topic is not None:
                  # Publish data to brocker to persist it
-                payload = message.payload
                 self._logger.info("Publishing to brocker %s %s", topic, payload)
                 self._brocker_client.publish(topic, payload=payload, retain=True)
                 # Publish data to poolaccess

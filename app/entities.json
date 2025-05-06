@@ -141,7 +141,9 @@
   },
   {
 	"__class__" : "Climate",
-	"uid": "4.123",
+	"uid": "4.123-5.185",
+	"uid_mode": "4.123",
+	"uid_temp": "5.185",
 	"key": "heater_hvac",
 	"icon": "mdi:heat-pump-outline",
 	"temperature_state_template": "{{ value_json.v | float / 10 }}",
