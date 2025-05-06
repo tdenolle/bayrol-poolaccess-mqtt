@@ -122,8 +122,7 @@ class PoolAccessMqttBridge:
         # only dealing with set commands
         if not (message
                 and message.payload
-                and message.topic
-                and message.topic.endswith("/set")):
+                and message.topic):
             return
         # finding corresponding entity and publishing to poolaccess client
         for e in self._hass_entities:  # type: Entity
@@ -136,6 +135,30 @@ class PoolAccessMqttBridge:
                 # Publish data to poolaccess
                 topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid)
                 payload = message.payload
+                self._logger.info("Publishing to poolaccess %s %s", topic, payload)
+                self._poolaccess_client.publish(topic, payload=payload)
+                
+            if re.match(".+/%s/set_temp$" % e.key, message.topic):
+                 # Publish data to brocker to persist it
+                topic = e.temperature_command_topic
+                payload = message.payload
+                self._logger.info("Publishing to brocker %s %s", topic, payload)
+                self._brocker_client.publish(topic, payload=payload, retain=True)
+                # Publish data to poolaccess
+                payload = message.payload
+                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, payload.t)
+                self._logger.info("Publishing to poolaccess %s %s", topic, payload)
+                self._poolaccess_client.publish(topic, payload=payload)
+
+            if re.match(".+/%s/set_mode$" % e.key, message.topic):
+                 # Publish data to brocker to persist it
+                topic = e.mode_command_topic
+                payload = message.payload
+                self._logger.info("Publishing to brocker %s %s", topic, payload)
+                self._brocker_client.publish(topic, payload=payload, retain=True)
+                # Publish data to poolaccess
+                payload = message.payload
+                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, payload.t)
                 self._logger.info("Publishing to poolaccess %s %s", topic, payload)
                 self._poolaccess_client.publish(topic, payload=payload)
 
