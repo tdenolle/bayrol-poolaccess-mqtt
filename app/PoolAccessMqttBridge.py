@@ -73,7 +73,7 @@ class PoolAccessMqttBridge:
                     self._logger.info("Publishing to brocker %s %s", e.state_topic, str(payload))
                 except JSONDecodeError as e:
                     self._logger.error(e)
-            if re.match(".+/v/%s$" % e.uid_mode, message.topic):
+            if isinstance(e, Climate) and re.match(".+/v/%s$" % e.uid_mode, message.topic):
                 self._logger.info("Reading %s %s", message.topic, str(message.payload))
                 try:
                     payload = e.get_payload(message.payload)
@@ -82,7 +82,7 @@ class PoolAccessMqttBridge:
                 except JSONDecodeError as e:
                     self._logger.error(e)
 
-            if re.match(".+/v/%s$" % e.uid_temp, message.topic):
+            if isinstance(e, Climate) and  re.match(".+/v/%s$" % e.uid_temp, message.topic):
                 self._logger.info("Reading %s %s", message.topic, str(message.payload))
                 try:
                     payload = e.get_payload(message.payload)
@@ -144,26 +144,30 @@ class PoolAccessMqttBridge:
         # finding corresponding entity and publishing to poolaccess client
 
         for e in self._hass_entities:  # type: Entity
-            topic = None
+            topic_brocker = None
+            topic_poolaccess = None
             payload = message.payload
             if re.match(".+/%s/set$" % e.key, message.topic):
-                topic = e.state_topic
+                topic_brocker = e.state_topic
+                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid)
 
             if re.match(".+/%s/set_temp$" % e.key, message.topic):
-                topic = e.temperature_command_topic
+                topic_brocker = e.temperature_command_topic
+                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid_temp)
                 
             if re.match(".+/%s/set_mode$" % e.key, message.topic):
-                topic = e.mode_command_topic
+                topic_brocker = e.mode_command_topic
+                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid_mode)
                 
-            if topic is not None:
+            if topic_brocker is not None and topic_poolaccess is not None:
                  # Publish data to brocker to persist it
-                self._logger.info("Publishing to brocker %s %s", topic, payload)
-                self._brocker_client.publish(topic, payload=payload, retain=True)
+                self._logger.info("Publishing to brocker %s %s", topic_brocker, payload)
+                self._brocker_client.publish(topic_brocker, payload=payload, retain=True)
                 # Publish data to poolaccess
-                data = json.loads(payload.decode('utf-8'))
-                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, data['t'])
-                self._logger.info("Publishing to poolaccess %s %s", topic, payload)
-                self._poolaccess_client.publish(topic, payload=payload)
+                
+                
+                self._logger.info("Publishing to poolaccess %s %s", topic_poolaccess, payload)
+                self._poolaccess_client.publish(topic_poolaccess, payload=payload)
 
 
     def on_disconnect(self, client, userdata, flags, rc, properties):
