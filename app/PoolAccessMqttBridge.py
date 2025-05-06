@@ -27,6 +27,7 @@ from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS
 
 from app.Translation import LanguageManager
 from .hass.Switch import Switch
+from .hass.Climate import Climate
 from .hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from .hass.Entity import Entity
 from .mqtt.MqttClient import MqttClient
@@ -103,10 +104,6 @@ class PoolAccessMqttBridge:
             # Looping on entities
             for e in self._hass_entities:  # type: Entity
                 if isinstance(e, Switch):
-                    # Subscribing to Entity Messages
-                    self._logger.info("Subscribing to topic: %s", e.command_topic)
-                    self._brocker_client.subscribe(e.command_topic)
-                if isinstance(e, Light):
                     # Subscribing to Entity Messages
                     self._logger.info("Subscribing to topic: %s", e.command_topic)
                     self._brocker_client.subscribe(e.command_topic)
