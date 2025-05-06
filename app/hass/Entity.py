@@ -21,6 +21,8 @@ def load_attr(key: str, data: dict):
 class Entity:
     def __init__(self, data: dict, device: BayrolPoolaccessDevice, discovery_prefix: str = "homeassistant"):
         self._uid = load_attr("uid", data)
+        self._uid_mode = load_attr("uid_mode", data)
+        self._uid_temp = load_attr("uid_temp", data)
         self._key = load_attr("key", data)
         self._attributes = data
         self._device = device
@@ -50,6 +52,14 @@ class Entity:
     @property
     def uid(self) -> str:
         return self._uid
+
+    @property
+    def uid_mode(self) -> str:
+        return self._uid_mode
+
+    @property
+    def uid_temp(self) -> str:
+        return self._uid_temp
 
     @property
     def key(self) -> str:
