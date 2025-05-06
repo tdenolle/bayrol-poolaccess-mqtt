@@ -143,7 +143,7 @@
 	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
 	"options" : ["Off","On","Auto","Smart","Hors-gel"],
 	"value_template": "{{ 'On' if value_json.v | float == 19.313 else 'Auto' if value_json.v | float == 19.346 else 'Smart' if value_json.v | float == 19.330 else 'Hors-gel' if value_json.v | float == 19.338 else 'Off' }}",
-	"command_template" : "{ \"t\":\"5.92\", \"v\":\"{{ '19.313' if value=='On' else '19.338' if value=='Hors-gel' else '19.346' if value=='Auto' else '19.330' if value=='Smart' else '19.312' }}\" }"
+	"command_template" : "{ \"t\":\"5.256\", \"v\":\"{{ '19.313' if value=='On' else '19.338' if value=='Hors-gel' else '19.346' if value=='Auto' else '19.330' if value=='Smart' else '19.312' }}\" }"
   },
   {
 	"__class__" : "Update",
