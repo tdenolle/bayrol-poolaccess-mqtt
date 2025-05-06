@@ -6,6 +6,8 @@ from app.hass.Entity import Entity
 class Climate(Entity):
     def __init__(self, data: dict, device: BayrolPoolaccessDevice, dicovery_prefix: str = "homeassistant"):
         super().__init__(data, device, dicovery_prefix)
+        self._uid_mode = load_attr("uid_mode", data)
+        self._uid_temp = load_attr("uid_temp", data)
 
         if "temperature_command_topic" not in data:
             data["temperature_command_topic"] = "%s/set_temp" % data["state_topic"]
