@@ -47,6 +47,6 @@
   "sw_version": "Firmware",
   "filtration_on_off" : "Filtration",
   "light_on_off" : "Lumière",
-  "heater_on_off" : "Chauffage on off",
-  "heater_hvac" : "Chauffage"
+  "heater_hvac" : "Chauffage",
+  "filtration_mode" : "Mode filtration"
 }
