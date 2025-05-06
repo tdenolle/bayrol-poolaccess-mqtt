@@ -52,14 +52,6 @@ class Entity:
         return self._uid
 
     @property
-    def uid_mode(self) -> str:
-        return self._uid_mode
-
-    @property
-    def uid_temp(self) -> str:
-        return self._uid_temp
-
-    @property
     def key(self) -> str:
         return self._key
 
