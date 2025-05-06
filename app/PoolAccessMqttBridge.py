@@ -149,15 +149,15 @@ class PoolAccessMqttBridge:
             payload = message.payload
             if re.match(".+/%s/set$" % e.key, message.topic):
                 topic_brocker = e.state_topic
-                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid)
+                topic_poolaccess = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid)
 
             if re.match(".+/%s/set_temp$" % e.key, message.topic):
                 topic_brocker = e.temperature_command_topic
-                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid_temp)
+                topic_poolaccess = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid_temp)
                 
             if re.match(".+/%s/set_mode$" % e.key, message.topic):
                 topic_brocker = e.mode_command_topic
-                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid_mode)
+                topic_poolaccess = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid_mode)
                 
             if topic_brocker is not None:
                  # Publish data to brocker to persist it
