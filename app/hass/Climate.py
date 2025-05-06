@@ -7,7 +7,7 @@ class Climate(Entity):
     def __init__(self, data: dict, device: BayrolPoolaccessDevice, dicovery_prefix: str = "homeassistant"):
         super().__init__(data, device, dicovery_prefix)
         self._uid_mode = data['uid_mode']
-        self._uid_temp = data['_uid_temp']
+        self._uid_temp = data['uid_temp']
 
         if "temperature_command_topic" not in data:
             data["temperature_command_topic"] = "%s/set_temp" % data["state_topic"]
