@@ -145,6 +145,16 @@
 	"mode_state_template" : "{{ 'auto' if value_json.v | float == 19.101 else 'off' }}"
   },
   {
+	"__class__" : "Select",
+	"uid": "5.256",
+	"key": "filtration_mode",
+	"icon": "mdi:pump",
+	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+	"options" : ["off","on","auto","smart","frost-free"],
+	"value_template": "{{ 'on' if value_json.v | float == 19.313 else 'auto' if value_json.v | float == 19.346 else 'smart' if value_json.v | float == 19.312 else 'frost-free' if value_json.v | float == 19.338 else 'off' }}",
+	"command_template" : "{ \"t\":\"5.92\", \"v\":\"{{ '19.313' if value=='on' else '19.338' if value=='frost-free' else '19.346' if value=='auto' else '19.330' if value=='smart' else '19.312' }}\" }"
+  },
+  {
 	"__class__" : "Update",
 	"uid": "6.15",
 	"key": "sw_version",
