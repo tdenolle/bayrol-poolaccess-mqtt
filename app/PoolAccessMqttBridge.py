@@ -125,44 +125,32 @@ class PoolAccessMqttBridge:
                 and message.topic):
             return
         # finding corresponding entity and publishing to poolaccess client
+
         for e in self._hass_entities:  # type: Entity
+            topic = null
             if re.match(".+/%s/set$" % e.key, message.topic):
                 # Publish data to brocker to persist it
                 topic = e.state_topic
-                payload = message.payload
-                self._logger.info("Publishing to brocker %s %s", topic, payload)
-                self._brocker_client.publish(topic, payload=payload, retain=True)
-                # Publish data to poolaccess
-                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid)
-                payload = message.payload
-                self._logger.info("Publishing to poolaccess %s %s", topic, payload)
-                self._poolaccess_client.publish(topic, payload=payload)
-                
+
             if re.match(".+/%s/set_temp$" % e.key, message.topic):
                  # Publish data to brocker to persist it
                 topic = e.temperature_command_topic
-                payload = message.payload
-                self._logger.info("Publishing to brocker %s %s", topic, payload)
-                self._brocker_client.publish(topic, payload=payload, retain=True)
-                # Publish data to poolaccess
-                payload = message.payload
-                data = json.loads(payload.decode('utf-8'))
-                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, data.t)
-                self._logger.info("Publishing to poolaccess %s %s", topic, payload)
-                self._poolaccess_client.publish(topic, payload=payload)
-
+                
             if re.match(".+/%s/set_mode$" % e.key, message.topic):
                  # Publish data to brocker to persist it
                 topic = e.mode_command_topic
+                
+            if topic is not null:
+                 # Publish data to brocker to persist it
                 payload = message.payload
                 self._logger.info("Publishing to brocker %s %s", topic, payload)
                 self._brocker_client.publish(topic, payload=payload, retain=True)
                 # Publish data to poolaccess
-                payload = message.payload
                 data = json.loads(payload.decode('utf-8'))
-                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, data.t)
+                topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, data['t'])
                 self._logger.info("Publishing to poolaccess %s %s", topic, payload)
                 self._poolaccess_client.publish(topic, payload=payload)
+
 
     def on_disconnect(self, client, userdata, flags, rc, properties):
         self._logger.warning("[mqtt] disconnect: %s  [%s][%s][%s]", type(client).__name__, str(rc), str(userdata),
