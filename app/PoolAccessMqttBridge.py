@@ -73,7 +73,7 @@ class PoolAccessMqttBridge:
                     self._logger.info("Publishing to brocker %s %s", e.state_topic, str(payload))
                 except JSONDecodeError as e:
                     self._logger.error(e)
-            if isinstance(e, Climate) and re.match(".+/v/%s$" % e.uid_mode, message.topic):
+            if re.match(".+/v/%s$" % e.uid_mode, message.topic):
                 self._logger.info("Reading %s %s", message.topic, str(message.payload))
                 try:
                     payload = e.get_payload(message.payload)
@@ -82,7 +82,7 @@ class PoolAccessMqttBridge:
                 except JSONDecodeError as e:
                     self._logger.error(e)
 
-            if isinstance(e, Climate) and  re.match(".+/v/%s$" % e.uid_temp, message.topic):
+            if re.match(".+/v/%s$" % e.uid_temp, message.topic):
                 self._logger.info("Reading %s %s", message.topic, str(message.payload))
                 try:
                     payload = e.get_payload(message.payload)
