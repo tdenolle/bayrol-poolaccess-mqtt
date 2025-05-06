@@ -159,13 +159,13 @@ class PoolAccessMqttBridge:
                 topic_brocker = e.mode_command_topic
                 topic = "d02/%s/s/%s" % (self._poolaccess_device_serial, e.uid_mode)
                 
-            if topic_brocker is not None and topic_poolaccess is not None:
+            if topic_brocker is not None:
                  # Publish data to brocker to persist it
                 self._logger.info("Publishing to brocker %s %s", topic_brocker, payload)
                 self._brocker_client.publish(topic_brocker, payload=payload, retain=True)
+
+            if topic_poolaccess is not None:
                 # Publish data to poolaccess
-                
-                
                 self._logger.info("Publishing to poolaccess %s %s", topic_poolaccess, payload)
                 self._poolaccess_client.publish(topic_poolaccess, payload=payload)
 
