@@ -107,9 +107,15 @@ class PoolAccessMqttBridge:
                 self._brocker_client.publish(topic, payload=payload, retain=True)
 
                 # Publish Get topic to Poolaccess
-                topic = "d02/%s/g/%s" % (self._poolaccess_device_serial, e.uid)
-                self._logger.info("Publishing to poolaccess: %s", topic)
-                self._poolaccess_client.publish(topic, payload=e.get_payload())
+                if "-" in e.uid:
+                        for i in e.uid.split("-"):
+                            topic = "d02/%s/g/%s" % (self._poolaccess_device_serial, i)
+                            self._logger.info("Publishing to poolaccess: %s", topic)
+                            self._poolaccess_client.publish(topic, payload=e.get_payload())
+                else:
+                    topic = "d02/%s/g/%s" % (self._poolaccess_device_serial, e.uid)
+                    self._logger.info("Publishing to poolaccess: %s", topic)
+                    self._poolaccess_client.publish(topic, payload=e.get_payload())
         else:
             self._logger.info("[poolaccess] connect: Connection failed [%s]", str(rc))
             exit(1)
