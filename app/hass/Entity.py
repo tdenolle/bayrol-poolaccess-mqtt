@@ -21,8 +21,12 @@ def load_attr(key: str, data: dict):
 class Entity:
     def __init__(self, data: dict, device: BayrolPoolaccessDevice, discovery_prefix: str = "homeassistant"):
         self._uid = load_attr("uid", data)
-        self._uid_mode = load_attr("uid_mode", data)
-        self._uid_temp = load_attr("uid_temp", data)
+        if isinstance(self, Climate):
+            self._uid_mode = load_attr("uid_mode", data)
+            self._uid_temp = load_attr("uid_temp", data)
+        else:
+            self._uid_mode = None
+            self._uid_temp = None
         self._key = load_attr("key", data)
         self._attributes = data
         self._device = device
