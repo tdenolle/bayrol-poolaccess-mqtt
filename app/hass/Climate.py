@@ -12,6 +12,12 @@ class Climate(Entity):
 
         if "mode_command_topic" not in data:
             data["mode_command_topic"] = "%s/set_mode" % data["state_topic"]
+
+        if "temperature_state_topic" not in data:
+            data["temperature_state_topic"] = "%s/temp" % data["state_topic"]
+
+        if "mode_state_topic" not in data:
+            data["mode_state_topic"] = "%s/mode" % data["state_topic"]
         
     @property
     def type(self) -> str:
@@ -32,6 +38,14 @@ class Climate(Entity):
     @property
     def mode_command_topic(self) -> str:
         return self._attributes["mode_command_topic"]
+
+    @property
+    def temperature_state_topic(self) -> str:
+        return self._attributes["temperature_state_topic"]
+
+    @property
+    def mode_state_topic(self) -> str:
+        return self._attributes["mode_state_topic"]
 
     def build_config(self):
         return super().build_config()
