@@ -151,6 +151,6 @@
 	"key": "sw_version",
 	"icon": "mdi:update",
 	"device_class": "firmware",
-	"entity_picture": "https://raw.githubusercontent.com/zoic21/bayrol-poolaccess-mqtt/refs/heads/master/docs/bayrol_icon.png"
+	"entity_picture": "https://raw.githubusercontent.com/tdenolle/bayrol-poolaccess-mqtt/refs/heads/master/docs/bayrol_icon.png"
   }
 ]

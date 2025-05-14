@@ -72,8 +72,8 @@ class PoolAccessMqttBridge:
                     payload = e.get_payload(message.payload)
                     self._brocker_client.publish(e.state_topic, payload, message.qos, retain=True)
                     self._logger.info("Publishing to brocker %s %s", e.state_topic, str(payload))
-                except JSONDecodeError as expc:
-                    self._logger.error(expc)
+                except JSONDecodeError as jde:
+                    self._logger.error(jde)
             if hasattr(e, 'uid_mode') and re.match(".+/v/%s$" % e.uid_mode, message.topic):
                 self._logger.info("Reading %s %s", message.topic, str(message.payload))
                 try:

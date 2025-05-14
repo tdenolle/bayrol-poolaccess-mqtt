@@ -1,5 +1,3 @@
-Fork from tdenolle
-
 # Bayrol PoolAccess to MQTT
 
 
@@ -8,8 +6,8 @@ Fork from tdenolle
 ![Supports armv6 Architecture][armv6-shield] 
 ![Supports armv7 Architecture][armv7-shield]
 
-![License](https://img.shields.io/github/license/zoic21/bayrol-poolaccess-mqtt)
-![Docker pulls](https://img.shields.io/docker/pulls/zoic21/bayrol-poolaccess-mqtt)
+![License](https://img.shields.io/github/license/tdenolle/bayrol-poolaccess-mqtt)
+![Docker pulls](https://img.shields.io/docker/pulls/tdenolle/bayrol-poolaccess-mqtt)
 
 ![Bayrol Automatic Salt](docs/bayrol_automatic_salt_connect.png)
 
@@ -19,12 +17,12 @@ Fork from tdenolle
 
 ## Contact & Support
 
-- Create a [GitHub issue](https://github.com/zoic21/bayrol-poolaccess-mqtt/issues) for bug reports, feature requests, or questions
-- Add a ⭐️ [star on GitHub](https://github.com/zoic21/bayrol-poolaccess-mqtt) to support the project!
+- Create a [GitHub issue](https://github.com/tdenolle/bayrol-poolaccess-mqtt/issues) for bug reports, feature requests, or questions
+- Add a ⭐️ [star on GitHub](https://github.com/tdenolle/bayrol-poolaccess-mqtt) to support the project!
 
 ## License
 
-This project is licensed under the [MIT license](https://github.com/zoic21/bayrol-poolaccess-mqtt/blob/master/LICENSE).
+This project is licensed under the [MIT license](https://github.com/tdenolle/bayrol-poolaccess-mqtt/blob/master/LICENSE).
 
 [amd64-shield]: https://img.shields.io/badge/amd64-yes-green.svg
 [armv6-shield]: https://img.shields.io/badge/armv6-yes-green.svg

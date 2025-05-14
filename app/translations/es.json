@@ -45,8 +45,8 @@
   "se_on_off": "Electrólisis de Sal",
   "ph_on_off": "Dosificación Automática de pH",
   "sw_version": "Firmware",
-  "filtration_on_off" : "Filtration",
-  "light_on_off" : "Lumière",
-  "heater_hvac" : "Chauffage",
-  "filtration_mode" : "Mode filtration"
+  "filtration_on_off" : "Filtración",
+  "light_on_off" : "Luz",
+  "heater_hvac" : "Calefacción",
+  "filtration_mode" : "Modo de filtración"
 }

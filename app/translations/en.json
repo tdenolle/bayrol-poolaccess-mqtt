@@ -46,7 +46,7 @@
   "ph_on_off": "Automatic pH Dosing",
   "sw_version": "Firmware",
   "filtration_on_off" : "Filtration",
-  "light_on_off" : "Lumière",
-  "heater_hvac" : "Chauffage",
-  "filtration_mode" : "Mode filtration"
+  "light_on_off" : "Light",
+  "heater_hvac" : "Heating",
+  "filtration_mode" : "Filtration mode"
 }
