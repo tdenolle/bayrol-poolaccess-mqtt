@@ -35,7 +35,7 @@ class CommandEntity(Entity):
     def process_broker_message(self, client: PoolAccessClient, broker: MqttClient, uid, state_topic:str, payload):
         # Publish data to broker to persist it
         self._logger.info("Publishing to broker %s %s", self.state_topic, payload)
-        broker.publish(state_topic, payload=payload, retain=True)
+        broker.publish(state_topic, payload=payload)
         # Publish data to poolaccess
         poolaccess_topic = client.build_topic(PoolAccessTopicMode.SET, uid)
         self._logger.info("Publishing to poolaccess %s %s", poolaccess_topic, payload)
