@@ -1,18 +1,24 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from app.mqtt.PoolAccessClient import PoolAccessClient, BAYROL_POOLACCESS_MQTT_HOST, \
-    BAYROL_POOLACCESS_MQTT_PORT, BAYROL_POOLACCESS_MQTT_TRANSPORT, BAYROL_POOLACCESS_MQTT_PASSWORD
 
+import pytest
+
+from app.mqtt.PoolAccessClient import PoolAccessClient, BAYROL_POOLACCESS_MQTT_HOST, \
+    BAYROL_POOLACCESS_MQTT_PORT, BAYROL_POOLACCESS_MQTT_TRANSPORT, BAYROL_POOLACCESS_MQTT_PASSWORD, PoolAccessTopicMode, \
+    BAYROL_POOLACCESS_BASE_TOPIC
+
+SERIAL = "25-ASE0-12345"
+UID = "test_uid"
 
 class TestPoolAccessClient(unittest.TestCase):
 
     def setUp(self):
         self.token = "test_token"
-        self.client = PoolAccessClient(self.token)
+        self.client = PoolAccessClient(self.token, SERIAL)
 
     @patch('paho.mqtt.client.Client.tls_set')
     def test_tls_set(self, mock_mqtt_client_tls_set):
-        PoolAccessClient(self.token)
+        PoolAccessClient(self.token,SERIAL)
         mock_mqtt_client_tls_set.assert_called_once()
 
     @patch('paho.mqtt.client.Client.on_connect')
@@ -55,6 +61,15 @@ class TestPoolAccessClient(unittest.TestCase):
         self.client.loop_forever()
         mock_loop_forever.assert_called_once()
 
+    def test_build_topic_enum(self):
+        expected_modes = {
+            PoolAccessTopicMode.GET: f"{BAYROL_POOLACCESS_BASE_TOPIC}/{SERIAL}/g/{UID}",
+            PoolAccessTopicMode.SET: f"{BAYROL_POOLACCESS_BASE_TOPIC}/{SERIAL}/s/{UID}",
+            PoolAccessTopicMode.VALUE: f"{BAYROL_POOLACCESS_BASE_TOPIC}/{SERIAL}/v/{UID}",
+        }
+        for mode, expected in expected_modes.items():
+            with self.subTest(mode=mode):
+                assert self.client.build_topic(mode, UID) == expected
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import copy
 
-from .BayrolPoolaccessDevice import BayrolPoolaccessDevice
-from .Sensor import Sensor
+from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
+from app.hass.Sensor import Sensor
 
 MESSAGES = {"8.5": {"key": "al_no_flow_bnc", "type": "warning"},
             "8.6": {"key": "al_no_flow_230V", "type": "warning"},
@@ -39,8 +39,8 @@ MESSAGES = {"8.5": {"key": "al_no_flow_bnc", "type": "warning"},
 
 
 class MessagesSensor(Sensor):
-    def __init__(self, data: dict, device: BayrolPoolaccessDevice, dicovery_prefix: str = "homeassistant"):
-        super().__init__(data, device, dicovery_prefix)
+    def __init__(self, data: dict, device: BayrolPoolaccessDevice, discovery_prefix: str = "homeassistant"):
+        super().__init__(data, device, discovery_prefix)
         # Build Messages array
         self._messages = copy.deepcopy(MESSAGES)
         for uid in self._messages:

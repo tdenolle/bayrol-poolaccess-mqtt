@@ -7,7 +7,10 @@ class TestBayrolPoolaccessDevice(unittest.TestCase):
     def setUp(self):
         # Example JSON data for testing
         self.json_data = {"uid": "1.0", "key": "test_entity", "name": "Test Entity"}
-        self.device = BayrolPoolaccessDevice("1.0")
+        self.device = BayrolPoolaccessDevice("12ASE1-12345")
+
+    def test_get_model(self):
+        self.assertEqual(self.device.model, "Automatic Salt")
 
     def test_get_device_model_from_serial_automatic_salt(self):
         self.assertEqual(get_device_model_from_serial("12ASE1-12345"), "Automatic Salt")

@@ -123,7 +123,6 @@
   },
   {
 	"__class__" : "Climate",
-	"uid": "4.123-5.185",
 	"uid_mode": "5.185",
 	"uid_temp": "4.123",
 	"key": "heater_hvac",
