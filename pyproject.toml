@@ -1,7 +1,7 @@
 [project]
 version = "1.4.0"
 name = "bayrol-poolaccess-mqtt"
-requires-python = ">= 3.11"
+requires-python = ">= 3.12"
 authors = [
     { name="tdenolle", email="thomas@denolle.fr" }
 ]

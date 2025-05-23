@@ -1,7 +1,7 @@
 name: Python Application CI
 
 env:
-  PYTHON_VERSION: '3.11'
+  PYTHON_VERSION: '3.12'
   DOCKER_PLATFORMS: 'linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/amd64'
   DOCKER_HUB_REPOSITORY: 'tdenolle/bayrol-poolaccess-mqtt'
   COVERAGE_THRESHOLD: '95'
