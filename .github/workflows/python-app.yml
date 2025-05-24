@@ -147,7 +147,9 @@ jobs:
 
   update_hassio_addon:
     name: Update Hassio Addons Project Latest Tag
-    needs: push_to_registry
+    needs:
+      - tag
+      - push_to_registry
     runs-on: ubuntu-latest
     steps:
       - name: Trigger hassio-addons version update Workflow
