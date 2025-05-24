@@ -163,13 +163,21 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         self.bridge.on_poolaccess_message(self.poolaccess_client, None, message)
         self.broker_client.publish.assert_not_called()
 
-    def test_on_broker_message(self):
+    def test_on_broker_message_switch(self):
         message = MagicMock(spec=MQTTMessage)
         message.topic = "bayrol/switch/24ASE2-45678/ph_switch/set"
         message.payload = b"{\"v\" : \"on\"}"
         self.bridge.on_broker_message(self.broker_client, None, message)
-        (self.poolaccess_client.publish
-         .assert_called_once_with("d02/24ASE2-45678/s/789", payload=b'{"v" : "on"}'))
+        self.broker_client.publish.assert_called_once_with("bayrol/switch/24ASE2-45678/ph_switch", payload=b'{"v" : "on"}')
+        self.poolaccess_client.publish.assert_called_once_with("d02/24ASE2-45678/s/789", payload=b'{"v" : "on"}')
+
+    def test_on_broker_message_climate(self):
+        message = MagicMock(spec=MQTTMessage)
+        message.topic = "bayrol/climate/24ASE2-45678/pac/temparature /set"
+        message.payload = b"{\"v\" : \"123\"}"
+        self.bridge.on_broker_message(self.broker_client, None, message)
+        self.broker_client.publish.assert_called_once_with("bayrol/switch/24ASE2-45678/ph_switch", payload=b'{"v" : "on"}')
+        self.poolaccess_client.publish.assert_called_once_with("d02/24ASE2-45678/s/789", payload=b'{"v" : "on"}')
 
     def test_on_broker_message_with_not_set(self):
         message = MagicMock(spec=MQTTMessage)

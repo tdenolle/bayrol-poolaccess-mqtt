@@ -29,15 +29,12 @@ class CommandEntity(Entity):
 
     def on_broker_message(self, client: PoolAccessClient, broker: MqttClient, message: MQTTMessage):
         if message.topic == self.command_topic:
-            self._logger.info("Reading %s %s", message.topic, str(message.payload))
-            self.process_broker_message(client, broker, self.uid, self.command_topic, message.payload)
+            # Publish data to broker to persist it
+            self._logger.info("Publishing to broker %s %s", self.state_topic, str(message.payload))
+            broker.publish(self.state_topic, payload=message.payload)
+            # Publish data to poolaccess
+            poolaccess_topic = client.build_topic(PoolAccessTopicMode.SET, self.uid)
+            self._logger.info("Publishing to poolaccess %s %s", poolaccess_topic, message.payload)
+            client.publish(poolaccess_topic, payload=message.payload)
 
-    def process_broker_message(self, client: PoolAccessClient, broker: MqttClient, uid, state_topic:str, payload):
-        # Publish data to broker to persist it
-        self._logger.info("Publishing to broker %s %s", self.state_topic, payload)
-        broker.publish(state_topic, payload=payload)
-        # Publish data to poolaccess
-        poolaccess_topic = client.build_topic(PoolAccessTopicMode.SET, uid)
-        self._logger.info("Publishing to poolaccess %s %s", poolaccess_topic, payload)
-        client.publish(poolaccess_topic, payload=payload)
 

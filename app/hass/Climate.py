@@ -90,17 +90,17 @@ class Climate(Entity):
     def on_broker_message(self, client: PoolAccessClient, broker: MqttClient, message: MQTTMessage):
         if message.topic == self.temperature_command_topic:
             self._logger.info("Reading %s %s", message.topic, str(message.payload))
-            self._process_broker_message(client, broker, self.uid_temp, self.temperature_command_topic, message.payload)
+            self._process_broker_message(client, broker, self.uid_temp, self.temperature_state_topic, message.payload)
 
         if message.topic == self.mode_command_topic:
             self._logger.info("Reading %s %s", message.topic, str(message.payload))
-            self._process_broker_message(client, broker, self.uid_mode, self.mode_command_topic, message.payload)
+            self._process_broker_message(client, broker, self.uid_mode, self.mode_state_topic, message.payload)
 
     def _process_broker_message(self, client: PoolAccessClient, broker: MqttClient, uid, state_topic:str, payload):
         # Publish data to broker to persist it
-        self._logger.info("Publishing to broker %s %s", self.state_topic, payload)
+        self._logger.info("Publishing to broker %s %s", state_topic, str(payload))
         broker.publish(state_topic, payload=payload)
         # Publish data to poolaccess
         poolaccess_topic = client.build_topic(PoolAccessTopicMode.SET, uid)
-        self._logger.info("Publishing to poolaccess %s %s", poolaccess_topic, payload)
+        self._logger.info("Publishing to poolaccess %s %s", poolaccess_topic, str(payload))
         client.publish(poolaccess_topic, payload=payload)
