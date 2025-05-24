@@ -173,11 +173,11 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
 
     def test_on_broker_message_climate(self):
         message = MagicMock(spec=MQTTMessage)
-        message.topic = "bayrol/climate/24ASE2-45678/pac/temparature /set"
+        message.topic = "bayrol/climate/24ASE2-45678/pac/temperature/set"
         message.payload = b"{\"v\" : \"123\"}"
         self.bridge.on_broker_message(self.broker_client, None, message)
-        self.broker_client.publish.assert_called_once_with("bayrol/switch/24ASE2-45678/ph_switch", payload=b'{"v" : "on"}')
-        self.poolaccess_client.publish.assert_called_once_with("d02/24ASE2-45678/s/789", payload=b'{"v" : "on"}')
+        self.broker_client.publish.assert_called_once_with("bayrol/climate/24ASE2-45678/pac/temperature", payload=b'{"v" : "123"}')
+        self.poolaccess_client.publish.assert_called_once_with("d02/24ASE2-45678/s/456", payload=b'{"v" : "123"}')
 
     def test_on_broker_message_with_not_set(self):
         message = MagicMock(spec=MQTTMessage)
