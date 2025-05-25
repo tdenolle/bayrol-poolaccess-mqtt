@@ -1,7 +1,7 @@
+import json
 import os
 import unittest
-from unittest.mock import MagicMock, patch, ANY, Mock, PropertyMock
-import json
+from unittest.mock import MagicMock, patch, ANY
 
 from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS, MQTT_ERR_AUTH, MQTT_ERR_CONN_REFUSED
 
@@ -10,8 +10,8 @@ from app.Translation import LanguageManager
 from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from app.hass.Climate import Climate
 from app.hass.MessagesSensor import MessagesSensor
-from app.hass.Switch import Switch
 from app.hass.Sensor import Sensor
+from app.hass.Switch import Switch
 from app.mqtt.MqttClient import MqttClient
 from app.mqtt.PoolAccessClient import PoolAccessClient, BAYROL_POOLACCESS_BASE_TOPIC
 
@@ -36,9 +36,12 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
 
         # Mock entities
         self.entities = [
-            Sensor({"uid": "123", "key": "temperature", "name": "Température", }, self.device, self.config["HASS_DISCOVERY_PREFIX"]),
-            Climate({"uid_temp": "456", "uid_mode": "457", "key": "pac", "name": "PAC"}, self.device,self.config["HASS_DISCOVERY_PREFIX"]),
-            Switch({"uid": "789", "key": "ph_switch", "name": "Activate pH"}, self.device,self.config["HASS_DISCOVERY_PREFIX"])
+            Sensor({"uid": "123", "key": "temperature", "name": "Température", }, self.device,
+                   self.config["HASS_DISCOVERY_PREFIX"]),
+            Climate({"uid_temp": "456", "uid_mode": "457", "key": "pac", "name": "PAC"}, self.device,
+                    self.config["HASS_DISCOVERY_PREFIX"]),
+            Switch({"uid": "789", "key": "ph_switch", "name": "Activate pH"}, self.device,
+                   self.config["HASS_DISCOVERY_PREFIX"])
         ]
 
         # Mock MQTT clients
@@ -46,7 +49,8 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         self.broker_client = MagicMock(spec=MqttClient)
 
         # On configure le mock pour build_topic
-        self.poolaccess_client.build_topic.side_effect = lambda mode, uid: "%s/%s/%s/%s" % (BAYROL_POOLACCESS_BASE_TOPIC, self.device.id, mode.value, uid)
+        self.poolaccess_client.build_topic.side_effect = lambda mode, uid: "%s/%s/%s/%s" % (
+        BAYROL_POOLACCESS_BASE_TOPIC, self.device.id, mode.value, uid)
 
         # Create instance of PoolAccessMqttBridge
         self.bridge = PoolAccessMqttBridge(
@@ -168,7 +172,8 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         message.topic = "bayrol/switch/24ASE2-45678/ph_switch/set"
         message.payload = b"{\"v\" : \"on\"}"
         self.bridge.on_broker_message(self.broker_client, None, message)
-        self.broker_client.publish.assert_called_once_with("bayrol/switch/24ASE2-45678/ph_switch", payload=b'{"v" : "on"}')
+        self.broker_client.publish.assert_called_once_with("bayrol/switch/24ASE2-45678/ph_switch",
+                                                           payload=b'{"v" : "on"}')
         self.poolaccess_client.publish.assert_called_once_with("d02/24ASE2-45678/s/789", payload=b'{"v" : "on"}')
 
     def test_on_broker_message_climate(self):
@@ -176,7 +181,8 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         message.topic = "bayrol/climate/24ASE2-45678/pac/temperature/set"
         message.payload = b"{\"v\" : \"123\"}"
         self.bridge.on_broker_message(self.broker_client, None, message)
-        self.broker_client.publish.assert_called_once_with("bayrol/climate/24ASE2-45678/pac/temperature", payload=b'{"v" : "123"}')
+        self.broker_client.publish.assert_called_once_with("bayrol/climate/24ASE2-45678/pac/temperature",
+                                                           payload=b'{"v" : "123"}')
         self.poolaccess_client.publish.assert_called_once_with("d02/24ASE2-45678/s/456", payload=b'{"v" : "123"}')
 
     def test_on_broker_message_with_not_set(self):
@@ -217,7 +223,8 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
                 "unique_id": "bayrol_24ase245678_pac",
                 "object_id": "bayrol_24ase245678_pac",
                 "state_topic": "bayrol/climate/24ASE2-45678/pac",
-                "availability": [{"topic": "bayrol/sensor/24ASE2-45678/status", "value_template": "{{ \'online\' if value_json.v | float > 17.0 else \'offline\' }}"}],
+                "availability": [{"topic": "bayrol/sensor/24ASE2-45678/status",
+                                  "value_template": "{{ \'online\' if value_json.v | float > 17.0 else \'offline\' }}"}],
                 "value_template": "{{ value_json.v }}",
                 "temperature_command_topic": "bayrol/climate/24ASE2-45678/pac/temperature/set",
                 "mode_command_topic": "bayrol/climate/24ASE2-45678/pac/mode/set",
@@ -275,19 +282,19 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         entities_json_path = os.path.join(os.path.dirname(__file__), "entities.json")
         with open(entities_json_path, 'w') as f:
             json.dump([
-                {"uid": "1", "key": "temperature", "unit_of_measurement": "°C", "attr_dyn" : "#XXX/#DEVICE_SERIAL/on"},
+                {"uid": "1", "key": "temperature", "unit_of_measurement": "°C", "attr_dyn": "#XXX/#DEVICE_SERIAL/on"},
                 {"uid": "10", "key": "messages", "__class__": "MessagesSensor"},
                 {"uid": "15", "key": "se_on_off", "__class__": "Switch"},
                 {"uid": "16", "key": "ph_on_off", "__class__": "Sensor", "disable": True},
             ], f)
 
         # Load entities
-        entities = load_entities(entities_json_path, { "DEVICE_SERIAL" : "1.0", "XXX" : "YYY" })
+        entities = load_entities(entities_json_path, {"DEVICE_SERIAL": "1.0", "XXX": "YYY"})
 
         # Assert sensor types
         self.assertEqual(len(entities), 3)
         self.assertIsInstance(entities[0], Sensor)
-        self.assertEqual(entities[0].get_attr("attr_dyn"),"YYY/1.0/on")
+        self.assertEqual(entities[0].get_attr("attr_dyn"), "YYY/1.0/on")
 
         self.assertIsInstance(entities[1], MessagesSensor)
         self.assertIsInstance(entities[2], Switch)

@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 import unittest
-import json
-import os
-from unittest.mock import patch
 
-from app.Translation import LanguageManager, Singleton
+from app.Translation import LanguageManager
 
 
 class TestLanguageManager(unittest.TestCase):
@@ -59,6 +56,7 @@ class TestLanguageManager(unittest.TestCase):
         lang.setup("en")
         str = lang.get_string("non_existing_uid", "default string")
         assert str == "default string"
+
 
 if __name__ == '__main__':
     unittest.main()
