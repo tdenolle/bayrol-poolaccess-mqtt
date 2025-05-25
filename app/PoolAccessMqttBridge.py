@@ -16,26 +16,20 @@ import importlib
 import json
 import logging
 import os
-import re
-import threading
 import sys
+import threading
 import time
-from json import JSONDecodeError
 
 from docopt import docopt
 from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS
 
 from .Translation import LanguageManager
-from .hass.Switch import Switch
-from .hass.Select import Select
-from .hass.Climate import Climate
 from .hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from .hass.Entity import Entity
 from .mqtt.MqttClient import MqttClient
 from .mqtt.PoolAccessClient import PoolAccessClient, PoolAccessTopicMode
 
 DEFAULT_RECONNECT_DELAY = 30
-
 
 class PoolAccessMqttBridge:
     _logger = None
@@ -66,13 +60,13 @@ class PoolAccessMqttBridge:
             return
         self._logger.debug("[poolaccess] message [%s][%s]", str(message.topic), str(message.payload))
         for e in self._hass_entities:  # type: Entity
-           e.on_poolaccess_message(self._poolaccess_client,self._broker_client, message)
+            e.on_poolaccess_message(self._poolaccess_client, self._broker_client, message)
 
     def on_poolaccess_connect(self, client: PoolAccessClient, userdata, flags, rc, properties):
         if rc == 0:
             self._logger.info("[poolaccess] connect: [%s][%s][%s]", str(rc), str(userdata), str(flags))
             # Subscribing to PoolAccess Messages
-            dash_topic = self._poolaccess_client.build_topic(PoolAccessTopicMode.VALUE,"#")
+            dash_topic = self._poolaccess_client.build_topic(PoolAccessTopicMode.VALUE, "#")
             self._logger.info("Subscribing to topic: %s", dash_topic)
             self._poolaccess_client.subscribe(dash_topic)
 
@@ -185,6 +179,17 @@ def load_entities(filepath: str, config) -> []:
         for e in json.loads(content):
             if "disable" in e and e["disable"]:
                 continue
+            # Check filters
+            if "filters" in e:
+                skip = False
+                for filt in e["filters"]:
+                    if filt not in config or config[filt] != e["filters"][filt]:
+                        # Filter not found or value is False, skip this entity
+                        logging.getLogger().warning("Skipping entity %s because filter option %s is not set or not matching value %s", e["key"], filt, e["filters"][filt])
+                        skip = True
+                if skip:
+                    continue
+            # default class type is Sensor
             class_type = "Sensor"
             if "__class__" in e:
                 class_type = e["__class__"]
@@ -201,9 +206,9 @@ def load_entities(filepath: str, config) -> []:
 def main(config: dict):
     LanguageManager().setup(config["LANGUAGE"] if "LANGUAGE" in config else "fr")
     broker = MqttClient(config["MQTT_HOST"], config["MQTT_PORT"],
-                                config["MQTT_USER"] if "MQTT_USER" in config else None,
-                                config["MQTT_PASSWORD"] if "MQTT_PASSWORD" in config else None)
-    poolaccess_client = PoolAccessClient(config["DEVICE_TOKEN"],config["DEVICE_SERIAL"])
+                        config["MQTT_USER"] if "MQTT_USER" in config else None,
+                        config["MQTT_PASSWORD"] if "MQTT_PASSWORD" in config else None)
+    poolaccess_client = PoolAccessClient(config["DEVICE_TOKEN"], config["DEVICE_SERIAL"])
     hass_entities = load_entities(os.path.join(os.path.dirname(__file__), "entities.json"), config)
     logger = logging.getLogger()
     logger.info("Starting Bridge")

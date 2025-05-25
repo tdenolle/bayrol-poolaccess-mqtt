@@ -1,155 +1,172 @@
 [
   {
-	"uid": "1",
-	"key": "status",
-	"value_template": "{{ 'Online' if value_json.v | float > 17.0 else 'Offline' }}",
-	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\"}"
+    "uid": "1",
+    "key": "status",
+    "value_template": "{{ 'Online' if value_json.v | float > 17.0 else 'Offline' }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
-	"uid": "4.78",
-	"key": "ph",
-	"icon": "mdi:ph",
-	"state_class": "measurement",
-	"unit_of_measurement": "pH",
-	"value_template": "{{ value_json.v | float / 10 }}",
-	"json_attributes_template": "{ \"min\": \"{{ value_json.min | float / 10 }}\", \"max\": \"{{ value_json.max | float / 10 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
+    "uid": "4.78",
+    "key": "ph",
+    "icon": "mdi:ph",
+    "state_class": "measurement",
+    "unit_of_measurement": "pH",
+    "value_template": "{{ value_json.v | float / 10 }}",
+    "json_attributes_template": "{ \"min\": \"{{ value_json.min | float / 10 }}\", \"max\": \"{{ value_json.max | float / 10 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
-	"uid": "4.82",
-	"key": "mv_se",
-	"icon": "mdi:water-opacity",
-	"state_class": "measurement",
-	"unit_of_measurement": "mv",
-	"value_template": "{{ value_json.v | int }}",
-	"json_attributes_template": "{ \"min\": \"{{ value_json.min | int }}\", \"max\": \"{{ value_json.max | int }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
+    "uid": "4.82",
+    "key": "mv_se",
+    "icon": "mdi:water-opacity",
+    "state_class": "measurement",
+    "unit_of_measurement": "mv",
+    "value_template": "{{ value_json.v | int }}",
+    "json_attributes_template": "{ \"min\": \"{{ value_json.min | int }}\", \"max\": \"{{ value_json.max | int }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
-	"uid": "4.98",
-	"key": "temperature",
-	"device_class": "temperature",
-	"unit_of_measurement": "°C",
-	"value_template": "{{ value_json.v | float / 10 }}",
-	"json_attributes_template": "{ \"min\": \"{{ value_json.min | float / 10 }}\", \"max\": \"{{ value_json.max | float / 10 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
-
+    "uid": "4.98",
+    "key": "temperature",
+    "device_class": "temperature",
+    "unit_of_measurement": "°C",
+    "value_template": "{{ value_json.v | float / 10 }}",
+    "json_attributes_template": "{ \"min\": \"{{ value_json.min | float / 10 }}\", \"max\": \"{{ value_json.max | float / 10 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
-	"uid": "4.100",
-	"key": "salt",
-	"icon": "mdi:water-sync",
-	"state_class": "measurement",
-	"unit_of_measurement": "mg/L",
-	"value_template": "{{ value_json.v | int * 100 }}",
-	"json_attributes_template": "{ \"min\": \"{{ value_json.min | int * 100 }}\", \"max\": \"{{ value_json.max | int * 100 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
+    "uid": "4.100",
+    "key": "salt",
+    "icon": "mdi:water-sync",
+    "state_class": "measurement",
+    "unit_of_measurement": "mg/L",
+    "value_template": "{{ value_json.v | int * 100 }}",
+    "json_attributes_template": "{ \"min\": \"{{ value_json.min | int * 100 }}\", \"max\": \"{{ value_json.max | int * 100 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
-	"uid": "5.2",
-	"key": "language",
-	"icon": "mdi:translate",
-	"value_template": "{% set lang = { \"19.19\": \"de\", \"19.21\": \"fr\", \"19.22\": \"es\" } %}{{ lang[value_json.v]|default(\"en\")}}",
-	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\"}"
+    "uid": "5.2",
+    "key": "language",
+    "icon": "mdi:translate",
+    "value_template": "{% set lang = { \"19.19\": \"de\", \"19.21\": \"fr\", \"19.22\": \"es\" } %}{{ lang[value_json.v]|default(\"en\")}}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
-	"uid": "5.29",
-	"key": "flow_in",
-	"icon": "mdi:water-pump",
-	"value_template": "{{ 'on' if value_json.v | float == 19.96 else 'off' }}",
-  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
+    "uid": "5.29",
+    "key": "flow_in",
+    "icon": "mdi:water-pump",
+    "value_template": "{{ 'on' if value_json.v | float == 19.96 else 'off' }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
   },
   {
-	"__class__" : "MessagesSensor",
-	"uid": "10",
-	"key": "messages",
-	"icon": "mdi:message-bulleted",
-	"value_template": "{{ value_json.v | map(attribute='key') | list }}",
-	"json_attributes_template": "{ \"data\": {{ value_json.v | to_json }}, \"updated\": \"{{ value_json.updatedAt }}\"}"
+    "__class__": "MessagesSensor",
+    "uid": "10",
+    "key": "messages",
+    "icon": "mdi:message-bulleted",
+    "value_template": "{{ value_json.v | map(attribute='key') | list }}",
+    "json_attributes_template": "{ \"data\": {{ value_json.v | to_json }}, \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
-	"uid": "4.89",
-	"key": "ph_dos_rate",
-	"state_class": "measurement",
-	"unit_of_measurement": "%",
-	"icon": "mdi:beaker",
-	"value_template": "{{ value_json.v }}",
-  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
+    "uid": "4.89",
+    "key": "ph_dos_rate",
+    "state_class": "measurement",
+    "unit_of_measurement": "%",
+    "icon": "mdi:beaker",
+    "value_template": "{{ value_json.v }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
   },
   {
-	"uid": "4.91",
-	"key": "se_production_rate",
-	"state_class": "measurement",
-	"unit_of_measurement": "%",
-	"icon": "mdi:beaker",
-	"value_template": "{{ value_json.v }}",
-  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
+    "uid": "4.91",
+    "key": "se_production_rate",
+    "state_class": "measurement",
+    "unit_of_measurement": "%",
+    "icon": "mdi:beaker",
+    "value_template": "{{ value_json.v }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
   },
   {
-	"__class__" : "Switch",
-	"uid": "5.130",
-	"key": "se_activate_boost",
-	"icon": "mdi:map-marker-up",
-	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
-  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"command_template" : "{ \"t\":\"5.130\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
-	"availability" : {
-		"topic": "#HASS_DISCOVERY_PREFIX/switch/#DEVICE_SERIAL/se_on_off",
-		"value_template": "{{ 'online' if value_json.v == '19.17' else 'offline' }}"
-	}
+    "__class__": "Switch",
+    "uid": "5.130",
+    "key": "se_activate_boost",
+    "icon": "mdi:map-marker-up",
+    "value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.130\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
+    "availability": {
+      "topic": "#HASS_DISCOVERY_PREFIX/switch/#DEVICE_SERIAL/se_on_off",
+      "value_template": "{{ 'online' if value_json.v == '19.17' else 'offline' }}"
+    }
   },
   {
-	"__class__" : "Switch",
-	"uid": "5.40",
-	"key": "se_on_off",
-	"icon": "mdi:water-opacity",
-	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
-  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"command_template" : "{ \"t\":\"5.40\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
+    "__class__": "Switch",
+    "uid": "5.40",
+    "key": "se_on_off",
+    "icon": "mdi:water-opacity",
+    "value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.40\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
   },
   {
-	"__class__" : "Switch",
-	"uid": "5.42",
-	"key": "ph_on_off",
-	"icon": "mdi:beaker",
-	"value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
-  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"command_template" : "{ \"t\":\"5.42\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
+    "__class__": "Switch",
+    "uid": "5.42",
+    "key": "ph_on_off",
+    "icon": "mdi:beaker",
+    "value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.42\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
   },
   {
-	"__class__" : "Switch",
-	"uid": "5.186",
-	"key": "light_on_off",
-	"icon": "mdi:lightbulb-outline",
-	"value_template": "{{ 'on' if value_json.v | float == 19.311 else 'off' }}",
-  	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"command_template" : "{ \"t\":\"5.186\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }"
+    "__class__": "Switch",
+    "uid": "5.186",
+    "key": "light_on_off",
+    "icon": "mdi:lightbulb-outline",
+    "value_template": "{{ 'on' if value_json.v | float == 19.311 else 'off' }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.186\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
+    "filters": {
+      "SMART_AND_EASY_CONTROL_MODULE": true
+    }
   },
   {
-	"__class__" : "Climate",
-	"uid_mode": "5.185",
-	"uid_temp": "4.123",
-	"key": "heater_hvac",
-	"icon": "mdi:heat-pump-outline",
-	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"temperature_state_template": "{{ value_json.v | float / 10 }}",
-	"temperature_command_template" : "{ \"t\":\"4.123\", \"v\":{{ (value * 10) | int }} }",
-	"modes": ["off","auto"],
-    "mode_command_template" : "{ \"t\":\"5.185\", \"v\":\"{{ '19.101' if value=='auto' else '19.100' }}\" }",
-	"mode_state_template" : "{{ 'auto' if value_json.v | float == 19.101 else 'off' }}"
+    "__class__": "Climate",
+    "uid_mode": "5.185",
+    "uid_temp": "4.123",
+    "key": "heater_hvac",
+    "icon": "mdi:heat-pump-outline",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "temperature_state_template": "{{ value_json.v | float / 10 }}",
+    "temperature_command_template": "{ \"t\":\"4.123\", \"v\":{{ (value * 10) | int }} }",
+    "modes": [
+      "off",
+      "auto"
+    ],
+    "mode_command_template": "{ \"t\":\"5.185\", \"v\":\"{{ '19.101' if value=='auto' else '19.100' }}\" }",
+    "mode_state_template": "{{ 'auto' if value_json.v | float == 19.101 else 'off' }}",
+    "filters": {
+      "SMART_AND_EASY_CONTROL_MODULE": true
+    }
   },
   {
-	"__class__" : "Select",
-	"uid": "5.256",
-	"key": "filtration_mode",
-	"icon": "mdi:pump",
-	"json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-	"options" : ["Off","On","Auto","Smart","Hors-gel"],
-	"value_template": "{{ 'On' if value_json.v | float == 19.313 else 'Auto' if value_json.v | float == 19.346 else 'Smart' if value_json.v | float == 19.330 else 'Hors-gel' if value_json.v | float == 19.338 else 'Off' }}",
-	"command_template" : "{ \"t\":\"5.256\", \"v\":\"{{ '19.313' if value=='On' else '19.338' if value=='Hors-gel' else '19.346' if value=='Auto' else '19.330' if value=='Smart' else '19.312' }}\" }"
+    "__class__": "Select",
+    "uid": "5.256",
+    "key": "filtration_mode",
+    "icon": "mdi:pump",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "options": [
+      "Off",
+      "On",
+      "Auto",
+      "Smart",
+      "Hors-gel"
+    ],
+    "value_template": "{{ 'On' if value_json.v | float == 19.313 else 'Auto' if value_json.v | float == 19.346 else 'Smart' if value_json.v | float == 19.330 else 'Hors-gel' if value_json.v | float == 19.338 else 'Off' }}",
+    "command_template": "{ \"t\":\"5.256\", \"v\":\"{{ '19.313' if value=='On' else '19.338' if value=='Hors-gel' else '19.346' if value=='Auto' else '19.330' if value=='Smart' else '19.312' }}\" }",
+    "filters": {
+      "SMART_AND_EASY_CONTROL_MODULE": true
+    }
   },
   {
-	"__class__" : "Update",
-	"uid": "6.15",
-	"key": "sw_version",
-	"icon": "mdi:update",
-	"device_class": "firmware",
-	"entity_picture": "https://raw.githubusercontent.com/tdenolle/bayrol-poolaccess-mqtt/refs/heads/master/docs/bayrol_icon.png"
+    "__class__": "Update",
+    "uid": "6.15",
+    "key": "sw_version",
+    "icon": "mdi:update",
+    "device_class": "firmware",
+    "entity_picture": "https://raw.githubusercontent.com/tdenolle/bayrol-poolaccess-mqtt/refs/heads/master/docs/bayrol_icon.png"
   }
 ]

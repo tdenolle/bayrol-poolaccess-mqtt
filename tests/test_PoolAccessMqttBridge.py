@@ -284,8 +284,9 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
             json.dump([
                 {"uid": "1", "key": "temperature", "unit_of_measurement": "°C", "attr_dyn": "#XXX/#DEVICE_SERIAL/on"},
                 {"uid": "10", "key": "messages", "__class__": "MessagesSensor"},
-                {"uid": "15", "key": "se_on_off", "__class__": "Switch"},
+                {"uid": "15", "key": "se_on_off", "__class__": "Switch", "filters": {"DEVICE_SERIAL": "1.0"}},
                 {"uid": "16", "key": "ph_on_off", "__class__": "Sensor", "disable": True},
+                {"uid": "17", "key": "en_filtered", "__class__": "Climate", "filters": {"XXX": "ZZZ"}},
             ], f)
 
         # Load entities
