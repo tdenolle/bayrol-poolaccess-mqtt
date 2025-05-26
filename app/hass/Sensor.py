@@ -11,5 +11,3 @@ class Sensor(Entity):
     @property
     def type(self) -> str:
         return "sensor"
-
-

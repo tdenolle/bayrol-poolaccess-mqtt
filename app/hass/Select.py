@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from app.hass.CommandEntity import CommandEntity
-from app.hass.Entity import Entity
 
 
 class Select(CommandEntity):

@@ -1,14 +1,13 @@
+import json
 import logging
 import re
-import json
 from datetime import datetime, timezone
-from enum import Enum
 from json import JSONDecodeError
 
 from paho.mqtt.client import MQTTMessage
 
-from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from app.Translation import LanguageManager
+from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from app.mqtt import PoolAccessClient, MqttClient
 from app.mqtt.PoolAccessClient import PoolAccessTopicMode
 
@@ -19,13 +18,14 @@ def norm(s: str):
 
 
 def load_attr(key: str, data: dict, optional=False):
-    value=None
+    value = None
     if not optional:
         assert key in data
-    if key  in data:
+    if key in data:
         value = data[key]
         del data[key]
     return value
+
 
 class Entity:
 
@@ -94,7 +94,7 @@ class Entity:
     def build_config(self):
         return "%s/config" % self.state_topic, {**self._attributes, "device": self._device}
 
-    def on_poolaccess_connect(self, client : PoolAccessClient):
+    def on_poolaccess_connect(self, client: PoolAccessClient):
         topic = client.build_topic(PoolAccessTopicMode.GET, self._uid)
         self._logger.info("Publishing to poolaccess: %s", topic)
         client.publish(topic)
@@ -102,7 +102,7 @@ class Entity:
     def on_broker_connect(self, client: MqttClient):
         pass
 
-    def on_poolaccess_message(self, client: PoolAccessClient, broker: MqttClient, message : MQTTMessage):
+    def on_poolaccess_message(self, client: PoolAccessClient, broker: MqttClient, message: MQTTMessage):
         if message.topic == client.build_topic(PoolAccessTopicMode.VALUE, self._uid):
             self._logger.info("Reading %s %s", message.topic, str(message.payload))
             try:
@@ -112,5 +112,5 @@ class Entity:
             except JSONDecodeError as jde:
                 self._logger.error(jde)
 
-    def on_broker_message(self, client: PoolAccessClient, broker: MqttClient, message : MQTTMessage):
+    def on_broker_message(self, client: PoolAccessClient, broker: MqttClient, message: MQTTMessage):
         pass

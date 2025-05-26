@@ -31,9 +31,9 @@ class Update(Entity):
     def _get_update_data(self, device: BayrolPoolaccessDevice):
         try:
             response = requests.get(self.BAYROL_UPDATE_URL,
-                                params={"id": device.id},
-                                timeout=5,
-                                allow_redirects=False)
+                                    params={"id": device.id},
+                                    timeout=5,
+                                    allow_redirects=False)
             if response.status_code == 200:
                 data = response.json()
                 return data.get(device.model, {})

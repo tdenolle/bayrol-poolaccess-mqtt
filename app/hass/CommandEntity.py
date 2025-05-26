@@ -36,5 +36,3 @@ class CommandEntity(Entity):
             poolaccess_topic = client.build_topic(PoolAccessTopicMode.SET, self.uid)
             self._logger.info("Publishing to poolaccess %s %s", poolaccess_topic, message.payload)
             client.publish(poolaccess_topic, payload=message.payload)
-
-
