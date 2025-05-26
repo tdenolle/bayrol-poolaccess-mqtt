@@ -1,30 +1,16 @@
+#!/usr/bin/env python3
 import json
 import logging
-import re
 from datetime import datetime, timezone
 from json import JSONDecodeError
 
 from paho.mqtt.client import MQTTMessage
 
 from app.Translation import LanguageManager
+from app.hass import load_attr, norm
 from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from app.mqtt import PoolAccessClient, MqttClient
 from app.mqtt.PoolAccessClient import PoolAccessTopicMode
-
-
-def norm(s: str):
-    s = re.sub(u"[\\W|_]", "", s)
-    return s.lower()
-
-
-def load_attr(key: str, data: dict, optional=False):
-    value = None
-    if not optional:
-        assert key in data
-    if key in data:
-        value = data[key]
-        del data[key]
-    return value
 
 
 class Entity:

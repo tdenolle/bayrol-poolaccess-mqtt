@@ -3,8 +3,6 @@
 import re
 import unicodedata
 
-from app.mqtt.PoolAccessClient import BAYROL_POOLACCESS_BASE_TOPIC, PoolAccessTopicMode
-
 
 def normalize_string(string: str, sep: str = " "):
     """
@@ -27,4 +25,3 @@ def normalize_string(string: str, sep: str = " "):
     if sep != " ":
         str_slugified = str_slugified.replace(" ", sep)
     return str_slugified.strip(sep)
-

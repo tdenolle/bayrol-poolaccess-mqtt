@@ -23,6 +23,7 @@ import time
 from docopt import docopt
 from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS
 
+from app.hass import HASS_ENTITY_TYPES
 from .Translation import LanguageManager
 from .hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from .hass.Entity import Entity
@@ -70,7 +71,13 @@ class PoolAccessMqttBridge:
             self._logger.info("Subscribing to topic: %s", dash_topic)
             self._poolaccess_client.subscribe(dash_topic)
 
-            # Looping on entities
+            # Resetting broker config to remove old entities
+            for hass_type in HASS_ENTITY_TYPES:
+                topic = "%s/%s/%s" % (self._mqtt_base_topic, hass_type, self._poolaccess_device_serial)
+                self._logger.info("Resetting broker config for topic: %s", topic)
+                self._broker_client.publish(topic, payload="", retain=True)
+
+            # Looping on active entities
             for e in self._hass_entities:  # type: Entity
                 # Publish entity config to Broker
                 (topic, cfg) = e.build_config()
@@ -87,6 +94,8 @@ class PoolAccessMqttBridge:
     def on_broker_connect(self, client: MqttClient, userdata, flags, rc, properties):
         if rc == 0:
             self._logger.info("[mqtt] connect: [%s][%s][%s]", str(rc), str(userdata), str(flags))
+
+
             # Looping on entities
             for e in self._hass_entities:  # type: Entity
                 e.on_broker_connect(client)
