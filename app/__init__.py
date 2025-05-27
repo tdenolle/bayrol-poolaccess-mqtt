@@ -18,11 +18,6 @@ def get_package_version() -> str:
         return __package_version
 
     logger = logging.getLogger()
-    logger.debug("os.getcwd() : %s", os.getcwd())
-    absolute_path = os.path.abspath(__file__)
-    logger.debug("Full path: %s", absolute_path)
-    logger.debug("Directory Path: %s", os.path.dirname(absolute_path))
-    logger.debug("Path(__file__) : %s", Path(__file__))
     pyproject_toml_file = Path(__file__).parent.parent / "pyproject.toml"
     logger.debug("pyproject toml file: %s", pyproject_toml_file)
     if pyproject_toml_file.exists() and pyproject_toml_file.is_file():
