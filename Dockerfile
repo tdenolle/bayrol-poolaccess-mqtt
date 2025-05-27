@@ -1,5 +1,7 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
+# Copy toml file
+COPY pyproject.toml /
 # Copy requirements.txt file
 COPY requirements.txt /
 # Install requirements.txt
