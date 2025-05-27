@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 import toml
@@ -15,7 +16,9 @@ def get_package_version() -> str:
         # extra work.
         return __package_version
 
+    logger = logging.getLogger()
     pyproject_toml_file = Path(__file__).parent.parent / "pyproject.toml"
+    logger.debug("pyproject toml file: %s", pyproject_toml_file)
     if pyproject_toml_file.exists() and pyproject_toml_file.is_file():
         data = toml.load(pyproject_toml_file)
         # check project.version
