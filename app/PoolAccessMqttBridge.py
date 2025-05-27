@@ -24,11 +24,11 @@ from docopt import docopt
 from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS
 
 from app.hass import HASS_ENTITY_TYPES
-from .Translation import LanguageManager
-from .hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
-from .hass.Entity import Entity
-from .mqtt.MqttClient import MqttClient
-from .mqtt.PoolAccessClient import PoolAccessClient, PoolAccessTopicMode
+from app.Translation import LanguageManager
+from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
+from app.hass.Entity import Entity
+from app.mqtt.MqttClient import MqttClient
+from app.mqtt.PoolAccessClient import PoolAccessClient, PoolAccessTopicMode
 
 DEFAULT_RECONNECT_DELAY = 30
 
@@ -72,13 +72,13 @@ class PoolAccessMqttBridge:
             self._poolaccess_client.subscribe(dash_topic)
 
             # Resetting broker config to remove old entities
-            for hass_type in HASS_ENTITY_TYPES:
-                topic = "%s/%s/%s" % (self._mqtt_base_topic, hass_type, self._poolaccess_device_serial)
-                self._logger.info("Resetting broker config for topic: %s", topic)
-                self._broker_client.publish(topic, payload="", retain=True)
+            for e in list(filter(lambda entity: entity.disable, self._hass_entities)) :
+                (topic, cfg) = e.build_config()
+                self._logger.info("Removing broker config for topic: %s", topic)
+                self._broker_client.publish(topic, payload=None, retain=True)
 
             # Looping on active entities
-            for e in self._hass_entities:  # type: Entity
+            for e in list(filter(lambda entity: not entity.disable, self._hass_entities)) :  # type: Entity
                 # Publish entity config to Broker
                 (topic, cfg) = e.build_config()
                 payload = str(json.dumps(cfg))
@@ -96,8 +96,8 @@ class PoolAccessMqttBridge:
             self._logger.info("[mqtt] connect: [%s][%s][%s]", str(rc), str(userdata), str(flags))
 
 
-            # Looping on entities
-            for e in self._hass_entities:  # type: Entity
+            # Looping on active entities
+            for e in list(filter(lambda entity: not entity.disable, self._hass_entities)):  # type: Entity
                 e.on_broker_connect(client)
         else:
             self._logger.info("[mqtt] connect: Connection failed [%s]", str(rc))
@@ -111,8 +111,8 @@ class PoolAccessMqttBridge:
                 and message.topic):
             return
 
-        # Trigger on_broker_message for each entity
-        for e in self._hass_entities:  # type: Entity
+        # Trigger on_broker_message for each active entity
+        for e in list(filter(lambda e: not e.disable, self._hass_entities)):  # type: Entity
             e.on_broker_message(self._poolaccess_client, self._broker_client, message)
 
     def on_disconnect(self, client, userdata, flags, rc, properties):
@@ -186,18 +186,6 @@ def load_entities(filepath: str, config) -> []:
             content = content.replace("#%s" % k, str(config[k]))
         # Instantiate entities
         for e in json.loads(content):
-            if "disable" in e and e["disable"]:
-                continue
-            # Check filters
-            if "filters" in e:
-                skip = False
-                for filt in e["filters"]:
-                    if filt not in config or config[filt] != e["filters"][filt]:
-                        # Filter not found or value is False, skip this entity
-                        logging.getLogger().warning("Skipping entity %s because filter option %s is not set or not matching value %s", e["key"], filt, e["filters"][filt])
-                        skip = True
-                if skip:
-                    continue
             # default class type is Sensor
             class_type = "Sensor"
             if "__class__" in e:

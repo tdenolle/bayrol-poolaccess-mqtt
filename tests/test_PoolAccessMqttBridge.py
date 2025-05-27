@@ -7,6 +7,7 @@ from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS, MQTT_ERR_AUTH, MQTT_
 
 from app.PoolAccessMqttBridge import PoolAccessMqttBridge, load_entities, main
 from app.Translation import LanguageManager
+from app.hass.Select import Select
 from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from app.hass.Climate import Climate
 from app.hass.MessagesSensor import MessagesSensor
@@ -284,21 +285,26 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
             json.dump([
                 {"uid": "1", "key": "temperature", "unit_of_measurement": "°C", "attr_dyn": "#XXX/#DEVICE_SERIAL/on"},
                 {"uid": "10", "key": "messages", "__class__": "MessagesSensor"},
-                {"uid": "15", "key": "se_on_off", "__class__": "Switch", "filters": {"DEVICE_SERIAL": "1.0"}},
+                {"uid": "15", "key": "se_on_off", "__class__": "Switch", "filters": {"#DEVICE_SERIAL": "1.0","#TEST_BOOL_CONFIG_VARIABLE": "True"}},
                 {"uid": "16", "key": "ph_on_off", "__class__": "Sensor", "disable": True},
-                {"uid": "17", "key": "en_filtered", "__class__": "Climate", "filters": {"XXX": "ZZZ"}},
+                {"uid_mode": "17", "uid_temp":"18", "key": "en_filtered", "__class__": "Climate", "filters": {"XXX": "ZZZ"}},
+                {"uid": "18", "key": "en_filtered_2", "__class__": "Select", "filters": {"#TEST_BOOL_CONFIG_VARIABLE": "False"}},
             ], f)
 
         # Load entities
-        entities = load_entities(entities_json_path, {"DEVICE_SERIAL": "1.0", "XXX": "YYY"})
+        entities = load_entities(entities_json_path, {"DEVICE_SERIAL": "1.0", "XXX": "YYY", "TEST_BOOL_CONFIG_VARIABLE": True})
 
         # Assert sensor types
-        self.assertEqual(len(entities), 3)
+        self.assertEqual(len(entities), 6)
+        self.assertEqual(len(list(filter(lambda entity: not entity.disable, entities))), 3)
         self.assertIsInstance(entities[0], Sensor)
         self.assertEqual(entities[0].get_attr("attr_dyn"), "YYY/1.0/on")
 
         self.assertIsInstance(entities[1], MessagesSensor)
         self.assertIsInstance(entities[2], Switch)
+        self.assertIsInstance(entities[3], Sensor)
+        self.assertIsInstance(entities[4], Climate)
+        self.assertIsInstance(entities[5], Select)
 
         # Clean up
         os.remove(entities_json_path)

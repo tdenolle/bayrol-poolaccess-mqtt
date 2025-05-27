@@ -23,6 +23,7 @@ class Entity:
         self._discovery_prefix = discovery_prefix
         self._lang = LanguageManager()
         self._logger = logging.getLogger()
+        self._disable = False
 
         # config variables
         self._attributes["unique_id"] = ("%s_%s_%s" % (norm(device.manufacturer), norm(self._device.id), self.key))
@@ -30,7 +31,7 @@ class Entity:
         self._attributes["state_topic"] = "%s/%s/%s/%s" % (discovery_prefix, self.type, device.id, self.key)
 
         if "name" not in data:
-            self._attributes["name"] = self._lang.get_string(self._key)
+            self._attributes["name"] = self._lang.get_string(self._key,self._key)
 
         if "availability" not in data:
             self._attributes["availability"] = [{
@@ -44,6 +45,21 @@ class Entity:
         if "json_attributes_topic" not in data and "json_attributes_template" in data:
             self._attributes["json_attributes_topic"] = self.state_topic
 
+        if "disable" in data:
+            self._disable = load_attr("disable", data, False)
+            if self._disable:
+                self._logger.info("Entity %s is disabled", self._key)
+
+        if "filters" in data:
+            filters = load_attr("filters", data, False)
+            skip = False
+            for f in filters:
+                if f != filters[f]:
+                    self._logger.warning(
+                        "Skipping entity %s because filter option %s is not set or not matching value %s", self._key, f, filters[f])
+                    self._disable = True
+
+
     @property
     def uid(self) -> str:
         return self._uid
@@ -51,6 +67,10 @@ class Entity:
     @property
     def key(self) -> str:
         return self._key
+
+    @property
+    def disable(self) -> str:
+        return self._disable
 
     @property
     def name(self) -> str:
