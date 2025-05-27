@@ -3,6 +3,7 @@ import logging
 
 import requests
 
+import app
 from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from app.hass.Entity import Entity
 
@@ -31,7 +32,7 @@ class Update(Entity):
     def _get_update_data(self, device: BayrolPoolaccessDevice):
         try:
             response = requests.get(self.BAYROL_UPDATE_URL,
-                                    params={"id": device.id},
+                                    params={"id": device.id, "version" : app.get_package_version()},
                                     timeout=5,
                                     allow_redirects=False)
             if response.status_code == 200:
