@@ -32,4 +32,5 @@ jobs:
           platforms: linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/amd64
           build-args: |
             BUILD_FROM=python:3.12-alpine
+            DOCKER_TAG=${{github.ref_name}}
           tags: "tdenolle/bayrol-poolaccess-mqtt:latest,tdenolle/bayrol-poolaccess-mqtt:${{github.ref_name}}"

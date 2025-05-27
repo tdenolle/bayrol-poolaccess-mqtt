@@ -1,5 +1,8 @@
+ARG DOCKER_TAG
 ARG BUILD_FROM
 FROM $BUILD_FROM
+# Base image tag for the Dockerfile
+ENV APP_VERSION=$DOCKER_TAG
 # Copy toml file
 COPY pyproject.toml /
 # Copy requirements.txt file

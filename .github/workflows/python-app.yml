@@ -143,6 +143,7 @@ jobs:
           platforms: ${{ env.DOCKER_PLATFORMS }}
           build-args: |
             BUILD_FROM=python:${{ env.PYTHON_VERSION }}-alpine
+            DOCKER_TAG=${{ needs.tag.outputs.tag_name }
           tags: "${{ env.DOCKER_HUB_REPOSITORY }}:dev,${{ env.DOCKER_HUB_REPOSITORY }}:${{ needs.tag.outputs.tag_name }}"
 
   update_hassio_addon:
