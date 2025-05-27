@@ -48,7 +48,7 @@ class Entity:
         if "disable" in data:
             self._disable = load_attr("disable", data, False)
             if self._disable:
-                self._logger.info("Entity %s is disabled", self._key)
+                self._logger.info("Entity '%s' is disabled", self._key)
 
         if "filters" in data:
             filters = load_attr("filters", data, False)
@@ -56,7 +56,7 @@ class Entity:
             for f in filters:
                 if f != filters[f]:
                     self._logger.warning(
-                        "Skipping entity %s because filter option %s is not set or not matching value %s", self._key, f, filters[f])
+                        "Skipping entity '%s' because filter option '%s' is not set or not matching value '%s'", self._key, f, filters[f])
                     self._disable = True
 
 

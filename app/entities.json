@@ -120,7 +120,7 @@
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.186\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
     "filters": {
-      "#SMART_AND_EASY_CONTROL_MODULE": true
+      "#SMART_AND_EASY_CONTROL_MODULE": "True"
     }
   },
   {
@@ -139,7 +139,7 @@
     "mode_command_template": "{ \"t\":\"5.185\", \"v\":\"{{ '19.101' if value=='auto' else '19.100' }}\" }",
     "mode_state_template": "{{ 'auto' if value_json.v | float == 19.101 else 'off' }}",
     "filters": {
-      "#SMART_AND_EASY_CONTROL_MODULE": true
+      "#SMART_AND_EASY_CONTROL_MODULE": "True"
     }
   },
   {
@@ -158,7 +158,7 @@
     "value_template": "{{ 'On' if value_json.v | float == 19.313 else 'Auto' if value_json.v | float == 19.346 else 'Smart' if value_json.v | float == 19.330 else 'Hors-gel' if value_json.v | float == 19.338 else 'Off' }}",
     "command_template": "{ \"t\":\"5.256\", \"v\":\"{{ '19.313' if value=='On' else '19.338' if value=='Hors-gel' else '19.346' if value=='Auto' else '19.330' if value=='Smart' else '19.312' }}\" }",
     "filters": {
-      "#SMART_AND_EASY_CONTROL_MODULE": true
+      "#SMART_AND_EASY_CONTROL_MODULE": "True"
     }
   },
   {
