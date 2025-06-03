@@ -35,3 +35,4 @@ class MqttClient(mqtt.Client):
             if self._logger is not None:
                 self._logger.error("Failed to connect to %s:%s. %s", self._host, self._port, e)
             return MQTTErrorCode.MQTT_ERR_CONN_REFUSED
+

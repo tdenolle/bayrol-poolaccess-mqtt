@@ -44,5 +44,8 @@
   "se_production_rate": "Chlorproduktion",
   "se_on_off": "Salzelektrolyse",
   "ph_on_off": "Automatische pH-Dosierung",
-  "sw_version": "Firmware"
+  "filtration_on_off" : "Filtration",
+  "light_on_off" : "Licht",
+  "heater_hvac" : "Heizung",
+  "filtration_mode" : "Filtrationsmodus"
 }
