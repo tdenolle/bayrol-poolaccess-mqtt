@@ -114,11 +114,47 @@
   {
     "__class__": "Switch",
     "uid": "5.186",
-    "key": "light_on_off",
+    "key": "light_on_off_1",
     "icon": "mdi:lightbulb-outline",
     "value_template": "{{ 'on' if value_json.v | float == 19.311 else 'off' }}",
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.186\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
+    "filters": {
+      "#SMART_AND_EASY_CONTROL_MODULE": "True"
+    }
+  },
+  {
+    "__class__": "Switch",
+    "uid": "5.187",
+    "key": "light_on_off_2",
+    "icon": "mdi:lightbulb-outline",
+    "value_template": "{{ 'on' if value_json.v | float == 19.311 else 'off' }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.187\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
+    "filters": {
+      "#SMART_AND_EASY_CONTROL_MODULE": "True"
+    }
+  },
+  {
+    "__class__": "Switch",
+    "uid": "5.188",
+    "key": "light_on_off_3",
+    "icon": "mdi:lightbulb-outline",
+    "value_template": "{{ 'on' if value_json.v | float == 19.311 else 'off' }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.188\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
+    "filters": {
+      "#SMART_AND_EASY_CONTROL_MODULE": "True"
+    }
+  },
+  {
+    "__class__": "Switch",
+    "uid": "5.189",
+    "key": "light_on_off_4",
+    "icon": "mdi:lightbulb-outline",
+    "value_template": "{{ 'on' if value_json.v | float == 19.311 else 'off' }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.189\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
     "filters": {
       "#SMART_AND_EASY_CONTROL_MODULE": "True"
     }
@@ -168,5 +204,15 @@
     "icon": "mdi:update",
     "device_class": "firmware",
     "entity_picture": "https://raw.githubusercontent.com/tdenolle/bayrol-poolaccess-mqtt/refs/heads/master/docs/bayrol_icon.png"
+  },
+  {
+    "__class__": "Switch",
+    "uid": "5.186",
+    "key": "light_on_off",
+    "icon": "mdi:lightbulb-outline",
+    "value_template": "{{ 'on' if value_json.v | float == 19.311 else 'off' }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.186\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
+    "disable": true
   }
 ]
