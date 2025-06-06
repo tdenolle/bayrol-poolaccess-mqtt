@@ -1,12 +1,5 @@
 name: Python Application CI
 
-env:
-  PYTHON_VERSION: '3.12'
-  DOCKER_PLATFORMS: 'linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/amd64'
-  DOCKER_HUB_REPOSITORY: 'tdenolle/bayrol-poolaccess-mqtt'
-  COVERAGE_THRESHOLD: '95'
-
-
 on:
   push:
     branches: [ "develop" ]
@@ -23,10 +16,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python ${{ env.PYTHON_VERSION }}
+    - name: Set up Python ${{ vars.PYTHON_VERSION }}
       uses: actions/setup-python@v5
       with:
-        python-version: ${{ env.PYTHON_VERSION }}
+        python-version: ${{ vars.PYTHON_VERSION }}
 
     - name: Install dependencies
       run: |
@@ -56,7 +49,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ vars.PYTHON_VERSION }}
 
       - name: Install dependencies
         run: |
@@ -67,7 +60,7 @@ jobs:
         run: |
            pytest --cov=app
 
-      - name: Combine coverage and fail it it’s under ${{ env.COVERAGE_THRESHOLD }}%
+      - name: Combine coverage and fail it it’s under ${{ vars.COVERAGE_THRESHOLD }}%
         run: |
           python -m coverage html --skip-covered --skip-empty
           
@@ -75,7 +68,7 @@ jobs:
           python -m coverage report | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
           
           # Report again and fail if under threshold.
-          python -Im coverage report --fail-under=${{ env.COVERAGE_THRESHOLD }}
+          python -Im coverage report --fail-under=${{ vars.COVERAGE_THRESHOLD }}
 
       - name: Upload HTML report if check failed
         uses: actions/upload-artifact@v4
@@ -140,11 +133,11 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          platforms: ${{ env.DOCKER_PLATFORMS }}
+          platforms: ${{ vars.DOCKER_PLATFORMS }}
           build-args: |
-            BUILD_FROM=python:${{ env.PYTHON_VERSION }}-alpine
+            BUILD_FROM=python:${{ vars.PYTHON_VERSION }}-alpine
             DOCKER_TAG=${{ needs.tag.outputs.tag_name }}
-          tags: "${{ env.DOCKER_HUB_REPOSITORY }}:dev,${{ env.DOCKER_HUB_REPOSITORY }}:${{ needs.tag.outputs.tag_name }}"
+          tags: "${{ vars.DOCKER_HUB_REPOSITORY }}:dev,${{ vars.DOCKER_HUB_REPOSITORY }}:${{ needs.tag.outputs.tag_name }}"
 
   update_hassio_addon:
     name: Update Hassio Addons Project Latest Tag
