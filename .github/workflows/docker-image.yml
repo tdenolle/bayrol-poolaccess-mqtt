@@ -29,8 +29,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          platforms: linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/amd64
+          platforms: ${{ vars.DOCKER_PLATFORMS }}
           build-args: |
-            BUILD_FROM=python:3.12-alpine
+            BUILD_FROM=python:${{ vars.PYTHON_VERSION }}-alpine
             DOCKER_TAG=${{github.ref_name}}
-          tags: "tdenolle/bayrol-poolaccess-mqtt:latest,tdenolle/bayrol-poolaccess-mqtt:${{github.ref_name}}"
+          tags: "${{ vars.DOCKER_HUB_REPOSITORY }}:latest,${{ vars.DOCKER_HUB_REPOSITORY }}:${{github.ref_name}}"
