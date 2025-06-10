@@ -165,6 +165,7 @@
     "uid_temp": "4.123",
     "key": "heater_hvac",
     "icon": "mdi:heat-pump-outline",
+    "target_temperature_step" : 0.5,
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "temperature_state_template": "{{ value_json.v | float / 10 }}",
     "temperature_command_template": "{ \"t\":\"4.123\", \"v\":{{ (value * 10) | int }} }",
