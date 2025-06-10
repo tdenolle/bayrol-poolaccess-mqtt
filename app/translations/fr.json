@@ -53,5 +53,6 @@
   "light_on_off_4" : "Eclairage 4",
   "heater_hvac" : "Chauffage",
   "filtration_mode" : "Mode filtration",
-  "mv_on_off": "Dosage Automatique du Chlore"
+  "mv_on_off": "Dosage Automatique du Chlore",
+  "next_light_program" : "Changer de couleur de l'éclairage"
 }

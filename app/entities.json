@@ -266,7 +266,7 @@
   {
     "__class__": "Button",
     "uid": "5.236",
-    "key": "light_color",
+    "key": "next_light_program",
     "icon": "mdi:lightbulb-outline",
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.236\", \"v\":\"19.54\" }",
