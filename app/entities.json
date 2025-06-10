@@ -262,5 +262,18 @@
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.186\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
     "disable": true
+  },
+  {
+    "__class__": "Button",
+    "uid": "5.236",
+    "key": "light_color",
+    "icon": "mdi:lightbulb-outline",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.236\", \"v\":\"19.54\" }",
+    "filters": {
+      "options": {
+        "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      }
+    }
   }
 ]

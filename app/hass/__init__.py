@@ -1,15 +1,6 @@
 #!/usr/bin/env python3
 import re
 
-HASS_ENTITY_TYPES = [
-    "sensor",
-    "switch",
-    "climate",
-    "light",
-    "update",
-    "select"
-]
-
 def norm(s: str):
     s = re.sub(u"[\\W|_]", "", s)
     return s.lower()
