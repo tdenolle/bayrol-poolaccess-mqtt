@@ -50,5 +50,6 @@
   "light_on_off_3": "Beleuchtung 3",
   "light_on_off_4": "Beleuchtung 4",
   "heater_hvac": "Heizung",
-  "filtration_mode": "Filtrationsmodus"
+  "filtration_mode": "Filtrationsmodus",
+  "mv_on_off": "Automatische Chlor-Dosierung"
 }

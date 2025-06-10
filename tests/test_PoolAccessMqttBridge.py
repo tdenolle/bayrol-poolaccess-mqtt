@@ -285,20 +285,22 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
             json.dump([
                 {"uid": "1", "key": "temperature", "unit_of_measurement": "°C", "attr_dyn": "#XXX/#DEVICE_SERIAL/on"},
                 {"uid": "10", "key": "messages", "__class__": "MessagesSensor"},
-                {"uid": "15", "key": "se_on_off", "__class__": "Switch", "filters": {"#DEVICE_SERIAL": "1.0","#TEST_BOOL_CONFIG_VARIABLE": "True"}},
+                {"uid": "15", "key": "se_on_off", "__class__": "Switch", "filters": { "options" : {"#TEST_BOOL_CONFIG_VARIABLE": "True"}}},
                 {"uid": "16", "key": "ph_on_off", "__class__": "Sensor", "disable": True},
-                {"uid_mode": "17", "uid_temp":"18", "key": "en_filtered", "__class__": "Climate", "filters": {"XXX": "ZZZ"}},
-                {"uid": "18", "key": "en_filtered_2", "__class__": "Select", "filters": {"#TEST_BOOL_CONFIG_VARIABLE": "False"}},
+                {"uid_mode": "17", "uid_temp":"18", "key": "en_filtered", "__class__": "Climate", "filters": { "options" : {"XXX": "ZZZ"}}},
+                {"uid": "18", "key": "en_filtered_2", "__class__": "Select", "filters": { "options" : {"#TEST_BOOL_CONFIG_VARIABLE": "False"}}},
+                {"uid": "19", "key": "mv_on_off", "__class__": "Sensor", "filters": { "devices": ["ASE"], "options": {"#XXX": "YYY"}}},
+                {"uid": "20", "key": "mv_test", "__class__": "Sensor","filters": {"devices": ["ACL"]}}
             ], f)
 
         # Load entities
-        entities = load_entities(entities_json_path, {"DEVICE_SERIAL": "1.0", "XXX": "YYY", "TEST_BOOL_CONFIG_VARIABLE": True})
+        entities = load_entities(entities_json_path, {"DEVICE_SERIAL": "24ASE2-45678", "XXX": "YYY", "TEST_BOOL_CONFIG_VARIABLE": True})
 
         # Assert sensor types
-        self.assertEqual(len(entities), 6)
-        self.assertEqual(len(list(filter(lambda entity: not entity.disable, entities))), 3)
+        self.assertEqual(len(entities), 8)
+        self.assertEqual(len(list(filter(lambda entity: not entity.disable, entities))), 4)
         self.assertIsInstance(entities[0], Sensor)
-        self.assertEqual(entities[0].get_attr("attr_dyn"), "YYY/1.0/on")
+        self.assertEqual(entities[0].get_attr("attr_dyn"), "YYY/24ASE2-45678/on")
 
         self.assertIsInstance(entities[1], MessagesSensor)
         self.assertIsInstance(entities[2], Switch)

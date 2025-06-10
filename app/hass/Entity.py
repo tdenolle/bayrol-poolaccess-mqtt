@@ -50,15 +50,25 @@ class Entity:
             if self._disable:
                 self._logger.info("Entity '%s' is disabled", self._key)
 
-        if "filters" in data:
+        if "filters" in data and not self._disable:
             filters = load_attr("filters", data, False)
-            skip = False
-            for f in filters:
-                if f != filters[f]:
-                    self._logger.warning(
-                        "Skipping entity '%s' because filter option '%s' is not set or not matching value '%s'", self._key, f, filters[f])
-                    self._disable = True
 
+            # device filtering check
+            devices = filters["devices"] if "devices" in filters else []
+            if len(devices) > 0 and self._device.code not in devices:
+                self._logger.warning(
+                    "Skipping entity '%s' because device '%s' is in filter devices %s", self._key, self._device.code,
+                    devices)
+                self._disable = True
+
+            # options filtering check
+            if not self._disable:
+                options = filters["options"] if "options" in filters else {}
+                for o in options:
+                    if o != options[o]:
+                        self._logger.warning(
+                            "Skipping entity '%s' because filter option '%s' is not set or not matching value '%s'", self._key, o, options[o])
+                        self._disable = True
 
     @property
     def uid(self) -> str:
