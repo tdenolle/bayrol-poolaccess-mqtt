@@ -40,7 +40,7 @@
     "value_template": "{{ value_json.v | int * 100 }}",
     "json_attributes_template": "{ \"min\": \"{{ value_json.min | int * 100 }}\", \"max\": \"{{ value_json.max | int * 100 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}",
     "filters": {
-      "device": [
+      "devices": [
         "ASE"
       ]
     }
@@ -85,7 +85,7 @@
     "value_template": "{{ value_json.v }}",
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "filters": {
-      "device": [
+      "devices": [
         "ASE"
       ]
     }
@@ -103,7 +103,7 @@
       "value_template": "{{ 'online' if value_json.v == '19.17' else 'offline' }}"
     },
     "filters": {
-      "device": [
+      "devices": [
         "ASE"
       ]
     }
@@ -117,7 +117,7 @@
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.40\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
     "filters": {
-      "device": [
+      "devices": [
         "ASE"
       ]
     }
@@ -131,7 +131,7 @@
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.154\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
     "filters": {
-      "device": [
+      "devices": [
         "ACL"
       ]
     }
@@ -207,7 +207,7 @@
     "uid_temp": "4.123",
     "key": "heater_hvac",
     "icon": "mdi:heat-pump-outline",
-    "precision": 0.5,
+    "target_temp_step": 0.5,
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "temperature_state_template": "{{ value_json.v | float / 10 }}",
     "temperature_command_template": "{ \"t\":\"4.123\", \"v\":{{ (value * 10) | int }} }",
