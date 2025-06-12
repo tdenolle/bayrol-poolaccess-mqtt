@@ -23,7 +23,6 @@ import time
 from docopt import docopt
 from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS
 
-from app.hass import HASS_ENTITY_TYPES
 from app.Translation import LanguageManager
 from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from app.hass.Entity import Entity

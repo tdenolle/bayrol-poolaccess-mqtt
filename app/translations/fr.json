@@ -1,4 +1,3 @@
-
 {
   "al_no_flow_bnc": "Pompe de filtration arrêtée\n(pas de débit)",
   "al_no_flow_230V": "Pompe de filtration arrêtée\n(pas de signal 230V~ de la pompe de filtration)",
@@ -46,11 +45,16 @@
   "se_on_off": "Electrolyse de sel",
   "ph_on_off": "Dosage Automatique pH",
   "sw_version": "Firmware",
-  "filtration_on_off" : "Filtration",
-  "light_on_off_1" : "Eclairage 1",
-  "light_on_off_2" : "Eclairage 2",
-  "light_on_off_3" : "Eclairage 3",
-  "light_on_off_4" : "Eclairage 4",
-  "heater_hvac" : "Chauffage",
-  "filtration_mode" : "Mode filtration"
+  "filtration_on_off": "Filtration",
+  "light_on_off_1": "Eclairage 1",
+  "light_color_1": "Couleur Eclairage 1",
+  "light_on_off_2": "Eclairage 2",
+  "light_color_2": "Couleur Eclairage 2",
+  "light_on_off_3": "Eclairage 3",
+  "light_color_3": "Couleur Eclairage 3",
+  "light_on_off_4": "Eclairage 4",
+  "light_color_4": "Couleur Eclairage 4",
+  "heater_hvac": "Chauffage",
+  "filtration_mode": "Mode filtration",
+  "mv_on_off": "Dosage Automatique Chlore"
 }

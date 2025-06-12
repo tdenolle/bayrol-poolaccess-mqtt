@@ -12,7 +12,13 @@
     "state_class": "measurement",
     "unit_of_measurement": "pH",
     "value_template": "{{ value_json.v | float / 10 }}",
-    "json_attributes_template": "{ \"min\": \"{{ value_json.min | float / 10 }}\", \"max\": \"{{ value_json.max | float / 10 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
+    "json_attributes_template": "{ \"min\": \"{{ value_json.min | float / 10 }}\", \"max\": \"{{ value_json.max | float / 10 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}",
+    "filters": {
+      "devices": [
+        "ASE",
+        "ACL"
+      ]
+    }
   },
   {
     "uid": "4.82",
@@ -21,7 +27,13 @@
     "state_class": "measurement",
     "unit_of_measurement": "mv",
     "value_template": "{{ value_json.v | int }}",
-    "json_attributes_template": "{ \"min\": \"{{ value_json.min | int }}\", \"max\": \"{{ value_json.max | int }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
+    "json_attributes_template": "{ \"min\": \"{{ value_json.min | int }}\", \"max\": \"{{ value_json.max | int }}\", \"updated\": \"{{ value_json.updatedAt }}\"}",
+    "filters": {
+      "devices": [
+        "ASE",
+        "ACL"
+      ]
+    }
   },
   {
     "uid": "4.98",
@@ -29,7 +41,13 @@
     "device_class": "temperature",
     "unit_of_measurement": "°C",
     "value_template": "{{ value_json.v | float / 10 }}",
-    "json_attributes_template": "{ \"min\": \"{{ value_json.min | float / 10 }}\", \"max\": \"{{ value_json.max | float / 10 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
+    "json_attributes_template": "{ \"min\": \"{{ value_json.min | float / 10 }}\", \"max\": \"{{ value_json.max | float / 10 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}",
+    "filters": {
+      "devices": [
+        "ASE",
+        "ACL"
+      ]
+    }
   },
   {
     "uid": "4.100",
@@ -38,7 +56,12 @@
     "state_class": "measurement",
     "unit_of_measurement": "mg/L",
     "value_template": "{{ value_json.v | int * 100 }}",
-    "json_attributes_template": "{ \"min\": \"{{ value_json.min | int * 100 }}\", \"max\": \"{{ value_json.max | int * 100 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}"
+    "json_attributes_template": "{ \"min\": \"{{ value_json.min | int * 100 }}\", \"max\": \"{{ value_json.max | int * 100 }}\", \"updated\": \"{{ value_json.updatedAt }}\"}",
+    "filters": {
+      "devices": [
+        "ASE"
+      ]
+    }
   },
   {
     "uid": "5.2",
@@ -78,7 +101,12 @@
     "unit_of_measurement": "%",
     "icon": "mdi:beaker",
     "value_template": "{{ value_json.v }}",
-    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "filters": {
+      "devices": [
+        "ASE"
+      ]
+    }
   },
   {
     "__class__": "Switch",
@@ -91,6 +119,11 @@
     "availability": {
       "topic": "#HASS_DISCOVERY_PREFIX/switch/#DEVICE_SERIAL/se_on_off",
       "value_template": "{{ 'online' if value_json.v == '19.17' else 'offline' }}"
+    },
+    "filters": {
+      "devices": [
+        "ASE"
+      ]
     }
   },
   {
@@ -100,7 +133,26 @@
     "icon": "mdi:water-opacity",
     "value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
-    "command_template": "{ \"t\":\"5.40\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }"
+    "command_template": "{ \"t\":\"5.40\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
+    "filters": {
+      "devices": [
+        "ASE"
+      ]
+    }
+  },
+  {
+    "__class__": "Switch",
+    "uid": "5.154",
+    "key": "mv_on_off",
+    "icon": "mdi:water-opacity",
+    "value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.154\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
+    "filters": {
+      "devices": [
+        "ACL"
+      ]
+    }
   },
   {
     "__class__": "Switch",
@@ -120,7 +172,26 @@
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.186\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
     "filters": {
-      "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      "options": {
+        "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      }
+    }
+  },
+  {
+    "__class__": "Button",
+    "uid": "5.235",
+    "key": "light_color_1",
+    "icon": "mdi:lightbulb-outline",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.235\", \"v\":\"19.54\" }",
+    "availability": {
+      "topic": "#HASS_DISCOVERY_PREFIX/switch/#DEVICE_SERIAL/light_on_off_1",
+      "value_template": "{{ 'online' if value_json.v | float == 19.311 else 'offline' }}"
+    },
+    "filters": {
+      "options": {
+        "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      }
     }
   },
   {
@@ -132,7 +203,26 @@
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.187\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
     "filters": {
-      "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      "options": {
+        "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      }
+    }
+  },
+  {
+    "__class__": "Button",
+    "uid": "5.236",
+    "key": "light_color_2",
+    "icon": "mdi:lightbulb-outline",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.236\", \"v\":\"19.54\" }",
+    "availability": {
+      "topic": "#HASS_DISCOVERY_PREFIX/switch/#DEVICE_SERIAL/light_on_off_2",
+      "value_template": "{{ 'online' if value_json.v | float == 19.311 else 'offline' }}"
+    },
+    "filters": {
+      "options": {
+        "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      }
     }
   },
   {
@@ -144,7 +234,26 @@
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.188\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
     "filters": {
-      "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      "options": {
+        "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      }
+    }
+  },
+  {
+    "__class__": "Button",
+    "uid": "5.237",
+    "key": "light_color_3",
+    "icon": "mdi:lightbulb-outline",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.237\", \"v\":\"19.54\" }",
+    "availability": {
+      "topic": "#HASS_DISCOVERY_PREFIX/switch/#DEVICE_SERIAL/light_on_off_3",
+      "value_template": "{{ 'online' if value_json.v | float == 19.311 else 'offline' }}"
+    },
+    "filters": {
+      "options": {
+        "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      }
     }
   },
   {
@@ -156,7 +265,26 @@
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.189\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
     "filters": {
-      "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      "options": {
+        "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      }
+    }
+  },
+  {
+    "__class__": "Button",
+    "uid": "5.238",
+    "key": "light_color_4",
+    "icon": "mdi:lightbulb-outline",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.238\", \"v\":\"19.54\" }",
+    "availability": {
+      "topic": "#HASS_DISCOVERY_PREFIX/switch/#DEVICE_SERIAL/light_on_off_4",
+      "value_template": "{{ 'online' if value_json.v | float == 19.311 else 'offline' }}"
+    },
+    "filters": {
+      "options": {
+        "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      }
     }
   },
   {
@@ -165,6 +293,7 @@
     "uid_temp": "4.123",
     "key": "heater_hvac",
     "icon": "mdi:heat-pump-outline",
+    "temp_step": 0.5,
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "temperature_state_template": "{{ value_json.v | float / 10 }}",
     "temperature_command_template": "{ \"t\":\"4.123\", \"v\":{{ (value * 10) | int }} }",
@@ -175,7 +304,9 @@
     "mode_command_template": "{ \"t\":\"5.185\", \"v\":\"{{ '19.101' if value=='auto' else '19.100' }}\" }",
     "mode_state_template": "{{ 'auto' if value_json.v | float == 19.101 else 'off' }}",
     "filters": {
-      "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      "options": {
+        "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      }
     }
   },
   {
@@ -194,7 +325,9 @@
     "value_template": "{{ 'On' if value_json.v | float == 19.313 else 'Auto' if value_json.v | float == 19.346 else 'Smart' if value_json.v | float == 19.330 else 'Hors-gel' if value_json.v | float == 19.338 else 'Off' }}",
     "command_template": "{ \"t\":\"5.256\", \"v\":\"{{ '19.313' if value=='On' else '19.338' if value=='Hors-gel' else '19.346' if value=='Auto' else '19.330' if value=='Smart' else '19.312' }}\" }",
     "filters": {
-      "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      "options": {
+        "#SMART_AND_EASY_CONTROL_MODULE": "True"
+      }
     }
   },
   {
@@ -207,12 +340,23 @@
   },
   {
     "__class__": "Switch",
+    "state": "TO BE DELETED IN THE NEXT RELEASE",
     "uid": "5.186",
     "key": "light_on_off",
     "icon": "mdi:lightbulb-outline",
     "value_template": "{{ 'on' if value_json.v | float == 19.311 else 'off' }}",
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.186\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
+    "disable": true
+  },
+  {
+    "__class__": "Button",
+    "state": "TO BE DELETED IN THE NEXT RELEASE",
+    "uid": "5.236",
+    "key": "next_light_program",
+    "icon": "mdi:lightbulb-outline",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.238\", \"v\":\"19.54\" }",
     "disable": true
   }
 ]

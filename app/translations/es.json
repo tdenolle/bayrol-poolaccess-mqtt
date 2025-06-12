@@ -47,9 +47,14 @@
   "sw_version": "Firmware",
   "filtration_on_off": "Filtración",
   "light_on_off_1": "Iluminación 1",
+  "light_color_1": "Color de Iluminación 1",
   "light_on_off_2": "Iluminación 2",
+  "light_color_2": "Color de Iluminación 2",
   "light_on_off_3": "Iluminación 3",
+  "light_color_3": "Color de Iluminación 3",
   "light_on_off_4": "Iluminación 4",
+  "light_color_4": "Color de Iluminación 4",
   "heater_hvac": "Calefacción",
-  "filtration_mode": "Modo de filtración"
+  "filtration_mode": "Modo de filtración",
+  "mv_on_off": "Dosaggio automatico del cloro"
 }

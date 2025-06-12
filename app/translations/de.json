@@ -46,9 +46,14 @@
   "ph_on_off": "Automatische pH-Dosierung",
   "filtration_on_off": "Filtration",
   "light_on_off_1": "Beleuchtung 1",
+  "light_color_1": "Beleuchtung Farbe 1",
   "light_on_off_2": "Beleuchtung 2",
+  "light_color_2": "Beleuchtung Farbe 2",
   "light_on_off_3": "Beleuchtung 3",
+  "light_color_3": "Beleuchtung Farbe 3",
   "light_on_off_4": "Beleuchtung 4",
+  "light_color_4": "Beleuchtung Farbe 4",
   "heater_hvac": "Heizung",
-  "filtration_mode": "Filtrationsmodus"
+  "filtration_mode": "Filtrationsmodus",
+  "mv_on_off": "Automatische Chlor-Dosierung"
 }
