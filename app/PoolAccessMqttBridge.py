@@ -21,7 +21,7 @@ import threading
 import time
 
 from docopt import docopt
-from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS
+from paho.mqtt.client import MQTTMessage, MQTT_ERR_SUCCESS, Client
 
 from app.Translation import LanguageManager
 from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
@@ -32,9 +32,6 @@ from app.mqtt.PoolAccessClient import PoolAccessClient, PoolAccessTopicMode
 DEFAULT_RECONNECT_DELAY = 30
 
 class PoolAccessMqttBridge:
-    _logger = None
-    _poolaccess_client = None
-    _broker_client = None
 
     def __init__(self,
                  mqtt_base_topic: str,
@@ -55,14 +52,14 @@ class PoolAccessMqttBridge:
         # Device Serial
         self._poolaccess_device_serial = poolaccess_device_serial
 
-    def on_poolaccess_message(self, client: PoolAccessClient, userdata, message: MQTTMessage):
+    def on_poolaccess_message(self, _client: Client, _userdata, message: MQTTMessage):
         if not message or message.payload is None or message.topic is None:
             return
         self._logger.debug("[poolaccess] message [%s][%s]", str(message.topic), str(message.payload))
-        for e in self._hass_entities:  # type: Entity
+        for e in self._hass_entities:  
             e.on_poolaccess_message(self._poolaccess_client, self._broker_client, message)
 
-    def on_poolaccess_connect(self, client: PoolAccessClient, userdata, flags, rc, properties):
+    def on_poolaccess_connect(self, _client: Client, userdata, flags, rc, _properties):
         if rc == 0:
             self._logger.info("[poolaccess] connect: [%s][%s][%s]", str(rc), str(userdata), str(flags))
             # Subscribing to PoolAccess Messages
@@ -77,7 +74,7 @@ class PoolAccessMqttBridge:
                 self._broker_client.publish(topic, payload=None, retain=True)
 
             # Looping on active entities
-            for e in list(filter(lambda entity: not entity.disable, self._hass_entities)) :  # type: Entity
+            for e in list(filter(lambda entity: not entity.disable, self._hass_entities)) : 
                 # Publish entity config to Broker
                 (topic, cfg) = e.build_config()
                 payload = str(json.dumps(cfg))
@@ -85,24 +82,23 @@ class PoolAccessMqttBridge:
                 self._broker_client.publish(topic, payload=payload, retain=True)
 
                 # Trigger on_poolaccess_connect for each entity
-                e.on_poolaccess_connect(client)
+                e.on_poolaccess_connect(self._poolaccess_client)
         else:
             self._logger.info("[poolaccess] connect: Connection failed [%s]", str(rc))
             exit(1)
 
-    def on_broker_connect(self, client: MqttClient, userdata, flags, rc, properties):
+    def on_broker_connect(self, _client: Client, userdata, flags, rc, _properties):
         if rc == 0:
             self._logger.info("[mqtt] connect: [%s][%s][%s]", str(rc), str(userdata), str(flags))
 
-
             # Looping on active entities
-            for e in list(filter(lambda entity: not entity.disable, self._hass_entities)):  # type: Entity
-                e.on_broker_connect(client)
+            for e in list(filter(lambda entity: not entity.disable, self._hass_entities)): 
+                e.on_broker_connect(self._broker_client)
         else:
             self._logger.info("[mqtt] connect: Connection failed [%s]", str(rc))
             exit(1)
 
-    def on_broker_message(self, client: MqttClient, userdata, message: MQTTMessage):
+    def on_broker_message(self, _client: Client, _userdata, message: MQTTMessage):
         self._logger.info("[mqtt] message [%s][%s]", str(message.topic), str(message.payload))
         # Stop if no message or payload
         if not (message
@@ -111,10 +107,10 @@ class PoolAccessMqttBridge:
             return
 
         # Trigger on_broker_message for each active entity
-        for e in list(filter(lambda e: not e.disable, self._hass_entities)):  # type: Entity
+        for e in list(filter(lambda e: not e.disable, self._hass_entities)):
             e.on_broker_message(self._poolaccess_client, self._broker_client, message)
 
-    def on_disconnect(self, client, userdata, flags, rc, properties):
+    def on_disconnect(self, client: Client, userdata, flags, rc, _properties):
         self._logger.warning("[mqtt] disconnect: %s  [%s][%s][%s]", type(client).__name__, str(rc), str(userdata),
                              str(flags))
 
@@ -162,7 +158,7 @@ class PoolAccessMqttBridge:
         self._broker_client.on_message = self.on_broker_message
         self._broker_client.on_disconnect = self.on_disconnect
         if self._broker_client.establish_connection() != 0:
-            self._logger.error("MQTT Brocker connection failure !")
+            self._logger.error("MQTT Broker connection failure !")
             connection_success = False
 
         # Multithreading startup if connection_success
@@ -172,7 +168,7 @@ class PoolAccessMqttBridge:
             t.start()
 
 
-def load_entities(filepath: str, config) -> []:
+def load_entities(filepath: str, config) -> list[Entity]:
     if "DEVICE_SERIAL" not in config:
         raise KeyError("DEVICE_SERIAL option can not be found in configuration.")
     device = BayrolPoolaccessDevice(config["DEVICE_SERIAL"])

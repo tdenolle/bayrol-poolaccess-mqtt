@@ -71,6 +71,7 @@
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\"}"
   },
   {
+    "__class__": "Sensor",
     "uid": "5.29",
     "key": "flow_in",
     "icon": "mdi:water-pump",
@@ -358,5 +359,34 @@
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.238\", \"v\":\"19.54\" }",
     "disable": true
+  },
+  {
+    "__class__": "Sensor",
+    "uid": "5.169",
+    "key": "mv_canister_status",
+    "icon": "mdi:flask-empty-outline",
+    "value_template": "{{ 'Not set' if value_json.v | float == 19.257 else 'Empty' if value_json.v | float == 19.258 else 'OK' if value_json.v | float == 19.259 else 'Error' }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "filters": {
+      "devices": [
+        "ACL"
+      ]
+    }
+  },
+  {
+    "__class__": "Sensor",
+    "uid": "5.143",
+    "key": "ph_plus_canister_status",
+    "icon": "mdi:flask-empty-plus-outline",
+    "value_template": "{{ 'Not set' if value_json.v | float == 19.257 else 'Empty' if value_json.v | float == 19.258 else 'OK' if value_json.v | float == 19.259 else 'Error' }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
+  },
+  {
+    "__class__": "Sensor",
+    "uid": "5.80",
+    "key": "ph_minus_canister_status",
+    "icon": "mdi:flask-empty-minus-outline",
+    "value_template": "{{ 'Not set' if value_json.v | float == 19.257 else 'Empty' if value_json.v | float == 19.258 else 'OK' if value_json.v | float == 19.259 else 'Error' }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
   }
 ]

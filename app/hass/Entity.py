@@ -3,14 +3,15 @@ import json
 import logging
 from datetime import datetime, timezone
 from json import JSONDecodeError
+from typing import Optional
 
 from paho.mqtt.client import MQTTMessage
 
 from app.Translation import LanguageManager
 from app.hass import load_attr, norm
 from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
-from app.mqtt import PoolAccessClient, MqttClient
-from app.mqtt.PoolAccessClient import PoolAccessTopicMode
+from app.mqtt.MqttClient import MqttClient
+from app.mqtt.PoolAccessClient import PoolAccessClient, PoolAccessTopicMode
 
 
 class Entity:
@@ -31,7 +32,7 @@ class Entity:
         self._attributes["state_topic"] = "%s/%s/%s/%s" % (discovery_prefix, self.type, device.id, self.key)
 
         if "name" not in data:
-            self._attributes["name"] = self._lang.get_string(self._key,self._key)
+            self._attributes["name"] = self._lang.get_string(self.key, self.key)
 
         if "availability" not in data:
             self._attributes["availability"] = [{
@@ -50,8 +51,12 @@ class Entity:
             if self._disable:
                 self._logger.info("Entity '%s' is disabled", self._key)
 
-        if "filters" in data and not self._disable:
-            filters = load_attr("filters", data, False)
+        if not self._disable:
+            filters = load_attr("filters", data, True)
+
+            if filters is None:
+                self._logger.debug("Filters are not set")
+                return
 
             # device filtering check
             devices = filters["devices"] if "devices" in filters else []
@@ -71,15 +76,19 @@ class Entity:
                         self._disable = True
 
     @property
-    def uid(self) -> str:
+    def uid(self) -> str | None:
         return self._uid
 
     @property
     def key(self) -> str:
+        if self._key is None:
+            raise ValueError("key is not set")
         return self._key
 
     @property
-    def disable(self) -> str:
+    def disable(self) -> bool:
+        if self._disable is None:
+            raise ValueError("disable is not set")
         return self._disable
 
     @property
@@ -97,7 +106,7 @@ class Entity:
     def get_attr(self, key: str):
         return self._attributes[key]
 
-    def get_payload(self, message: bytes = None):
+    def get_payload(self, message: Optional[bytes] = None):
         if message is None or len(message) == 0:
             return None
         json_object = json.loads(message)
@@ -115,7 +124,7 @@ class Entity:
         self._logger.info("Publishing to poolaccess: %s", topic)
         client.publish(topic)
 
-    def on_broker_connect(self, client: MqttClient):
+    def on_broker_connect(self, _client: MqttClient):
         pass
 
     def on_poolaccess_message(self, client: PoolAccessClient, broker: MqttClient, message: MQTTMessage):
@@ -128,5 +137,5 @@ class Entity:
             except JSONDecodeError as jde:
                 self._logger.error(jde)
 
-    def on_broker_message(self, client: PoolAccessClient, broker: MqttClient, message: MQTTMessage):
+    def on_broker_message(self, _client: PoolAccessClient, _broker: MqttClient, _message: MQTTMessage):
         pass

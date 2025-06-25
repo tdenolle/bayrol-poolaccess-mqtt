@@ -39,5 +39,7 @@ class Update(Entity):
                 data = response.json()
                 return data.get(device.model, {})
         except requests.RequestException as e:
-            logging.getLogger().debug(f"Error fetching update data: {e}")
+             self._logger.info(f"RequestException fetching update data: {e}")
+        except ValueError  as e:
+             self._logger.info(f"ValueError fetching update data: {e}")
         return {}
