@@ -56,5 +56,8 @@
   "light_color_4": "Color de Iluminación 4",
   "heater_hvac": "Calefacción",
   "filtration_mode": "Modo de filtración",
-  "mv_on_off": "Dosaggio automatico del cloro"
+  "mv_on_off": "Dosaggio automatico del cloro",
+  "mv_canister_status": "Bidón de Cloro",
+  "ph_plus_canister_status": "Bidón de pH+",
+  "ph_minus_canister_status": "Bidón de pH-"
 }

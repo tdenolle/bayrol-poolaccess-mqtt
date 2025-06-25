@@ -56,5 +56,8 @@
   "light_color_4": "Couleur Eclairage 4",
   "heater_hvac": "Chauffage",
   "filtration_mode": "Mode filtration",
-  "mv_on_off": "Dosage Automatique Chlore"
+  "mv_on_off": "Dosage Automatique Chlore",
+  "mv_canister_status": "Bidon Chloriliquide",
+  "ph_plus_canister_status": "Bidon pH-Plus",
+  "ph_minus_canister_status": "Bidon pH-Minus"
 }

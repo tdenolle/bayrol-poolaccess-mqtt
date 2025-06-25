@@ -55,5 +55,8 @@
   "light_color_4": "Beleuchtung Farbe 4",
   "heater_hvac": "Heizung",
   "filtration_mode": "Filtrationsmodus",
-  "mv_on_off": "Automatische Chlor-Dosierung"
+  "mv_on_off": "Automatische Chlor-Dosierung",
+  "mv_canister_status": "Chlor-Kanister",
+  "ph_plus_canister_status": "pH-Plus-Kanister",
+  "ph_minus_canister_status": "pH-Minus-Kanister"
 }

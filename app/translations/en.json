@@ -57,5 +57,8 @@
   "heater_hvac": "Heating",
   "filtration_mode": "Filtration mode",
   "mv_on_off": "Automatic Chlorine Dosing",
-  "next_light_program": "Light color change"
+  "next_light_program": "Light color change",
+  "mv_canister_status": "Chlorine Canister",
+  "ph_plus_canister_status": "pH+ Canister",
+  "ph_minus_canister_status": "pH- Canister"
 }
