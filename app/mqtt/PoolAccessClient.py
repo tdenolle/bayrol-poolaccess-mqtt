@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from enum import Enum
-
 from app.mqtt.MqttClient import MqttClient
 
 BAYROL_POOLACCESS_MQTT_TRANSPORT = "websockets"
@@ -18,10 +17,9 @@ class PoolAccessTopicMode(Enum):
 
 class PoolAccessClient(MqttClient):
     def __init__(self, token: str, serial: str):
-        super().__init__(BAYROL_POOLACCESS_MQTT_HOST, BAYROL_POOLACCESS_MQTT_PORT, token,
-                         BAYROL_POOLACCESS_MQTT_PASSWORD, transport=BAYROL_POOLACCESS_MQTT_TRANSPORT)
+        super().__init__(BAYROL_POOLACCESS_MQTT_HOST, BAYROL_POOLACCESS_MQTT_PORT, token, BAYROL_POOLACCESS_MQTT_PASSWORD, transport=BAYROL_POOLACCESS_MQTT_TRANSPORT)
         self._serial = serial
         self.tls_set()
 
-    def build_topic(self, mode: PoolAccessTopicMode, uid):
+    def build_topic(self, mode: PoolAccessTopicMode, uid: str) -> str   :
         return "%s/%s/%s/%s" % (BAYROL_POOLACCESS_BASE_TOPIC, self._serial, mode.value, uid)

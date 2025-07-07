@@ -30,3 +30,6 @@ build-backend = "setuptools.build_meta"
 exclude_lines = [
     "if __name__ == .__main__.:"
     ]
+
+[tool.pyright]
+typeCheckingMode = "off"

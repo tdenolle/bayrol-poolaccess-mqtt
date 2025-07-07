@@ -316,6 +316,44 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         main(self.config)
         mock_start.assert_called_once()
 
+    def test_on_poolaccess_connect_failure(self):
+        from app.PoolAccessMqttBridge import PoolAccessMqttBridge
+        from app.hass.Sensor import Sensor
+        from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
+        device = BayrolPoolaccessDevice("24ASE2-45678")
+        entity = Sensor({"uid": "1", "key": "test", "name": "Test"}, device, "bayrol")
+        mock_poolaccess_client = MagicMock()
+        mock_broker_client = MagicMock()
+        bridge = PoolAccessMqttBridge(
+            self.config["MQTT_BASE_TOPIC"],
+            self.config["DEVICE_SERIAL"],
+            [entity],
+            mock_poolaccess_client,
+            mock_broker_client
+        )
+        bridge._logger = MagicMock()
+        with self.assertRaises(SystemExit):
+            bridge.on_poolaccess_connect(None, None, None, 1, None)
+
+    def test_on_broker_connect_failure(self):
+        from app.PoolAccessMqttBridge import PoolAccessMqttBridge
+        from app.hass.Sensor import Sensor
+        from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
+        device = BayrolPoolaccessDevice("24ASE2-45678")
+        entity = Sensor({"uid": "1", "key": "test", "name": "Test"}, device, "bayrol")
+        mock_poolaccess_client = MagicMock()
+        mock_broker_client = MagicMock()
+        bridge = PoolAccessMqttBridge(
+            self.config["MQTT_BASE_TOPIC"],
+            self.config["DEVICE_SERIAL"],
+            [entity],
+            mock_poolaccess_client,
+            mock_broker_client
+        )
+        bridge._logger = MagicMock()
+        with self.assertRaises(SystemExit):
+            bridge.on_broker_connect(None, None, None, 1, None)
+
 
 if __name__ == '__main__':
     unittest.main()

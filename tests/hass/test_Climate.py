@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch, PropertyMock
 from app.hass.Climate import Climate
 from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from app.mqtt.PoolAccessClient import BAYROL_POOLACCESS_BASE_TOPIC
@@ -44,8 +44,7 @@ class TestClimate(unittest.TestCase):
         # Mocking the PoolAccessClient and BrokerClient
         poolaccess_client = MagicMock()
         # build_topic mocked to return a specific topic
-        poolaccess_client.build_topic.side_effect = lambda mode, uid: "%s/%s/%s/%s" % (
-        BAYROL_POOLACCESS_BASE_TOPIC, self.device.id, mode.value, uid)
+        poolaccess_client.build_topic.side_effect = lambda mode, uid: "%s/%s/%s/%s" % (BAYROL_POOLACCESS_BASE_TOPIC, self.device.id, mode, uid)
         broker_client = MagicMock()
         message = MagicMock()
 
@@ -79,6 +78,57 @@ class TestClimate(unittest.TestCase):
         self.climate.on_broker_message(poolaccess_client, broker_client, message)
         poolaccess_client.publish.assert_called()
         broker_client.publish.assert_called()
+
+    def test_uid_mode_and_uid_temp_value_error(self):
+        from app.hass.Climate import Climate
+        device = BayrolPoolaccessDevice("24ASE2-45678")
+        # Provide keys with None values to pass constructor but fail property
+        climate = Climate({"key": "pac", "name": "PAC", "uid_mode": None, "uid_temp": None}, device, "bayrol")
+        with self.assertRaises(ValueError):
+            _ = climate.uid_mode
+        with self.assertRaises(ValueError):
+            _ = climate.uid_temp
+
+    def test_on_broker_message_mode_command_topic(self):
+        from app.hass.Climate import Climate
+        device = BayrolPoolaccessDevice("24ASE2-45678")
+        data = {"uid_temp": "456", "uid_mode": "457", "key": "pac", "name": "PAC"}
+        climate = Climate(data, device, "bayrol")
+        poolaccess_client = MagicMock()
+        broker_client = MagicMock()
+        message = MagicMock()
+        message.topic = climate.mode_command_topic
+        message.payload = b'{"v": "auto"}'
+        climate.on_broker_message(poolaccess_client, broker_client, message)
+        poolaccess_client.publish.assert_called()
+        broker_client.publish.assert_called()
+
+    def test_on_broker_message_mode_command_topic_only(self):
+        poolaccess_client = MagicMock()
+        broker_client = MagicMock()
+        message = MagicMock()
+        # Only mode_command_topic matches
+        message.topic = self.climate.mode_command_topic
+        message.payload = b'{"v": "auto"}'
+        self.climate.on_broker_message(poolaccess_client, broker_client, message)
+        poolaccess_client.publish.assert_called()
+        broker_client.publish.assert_called()
+
+    def test_on_broker_message_both_topics(self):
+        poolaccess_client = MagicMock()
+        broker_client = MagicMock()
+        message = MagicMock()
+        # Patch the properties so both topics match
+        with patch.object(type(self.climate), 'temperature_command_topic', new_callable=PropertyMock) as temp_topic, \
+             patch.object(type(self.climate), 'mode_command_topic', new_callable=PropertyMock) as mode_topic:
+            temp_topic.return_value = "topic/set"
+            mode_topic.return_value = "topic/set"
+            message.topic = "topic/set"
+            message.payload = b'{"v": "auto"}'
+            self.climate.on_broker_message(poolaccess_client, broker_client, message)
+            poolaccess_client.publish.assert_called()
+            broker_client.publish.assert_called()
+
 
 if __name__ == '__main__':
     unittest.main()

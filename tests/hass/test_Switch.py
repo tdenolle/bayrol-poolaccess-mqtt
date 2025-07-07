@@ -1,7 +1,6 @@
 import unittest
-
+from typing import Any
 from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
-from app.hass.Sensor import Sensor
 from app.hass.Switch import Switch
 
 
@@ -24,7 +23,7 @@ class TestSwitch(unittest.TestCase):
         # Test building switch configuration
         switch = Switch(self.json_data,self.device)
         config_topic, config = switch.build_config()
-        expected_config = {
+        expected_config: dict[str, Any] = {
             'availability': [{'topic': 'homeassistant/sensor/22ASE-12343/status',
                               'value_template': "{{ 'online' if value_json.v | float > "
                                                 "17.0 else 'offline' }}"}],
