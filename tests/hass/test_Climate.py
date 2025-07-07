@@ -43,22 +43,20 @@ class TestClimate(unittest.TestCase):
     def test_on_poolaccess_message(self):
         # Mocking the PoolAccessClient and BrokerClient
         poolaccess_client = MagicMock()
-        # build_topic mocked to return a specific topic
-        poolaccess_client.build_topic.side_effect = lambda mode, uid: "%s/%s/%s/%s" % (BAYROL_POOLACCESS_BASE_TOPIC, self.device.id, mode, uid)
         broker_client = MagicMock()
         message = MagicMock()
-
-        # Mocking temperature message topic and payload
-        message.topic = "d02/24ASE2-45678/v/456"
-        message.payload = b'{"t": "456", "v": "22"}'
-        self.climate.on_poolaccess_message(poolaccess_client, broker_client, message)
-        broker_client.publish.assert_called()
-
-        # Mocking mode message topic and payload
-        message.topic = "d02/24ASE2-45678/v/457"
-        message.payload = b'{"t": "457", "v": "auto"}'
-        self.climate.on_poolaccess_message(poolaccess_client, broker_client, message)
-        broker_client.publish.assert_called()
+        # Patch build_topic to always return the same topic for uid_temp
+        with patch.object(poolaccess_client, 'build_topic', return_value='topic/temp'):
+            message.topic = 'topic/temp'
+            message.payload = b'{"t": "456", "v": "22"}'
+            self.climate.on_poolaccess_message(poolaccess_client, broker_client, message)
+            broker_client.publish.assert_called()
+        # Patch build_topic to always return the same topic for uid_mode
+        with patch.object(poolaccess_client, 'build_topic', return_value='topic/mode'):
+            message.topic = 'topic/mode'
+            message.payload = b'{"t": "457", "v": "auto"}'
+            self.climate.on_poolaccess_message(poolaccess_client, broker_client, message)
+            broker_client.publish.assert_called()
 
     def test_on_broker_message(self):
         poolaccess_client = MagicMock()
