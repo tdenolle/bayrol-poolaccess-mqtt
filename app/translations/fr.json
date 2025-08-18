@@ -57,7 +57,7 @@
   "heater_hvac": "Chauffage",
   "filtration_mode": "Mode filtration",
   "mv_on_off": "Dosage Automatique Chlore",
-  "mv_canister_status": "Bidon Chloriliquide",
+  "mv_canister_status": "Bidon Chlore",
   "ph_plus_canister_status": "Bidon pH-Plus",
   "ph_minus_canister_status": "Bidon pH-Minus"
 }
