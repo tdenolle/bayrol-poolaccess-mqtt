@@ -365,7 +365,7 @@
     "uid": "5.169",
     "key": "mv_canister_status",
     "icon": "mdi:flask-empty-outline",
-    "value_template": "{{ 'Not set' if value_json.v | float == 19.257 else 'Empty' if value_json.v | float == 19.258 else 'OK' if value_json.v | float == 19.259 else 'Error' }}",
+    "value_template": "{{ 'Not set' if value_json.v | float == 19.257 else 'OK' if value_json.v | float == 19.258 else 'Empty' if value_json.v | float == 19.259 else 'Error' }}",
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "filters": {
       "devices": [
