@@ -9,7 +9,7 @@ def norm(s: str):
 def load_attr(key: str, data: dict, optional=False):
     value = None
     if not optional:
-        assert key in data
+        assert key in data, f"\"{key}\" not found in data"
     if key in data:
         value = data[key]
         del data[key]

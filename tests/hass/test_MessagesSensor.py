@@ -1,6 +1,5 @@
 import re
 import unittest
-import json
 
 from app.Translation import LanguageManager
 from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice

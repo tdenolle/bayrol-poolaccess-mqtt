@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import logging
 from random import random
+from typing import Literal
 
 import paho.mqtt.client as mqtt
 from paho.mqtt.enums import CallbackAPIVersion, MQTTErrorCode
@@ -11,7 +12,7 @@ DEFAULT_RECONNECT_DELAY = 60
 
 
 class MqttClient(mqtt.Client):
-    def __init__(self, host: str, port: int, user: str, password: str, transport: str = "tcp"):
+    def __init__(self, host: str, port: int, user: str | None, password: str | None, transport: Literal["tcp", "websockets", "unix"] = "tcp"):
         self._cid = '_'.join(['user', str(random().hex())[4:12]])
         self._transport = transport
         super().__init__(CallbackAPIVersion.VERSION2,

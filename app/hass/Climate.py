@@ -5,8 +5,8 @@ from paho.mqtt.client import MQTTMessage
 
 from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from app.hass.Entity import Entity, load_attr
-from app.mqtt import PoolAccessClient, MqttClient
-from app.mqtt.PoolAccessClient import PoolAccessTopicMode
+from app.mqtt.MqttClient import MqttClient
+from app.mqtt.PoolAccessClient import PoolAccessClient, PoolAccessTopicMode
 
 
 class Climate(Entity):
@@ -34,10 +34,14 @@ class Climate(Entity):
 
     @property
     def uid_mode(self) -> str:
+        if self._uid_mode is None:
+            raise ValueError("uid_mode is not set")
         return self._uid_mode
 
     @property
     def uid_temp(self) -> str:
+        if self._uid_temp is None:
+            raise ValueError("uid_temp is not set")
         return self._uid_temp
 
     @property
