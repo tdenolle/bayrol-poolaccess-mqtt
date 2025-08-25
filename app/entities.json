@@ -96,6 +96,20 @@
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
   },
   {
+    "uid": "4.90",
+    "key": "mv_dos_rate",
+    "state_class": "measurement",
+    "unit_of_measurement": "%",
+    "icon": "mdi:beaker",
+    "value_template": "{{ value_json.v }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "filters": {
+      "devices": [
+        "ACL"
+      ]
+    }
+  },
+  {
     "uid": "4.91",
     "key": "se_production_rate",
     "state_class": "measurement",

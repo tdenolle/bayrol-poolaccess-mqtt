@@ -58,5 +58,6 @@
   "mv_on_off": "Automatische Chlor-Dosierung",
   "mv_canister_status": "Chlor-Kanister",
   "ph_plus_canister_status": "pH-Plus-Kanister",
-  "ph_minus_canister_status": "pH-Minus-Kanister"
+  "ph_minus_canister_status": "pH-Minus-Kanister",
+  "mv_dos_rate": "Chlor-Dosierung"
 }

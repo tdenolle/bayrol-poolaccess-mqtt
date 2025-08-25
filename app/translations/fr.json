@@ -59,5 +59,6 @@
   "mv_on_off": "Dosage Automatique Chlore",
   "mv_canister_status": "Bidon Chlore",
   "ph_plus_canister_status": "Bidon pH-Plus",
-  "ph_minus_canister_status": "Bidon pH-Minus"
+  "ph_minus_canister_status": "Bidon pH-Minus",
+  "mv_dos_rate": "Dosage Chlore"
 }
