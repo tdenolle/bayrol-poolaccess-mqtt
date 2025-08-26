@@ -1,5 +1,5 @@
 [project]
-version = "1.4.3"
+version = "1.4.4"
 name = "bayrol-poolaccess-mqtt"
 requires-python = ">= 3.12"
 authors = [
@@ -11,7 +11,9 @@ readme = "README.md"
 license = {file = "LICENSE"}
 dependencies = [
     "paho-mqtt>=2.1.0",
-    "docopt>=0.6.0,<1.0.0"
+    "docopt>=0.6.2",
+    "requests>=2.25.1",
+    "toml>=0.10.2"
 ]
 classifiers=[
     'Development Status :: 5 - Production/Stable',
