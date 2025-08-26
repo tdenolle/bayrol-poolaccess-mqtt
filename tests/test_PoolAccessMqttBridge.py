@@ -278,6 +278,17 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
             load_entities("/tmp/fake.json", {"XXX": "YYY"})
             self.assertEqual(ke.msg, "DEVICE_SERIAL option can not be found in configuration.")
 
+    def test_load_entities_acl(self):
+        entities = load_entities(os.path.join(os.path.dirname(__file__), "../app/entities.json"),
+                                 {"DEVICE_SERIAL": "24ACL2-00000"})
+        self.assertEqual(len(list(filter(lambda entity: not entity.disable, entities))), 15)
+
+
+    def test_load_entities_ase(self):
+        entities = load_entities(os.path.join(os.path.dirname(__file__), "../app/entities.json"),
+                                 {"DEVICE_SERIAL": "24ASE2-00000"})
+        self.assertEqual(len(list(filter(lambda entity: not entity.disable, entities))), 16)
+
     def test_load_entities(self):
         # Mock entities.json file
         entities_json_path = os.path.join(os.path.dirname(__file__), "entities.json")
