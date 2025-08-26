@@ -40,7 +40,7 @@
   "language": "Langue",
   "flow_in": "Filtration",
   "messages": "Messages",
-  "ph_dos_rate": "pH Dosage",
+  "ph_dos_rate": "Dosage pH",
   "se_production_rate": "Chlore Production",
   "se_on_off": "Electrolyse de sel",
   "ph_on_off": "Dosage Automatique pH",
