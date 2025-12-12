@@ -71,7 +71,7 @@ jobs:
           python -Im coverage report --fail-under=${{ vars.COVERAGE_THRESHOLD }}
 
       - name: Upload HTML report if check failed
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: html-report
           path: htmlcov
