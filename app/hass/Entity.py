@@ -28,7 +28,7 @@ class Entity:
 
         # config variables
         self._attributes["unique_id"] = ("%s_%s_%s" % (norm(device.manufacturer), norm(self._device.id), self.key))
-        self._attributes["object_id"] = self._attributes["unique_id"]
+        self._attributes["default_entity_id"] = "%s.%s" % (self.type, self._attributes["unique_id"])
         self._attributes["state_topic"] = "%s/%s/%s/%s" % (discovery_prefix, self.type, device.id, self.key)
 
         if "name" not in data:

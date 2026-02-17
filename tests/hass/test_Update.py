@@ -31,7 +31,7 @@ class TestUpdate(unittest.TestCase):
         config_topic, config_payload = update_entity.build_config()
         self.assertEqual(config_payload["name"], "Version")
         self.assertEqual(config_payload["unique_id"], "bayrol_22ase212343_sw_version")
-        self.assertEqual(config_payload["object_id"], "bayrol_22ase212343_sw_version")
+        self.assertEqual(config_payload["default_entity_id"], "update.bayrol_22ase212343_sw_version")
         self.assertEqual(config_payload["state_topic"], "homeassistant/update/22ASE2-12343/sw_version")
         self.assertIn("availability", config_payload)
         self.assertIn("value_template", config_payload)
