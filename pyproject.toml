@@ -1,5 +1,5 @@
 [project]
-version = "1.4.4"
+version = "1.4.5"
 name = "bayrol-poolaccess-mqtt"
 requires-python = ">= 3.12"
 authors = [
