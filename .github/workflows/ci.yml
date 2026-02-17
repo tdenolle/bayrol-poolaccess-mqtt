@@ -1,0 +1,217 @@
+name: CI/CD
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["develop", "master"]
+  pull_request:
+    branches: ["develop", "master"]
+
+permissions:
+  contents: write
+
+jobs:
+
+  # ── Build, test & lint ──────────────────────────────────────────────
+  build:
+    name: Build, test and lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python ${{ vars.PYTHON_VERSION }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ vars.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 ./app --count --config=setup.cfg --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 ./app --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Test with unittest
+        run: |
+          python -m unittest discover -s ./tests -p 'test_*.py'
+
+  # ── Coverage ────────────────────────────────────────────────────────
+  coverage:
+    name: Check coverage
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ vars.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pytest-cov coverage[toml]
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run coverage
+        run: |
+          pytest --cov=app
+
+      - name: Combine coverage and fail it it's under ${{ vars.COVERAGE_THRESHOLD }}%
+        run: |
+          python -m coverage html --skip-covered --skip-empty
+
+          # Report and write to summary.
+          python -m coverage report | sed 's/^/    /' >> $GITHUB_STEP_SUMMARY
+
+          # Report again and fail if under threshold.
+          python -Im coverage report --fail-under=${{ vars.COVERAGE_THRESHOLD }}
+
+      - name: Upload HTML report if check failed
+        uses: actions/upload-artifact@v6
+        with:
+          name: html-report
+          path: htmlcov
+        if: ${{ failure() }}
+
+  # ── Generate tag (develop → dev tag, master → release tag) ───────────
+  tag:
+    name: Generate Tag
+    needs:
+      - build
+      - coverage
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master')
+    outputs:
+      tag_name: ${{ steps.tag_name.outputs.value }}
+      is_release: ${{ steps.tag_name.outputs.is_release }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v6
+
+      - name: Read version from toml
+        uses: SebRollen/toml-action@v1.2.0
+        id: toml_version
+        with:
+          file: '${{ github.workspace }}/pyproject.toml'
+          field: 'project.version'
+
+      - name: Generate tag name
+        id: tag_name
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/master" ]; then
+            echo "value=${{ steps.toml_version.outputs.value }}" >> "$GITHUB_OUTPUT"
+            echo "is_release=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=${{ steps.toml_version.outputs.value }}-dev.$(date +'%Y%m%d%H%M%S')" >> "$GITHUB_OUTPUT"
+            echo "is_release=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create tag
+        uses: actions/github-script@v8
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ steps.tag_name.outputs.value }}',
+              sha: context.sha
+            })
+
+  # ── Create draft GitHub release (master only) ──────────────────────
+  release:
+    name: Create draft GitHub release
+    needs: tag
+    if: needs.tag.outputs.is_release == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create draft release with auto-generated notes
+        uses: actions/github-script@v8
+        with:
+          script: |
+            await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: '${{ needs.tag.outputs.tag_name }}',
+              name: '${{ needs.tag.outputs.tag_name }}',
+              draft: true,
+              generate_release_notes: true
+            })
+
+  # ── Push docker image (develop → :dev, master → :latest) ────────────
+  push_to_registry:
+    name: Push docker image to hub
+    needs: [tag]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine docker tag and image tags
+        id: meta
+        run: |
+          if [ "${{ needs.tag.outputs.is_release }}" == "true" ]; then
+            echo "docker_tag=${{ needs.tag.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
+            echo "image_tags=${{ vars.DOCKER_HUB_REPOSITORY }}:latest,${{ vars.DOCKER_HUB_REPOSITORY }}:${{ needs.tag.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "docker_tag=${{ needs.tag.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
+            echo "image_tags=${{ vars.DOCKER_HUB_REPOSITORY }}:dev,${{ vars.DOCKER_HUB_REPOSITORY }}:${{ needs.tag.outputs.tag_name }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check out the repo
+        uses: actions/checkout@v6
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to docker registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push docker image to registry
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          platforms: ${{ vars.DOCKER_PLATFORMS }}
+          build-args: |
+            BUILD_FROM=python:${{ vars.PYTHON_VERSION }}-alpine
+            DOCKER_TAG=${{ steps.meta.outputs.docker_tag }}
+          tags: ${{ steps.meta.outputs.image_tags }}
+
+  # ── Update Hassio addon ─────────────────────────────────────────────
+  update_hassio_addon:
+    name: Update Hassio Addons Project
+    needs:
+      - tag
+      - push_to_registry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine addon slug and mode
+        id: addon
+        run: |
+          if [ "${{ needs.tag.outputs.is_release }}" == "true" ]; then
+            echo "slug=bayrol-poolaccess-mqtt" >> "$GITHUB_OUTPUT"
+            echo "mode=pr" >> "$GITHUB_OUTPUT"
+          else
+            echo "slug=bayrol-poolaccess-mqtt-dev" >> "$GITHUB_OUTPUT"
+            echo "mode=auto" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Trigger hassio-addons version update Workflow
+        run: |
+          curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.HASSIO_ADDONS_PAT }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/tdenolle/hassio-addons/actions/workflows/update-addon-version.yml/dispatches \
+           -d '{"ref":"master","inputs":{ "slug": "${{ steps.addon.outputs.slug }}", "version": "${{ needs.tag.outputs.tag_name }}", "mode": "${{ steps.addon.outputs.mode }}" }}'
