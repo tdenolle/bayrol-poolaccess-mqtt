@@ -212,7 +212,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
             unittest.mock.call('bayrol/sensor/24ASE2-45678/temperature/config', payload=json.dumps({
                 "name": "Température",
                 "unique_id": "bayrol_24ase245678_temperature",
-                "object_id": "bayrol_24ase245678_temperature",
+                "default_entity_id": "sensor.bayrol_24ase245678_temperature",
                 "state_topic": "bayrol/sensor/24ASE2-45678/temperature",
                 "availability": [{"topic": "bayrol/sensor/24ASE2-45678/status",
                                   "value_template": "{{ \'online\' if value_json.v | float > 17.0 else \'offline\' }}"}],
@@ -222,7 +222,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
             unittest.mock.call('bayrol/climate/24ASE2-45678/pac/config', payload=json.dumps({
                 "name": "PAC",
                 "unique_id": "bayrol_24ase245678_pac",
-                "object_id": "bayrol_24ase245678_pac",
+                "default_entity_id": "climate.bayrol_24ase245678_pac",
                 "state_topic": "bayrol/climate/24ASE2-45678/pac",
                 "availability": [{"topic": "bayrol/sensor/24ASE2-45678/status",
                                   "value_template": "{{ \'online\' if value_json.v | float > 17.0 else \'offline\' }}"}],
@@ -236,7 +236,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
             unittest.mock.call('bayrol/switch/24ASE2-45678/ph_switch/config', payload=json.dumps({
                 "name": "Activate pH",
                 "unique_id": "bayrol_24ase245678_ph_switch",
-                "object_id": "bayrol_24ase245678_ph_switch",
+                "default_entity_id": "switch.bayrol_24ase245678_ph_switch",
                 "state_topic": "bayrol/switch/24ASE2-45678/ph_switch",
                 "availability": [{
                     "topic": "bayrol/sensor/24ASE2-45678/status",
