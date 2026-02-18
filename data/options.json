@@ -7,5 +7,6 @@
   "MQTT_HOST": "localhost",
   "MQTT_PORT" : 1883,
   "MQTT_USER": "anonymous",
-  "MQTT_PASSWORD": ""
+  "MQTT_PASSWORD": "",
+  "ANONYMOUS_ERROR_SHARING": false
 }
