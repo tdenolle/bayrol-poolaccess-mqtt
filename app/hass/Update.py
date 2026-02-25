@@ -10,7 +10,7 @@ from app.hass.Entity import Entity
 
 class Update(Entity):
     ENTITY_PLATFORM = "update"
-    BAYROL_UPDATE_URL = "https://www.denolle.fr/bayrol/update.json"
+    BAYROL_UPDATE_ENDPOINT = "https://api.denolle.fr/bayrol/updates/{id}"
     BAYROL_SUPPORT_URL = "https://www.bayrol.fr/bayrol-technik-support"
 
     def __init__(self, data: dict, device: BayrolPoolaccessDevice, discovery_prefix: str = "homeassistant"):
@@ -31,15 +31,14 @@ class Update(Entity):
 
     def _get_update_data(self, device: BayrolPoolaccessDevice):
         try:
-            response = requests.get(self.BAYROL_UPDATE_URL,
-                                    params={"id": device.id, "version": os.environ.get('APP_VERSION', "unknown")},
+            response = requests.get(self.BAYROL_UPDATE_ENDPOINT.format(id=device.id),
+                                    headers={"User-Agent": f"BayrolPoolaccess/{os.environ.get('APP_VERSION', '0.0.0')}"},
                                     timeout=5,
                                     allow_redirects=False)
             if response.status_code == 200:
-                data = response.json()
-                return data.get(device.model, {})
+                return response.json()
         except requests.RequestException as e:
-             self._logger.info(f"RequestException fetching update data: {e}")
+             self._logger.error(f"RequestException fetching update data: {e}")
         except ValueError  as e:
-             self._logger.info(f"ValueError fetching update data: {e}")
+             self._logger.error(f"ValueError fetching update data: {e}")
         return {}
