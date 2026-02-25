@@ -20,6 +20,10 @@ from app.mqtt.PoolAccessClient import PoolAccessClient, BAYROL_POOLACCESS_BASE_T
 class TestPoolAccessMqttBridge(unittest.TestCase):
 
     def setUp(self):
+
+        # Mock environment variable for update endpoint
+        os.environ['BAYROL_UPDATE_ENDPOINT'] = 'http://localhost/bayrol/updates/{id}'
+
         # Mock configuration
         self.config = {
             "MQTT_HOST": "mqtt.example.com",
