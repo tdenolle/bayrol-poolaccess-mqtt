@@ -22,7 +22,7 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
     def setUp(self):
 
         # Mock environment variable for update endpoint
-        os.environ['BAYROL_UPDATE_ENDPOINT'] = 'http://localhost/bayrol/updates/{id}'
+        os.environ['UPDATE_VERSION_ENDPOINT'] = 'http://localhost:5000/updates/{id}'
 
         # Mock configuration
         self.config = {

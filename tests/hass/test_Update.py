@@ -94,7 +94,7 @@ class TestUpdate(unittest.TestCase):
         data = update_entity._get_update_data(self.device)
         self.assertEqual(data, {})
 
-    @patch.dict(os.environ, {"APP_VERSION": "9.9.9"})
+    @patch.dict(os.environ, {"APP_VERSION": "9.9.9", "UPDATE_VERSION_ENDPOINT": "http://test/endpoint"})
     def test_get_update_data_with_env_version(self):
         mock_response = MagicMock()
         mock_response.status_code = 200
@@ -106,7 +106,7 @@ class TestUpdate(unittest.TestCase):
         self.mock_get.return_value = mock_response
         Update(self.data, self.device)
         self.mock_get.assert_called_with(
-            Update.BAYROL_UPDATE_ENDPOINT.format(id=self.device.id),
+            "http://test/endpoint",
             headers={"User-Agent": "BayrolPoolaccess/9.9.9"},
             timeout=5,
             allow_redirects=False

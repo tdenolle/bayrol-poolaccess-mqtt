@@ -10,9 +10,8 @@ from app.hass.Entity import Entity
 
 class Update(Entity):
     ENTITY_PLATFORM = "update"
-    BAYROL_UPDATE_ENDPOINT = "https://api.denolle.fr/bayrol/updates/{id}"
     BAYROL_SUPPORT_URL = "https://www.bayrol.fr/bayrol-technik-support"
-
+    
     def __init__(self, data: dict, device: BayrolPoolaccessDevice, discovery_prefix: str = "homeassistant"):
         super().__init__(data, device, discovery_prefix)
         self._attributes["platform"] = self.ENTITY_PLATFORM
@@ -31,7 +30,8 @@ class Update(Entity):
 
     def _get_update_data(self, device: BayrolPoolaccessDevice):
         try:
-            response = requests.get(self.BAYROL_UPDATE_ENDPOINT.format(id=device.id),
+            update_version_endpoint = os.environ.get('UPDATE_VERSION_ENDPOINT', "https://api.denolle.fr/bayrol/updates/{id}")
+            response = requests.get(update_version_endpoint,
                                     headers={"User-Agent": f"BayrolPoolaccess/{os.environ.get('APP_VERSION', '0.0.0')}"},
                                     timeout=5,
                                     allow_redirects=False)
