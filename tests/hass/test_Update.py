@@ -54,6 +54,7 @@ class TestUpdate(unittest.TestCase):
         update_entity = Update(self.data, self.device)
         self.assertEqual(update_entity.type, "update")
 
+    @patch.dict(os.environ, {"UPDATE_VERSION_ENDPOINT": "http://mocked/endpoint"})
     def test_get_update_data_success(self):
         mock_response = MagicMock()
         mock_response.status_code = 200

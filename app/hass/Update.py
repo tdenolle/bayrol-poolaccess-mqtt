@@ -30,7 +30,10 @@ class Update(Entity):
 
     def _get_update_data(self, device: BayrolPoolaccessDevice):
         try:
-            update_version_endpoint = os.environ.get('UPDATE_VERSION_ENDPOINT', "https://api.denolle.fr/bayrol/updates/{id}")
+            update_version_endpoint = os.environ.get('UPDATE_VERSION_ENDPOINT')
+            if not update_version_endpoint:
+                self._logger.warning("UPDATE_VERSION_ENDPOINT environment variable is not set.")
+                return {}
             response = requests.get(update_version_endpoint,
                                     headers={"User-Agent": f"BayrolPoolaccess/{os.environ.get('APP_VERSION', '0.0.0')}"},
                                     timeout=5,
