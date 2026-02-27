@@ -1,0 +1,24 @@
+name: Sync pyproject.toml with GitHub vars
+description: Patches pyproject.toml with repository variables (Python version, author info)
+
+inputs:
+  python-version:
+    description: Python version (e.g. 3.13)
+    required: true
+  author-name:
+    description: Author name
+    required: true
+  author-email:
+    description: Author email
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Patch pyproject.toml
+      shell: bash
+      run: |
+        sed -i "s/requires-python = .*/requires-python = \">= ${{ inputs.python-version }}\"/" pyproject.toml
+        sed -i "s/Programming Language :: Python :: .*/Programming Language :: Python :: ${{ inputs.python-version }}',/" pyproject.toml
+        sed -i 's/name="[^"]*"/name="${{ inputs.author-name }}"/' pyproject.toml
+        sed -i 's/email="[^"]*"/email="${{ inputs.author-email }}"/' pyproject.toml

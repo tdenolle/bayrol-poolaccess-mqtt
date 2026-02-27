@@ -31,6 +31,7 @@ from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
 from app.hass.Entity import Entity
 from app.mqtt.MqttClient import MqttClient
 from app.mqtt.PoolAccessClient import PoolAccessClient, PoolAccessTopicMode
+from app.utils.HttpErrorHandler import HttpErrorHandler
 
 DEFAULT_RECONNECT_DELAY = 30
 
@@ -243,5 +244,19 @@ if __name__ == "__main__":
         format='%(asctime)s :: %(levelname)s :: %(message)s',
     )
     logging.getLogger().setLevel('DEBUG' if args['--debug'] else c["LOG_LEVEL"])
+
+    # Setup remote error reporting (opt-in via config + env var)
+    error_reporting_url = os.environ.get("ERROR_REPORTING_URL", "")
+    anonymous_error_sharing = c.get("ANONYMOUS_ERROR_SHARING", False)
+    if anonymous_error_sharing and error_reporting_url:
+        device_serial = c.get("DEVICE_SERIAL", "")
+        app_version = os.environ.get("APP_VERSION", "unknown")
+        http_error_handler = HttpErrorHandler(
+            url=error_reporting_url,
+            device_serial=device_serial,
+            app_version=app_version,
+        )
+        logging.getLogger().addHandler(http_error_handler)
+        logging.getLogger().info("Remote error reporting enabled")
 
     main(c)
