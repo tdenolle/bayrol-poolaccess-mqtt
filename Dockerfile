@@ -6,6 +6,9 @@ ENV APP_VERSION=$DOCKER_TAG
 # Error reporting URL (baked into the image, invisible to users)
 ARG ERROR_REPORTING_URL
 ENV ERROR_REPORTING_URL=$ERROR_REPORTING_URL
+# Update version endpoint (baked into the image, invisible to users)
+ARG UPDATE_VERSION_ENDPOINT
+ENV UPDATE_VERSION_ENDPOINT=$UPDATE_VERSION_ENDPOINT
 # Copy toml file
 COPY pyproject.toml /
 # Copy requirements.txt file

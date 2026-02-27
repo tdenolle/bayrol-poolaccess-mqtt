@@ -200,6 +200,7 @@ jobs:
             BUILD_FROM=python:${{ vars.PYTHON_VERSION }}-alpine
             DOCKER_TAG=${{ steps.meta.outputs.docker_tag }}
             ERROR_REPORTING_URL=${{ vars.ERROR_REPORTING_URL }}
+            UPDATE_VERSION_ENDPOINT=${{ vars.UPDATE_VERSION_ENDPOINT }}
           tags: ${{ steps.meta.outputs.image_tags }}
 
   # ── Update Hassio addon ─────────────────────────────────────────────
