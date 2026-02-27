@@ -24,6 +24,13 @@ jobs:
         with:
           python-version: ${{ vars.PYTHON_VERSION }}
 
+      - name: Sync pyproject.toml with GitHub vars
+        uses: ./.github/actions/sync-pyproject
+        with:
+          python-version: ${{ vars.PYTHON_VERSION }}
+          author-name: ${{ vars.AUTHOR_NAME }}
+          author-email: ${{ vars.AUTHOR_EMAIL }}
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -55,6 +62,13 @@ jobs:
         with:
           python-version: ${{ vars.PYTHON_VERSION }}
 
+      - name: Sync pyproject.toml with GitHub vars
+        uses: ./.github/actions/sync-pyproject
+        with:
+          python-version: ${{ vars.PYTHON_VERSION }}
+          author-name: ${{ vars.AUTHOR_NAME }}
+          author-email: ${{ vars.AUTHOR_EMAIL }}
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pytest-cov coverage[toml]
@@ -75,7 +89,7 @@ jobs:
           python -Im coverage report --fail-under=${{ vars.COVERAGE_THRESHOLD }}
 
       - name: Upload HTML report if check failed
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: html-report
           path: htmlcov
@@ -185,6 +199,7 @@ jobs:
           build-args: |
             BUILD_FROM=python:${{ vars.PYTHON_VERSION }}-alpine
             DOCKER_TAG=${{ steps.meta.outputs.docker_tag }}
+            ERROR_REPORTING_URL=${{ vars.ERROR_REPORTING_URL }}
           tags: ${{ steps.meta.outputs.image_tags }}
 
   # ── Update Hassio addon ─────────────────────────────────────────────
