@@ -246,7 +246,7 @@ if __name__ == "__main__":
     logging.getLogger().setLevel('DEBUG' if args['--debug'] else c["LOG_LEVEL"])
 
     # Setup remote error reporting (opt-in via config + env var)
-    error_reporting_url = os.environ.get("ERROR_REPORTING_URL", "")
+    error_reporting_url = os.environ.get("ERROR_REPORTING_ENDPOINT", "")
     anonymous_error_sharing = c.get("ANONYMOUS_ERROR_SHARING", False)
     if anonymous_error_sharing and error_reporting_url:
         device_serial = c.get("DEVICE_SERIAL", "")

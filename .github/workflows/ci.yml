@@ -199,7 +199,7 @@ jobs:
           build-args: |
             BUILD_FROM=python:${{ vars.PYTHON_VERSION }}-alpine
             DOCKER_TAG=${{ steps.meta.outputs.docker_tag }}
-            ERROR_REPORTING_URL=${{ vars.ERROR_REPORTING_URL }}
+            ERROR_REPORTING_ENDPOINT=${{ vars.ERROR_REPORTING_ENDPOINT }}
             UPDATE_VERSION_ENDPOINT=${{ vars.UPDATE_VERSION_ENDPOINT }}
           tags: ${{ steps.meta.outputs.image_tags }}
 
