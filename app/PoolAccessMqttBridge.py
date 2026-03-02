@@ -243,20 +243,23 @@ if __name__ == "__main__":
         level=logging.DEBUG,
         format='%(asctime)s :: %(levelname)s :: %(message)s',
     )
-    logging.getLogger().setLevel('DEBUG' if args['--debug'] else c["LOG_LEVEL"])
+    _logger = logging.getLogger()
+    _logger.setLevel('DEBUG' if args['--debug'] else c["LOG_LEVEL"])
 
     # Setup remote error reporting (opt-in via config + env var)
-    error_reporting_url = os.environ.get("ERROR_REPORTING_ENDPOINT", "")
+    error_reporting_url = os.environ.get("ERROR_REPORTING_ENDPOINT", None)
     anonymous_error_sharing = c.get("ANONYMOUS_ERROR_SHARING", False)
+    _logger.debug("Error reporting URL: %s", error_reporting_url)
+    _logger.debug("Anonymous error sharing: %s", anonymous_error_sharing)
     if anonymous_error_sharing and error_reporting_url:
-        device_serial = c.get("DEVICE_SERIAL", "")
+        device_serial = c.get("DEVICE_SERIAL", "unknown device")
         app_version = os.environ.get("APP_VERSION", "unknown")
         http_error_handler = HttpErrorHandler(
             url=error_reporting_url,
             device_serial=device_serial,
             app_version=app_version,
         )
-        logging.getLogger().addHandler(http_error_handler)
-        logging.getLogger().info("Remote error reporting enabled")
+        _logger.addHandler(http_error_handler)
+        _logger.info("Remote error reporting enabled")
 
     main(c)
