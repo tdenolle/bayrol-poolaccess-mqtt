@@ -34,7 +34,7 @@ class Update(Entity):
             if not update_version_endpoint:
                 self._logger.warning("[Update] UPDATE_VERSION_ENDPOINT environment variable is not set.")
                 return {}
-            response = requests.get(update_version_endpoint,
+            response = requests.get(update_version_endpoint.format(id=device.id),
                                     headers={"User-Agent": f"BayrolPoolaccess/{os.environ.get('APP_VERSION', '0.0.0')}"},
                                     timeout=5,
                                     allow_redirects=False)
