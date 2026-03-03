@@ -42,12 +42,18 @@ class HttpErrorHandler(logging.Handler):
         """Emit a log record by sending it to the remote API in a background thread."""
         # Anti-recursion guard: skip if we're already inside a send
         if getattr(self._sending, 'active', False):
+            logging.getLogger(__name__).debug("HttpErrorHandler: skipping record (anti-recursion guard active)")
             return
 
+        logging.getLogger(__name__).debug(
+            "HttpErrorHandler: received record level=%s logger=%s msg=%s",
+            record.levelname, record.name, record.getMessage()
+        )
         try:
             payload = self._build_payload(record)
             thread = threading.Thread(target=self._send, args=(payload,), daemon=True)
             thread.start()
+            logging.getLogger(__name__).debug("HttpErrorHandler: background thread started for record level=%s", record.levelname)
         except Exception:
             self.handleError(record)
 
@@ -73,8 +79,12 @@ class HttpErrorHandler(logging.Handler):
     def _send(self, payload: dict):
         """Send the payload to the remote API. Runs in a background thread."""
         self._sending.active = True
+        logging.getLogger(__name__).debug("HttpErrorHandler: sending payload to %s", self._url)
         try:
             response = requests.post(self._url, json=payload, timeout=self._timeout)
+            logging.getLogger(__name__).debug(
+                "HttpErrorHandler: response status=%s", response.status_code
+            )
             if response.status_code >= 400:
                 logging.getLogger(__name__).warning(
                     "Error reporting failed with status %s", response.status_code
