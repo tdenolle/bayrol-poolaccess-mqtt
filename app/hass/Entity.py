@@ -128,6 +128,7 @@ class Entity:
         pass
 
     def on_poolaccess_message(self, client: PoolAccessClient, broker: MqttClient, message: MQTTMessage):
+        # Only process messages for this entity
         if message.topic == client.build_topic(PoolAccessTopicMode.VALUE, self._uid):
             self._logger.info("Reading %s %s", message.topic, str(message.payload))
             try:
