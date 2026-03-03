@@ -15,7 +15,7 @@ import requests
 
 class HttpErrorHandler(logging.Handler):
     """
-    A logging handler that forwards ERROR+ log records to a remote API via HTTP POST.
+    A logging handler that forwards WARNING+ log records to a remote API via HTTP POST.
 
     Features:
         - Asynchronous: each log record is sent in a background thread
@@ -27,10 +27,10 @@ class HttpErrorHandler(logging.Handler):
         device_serial: The device serial number included in the payload for identification
         app_version: The application version string included in the payload
         timeout: HTTP request timeout in seconds (default: 5)
-        level: Minimum log level to capture (default: ERROR)
+        level: Minimum log level to capture (default: WARNING)
     """
 
-    def __init__(self, url: str, device_serial: str = "", app_version: str = "unknown", timeout: int = 5, level: int = logging.ERROR):
+    def __init__(self, url: str, device_serial: str = "", app_version: str = "unknown", timeout: int = 5, level: int = logging.WARNING):
         super().__init__(level)
         self._url = url
         self._device_serial = device_serial

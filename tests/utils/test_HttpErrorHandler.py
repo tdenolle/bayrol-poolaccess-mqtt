@@ -25,9 +25,9 @@ class TestHttpErrorHandler(unittest.TestCase):
     def tearDown(self):
         self.logger.removeHandler(self.handler)
 
-    def test_handler_level_is_error(self):
-        """Handler should only capture ERROR and above."""
-        self.assertEqual(self.handler.level, logging.ERROR)
+    def test_handler_level_is_warning(self):
+        """Handler should only capture WARNING and above."""
+        self.assertEqual(self.handler.level, logging.WARNING)
 
     def test_build_payload_basic(self):
         """Payload should contain all expected fields."""
@@ -148,12 +148,17 @@ class TestHttpErrorHandler(unittest.TestCase):
         self.handler._send(payload)
         mock_post.assert_called_once()
 
-    def test_info_and_warning_not_captured(self):
-        """INFO and WARNING logs should not trigger the handler."""
+    def test_info_not_captured(self):
+        """INFO logs should not trigger the handler."""
         with patch.object(self.handler, 'emit') as mock_emit:
             self.logger.info("Info message")
-            self.logger.warning("Warning message")
             mock_emit.assert_not_called()
+
+    def test_warning_is_captured(self):
+        """WARNING logs should trigger the handler."""
+        with patch.object(self.handler, 'emit') as mock_emit:
+            self.logger.warning("Warning message")
+            mock_emit.assert_called_once()
 
     def test_error_is_captured(self):
         """ERROR logs should trigger the handler."""
