@@ -61,7 +61,7 @@ class Entity:
             # device filtering check
             devices = filters["devices"] if "devices" in filters else []
             if len(devices) > 0 and self._device.code not in devices:
-                self._logger.warning(
+                self._logger.info(
                     "Skipping entity '%s' because device '%s' is in filter devices %s", self._key, self._device.code,
                     devices)
                 self._disable = True
@@ -71,7 +71,7 @@ class Entity:
                 options = filters["options"] if "options" in filters else {}
                 for o in options:
                     if o != options[o]:
-                        self._logger.warning(
+                        self._logger.info(
                             "Skipping entity '%s' because filter option '%s' is not set or not matching value '%s'", self._key, o, options[o])
                         self._disable = True
 
