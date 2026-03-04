@@ -10,9 +10,8 @@ from app.hass.Entity import Entity
 
 class Update(Entity):
     ENTITY_PLATFORM = "update"
-    BAYROL_UPDATE_URL = "https://www.denolle.fr/bayrol/update.json"
-    BAYROL_SUPPORT_URL = "https://www.bayrol.fr/bayrol-technik-support"
-
+    DEFAULT_BAYROL_SUPPORT_URL = "https://www.bayrol.fr/bayrol-technik-support"
+    
     def __init__(self, data: dict, device: BayrolPoolaccessDevice, discovery_prefix: str = "homeassistant"):
         super().__init__(data, device, discovery_prefix)
         self._attributes["platform"] = self.ENTITY_PLATFORM
@@ -22,8 +21,8 @@ class Update(Entity):
         self._attributes["value_template"] = ("{ \"installed_version\": \"{{ value_json.v }}\","
                                               "\"latest_version\": \"%s\","
                                               "\"release_url\": \"%s\" }" %
-                                              (update_data.get("version", "{{ value_json.v }}"),
-                                               update_data.get("url", self.BAYROL_SUPPORT_URL)))
+                                              (update_data.get("version", "unavailable"),
+                                               update_data.get("url", self.DEFAULT_BAYROL_SUPPORT_URL)))
 
     @property
     def type(self) -> str:
@@ -31,15 +30,19 @@ class Update(Entity):
 
     def _get_update_data(self, device: BayrolPoolaccessDevice):
         try:
-            response = requests.get(self.BAYROL_UPDATE_URL,
-                                    params={"id": device.id, "version": os.environ.get('APP_VERSION', "unknown")},
+            update_version_endpoint = os.environ.get('UPDATE_VERSION_ENDPOINT')
+            if not update_version_endpoint:
+                self._logger.warning("[Update] UPDATE_VERSION_ENDPOINT environment variable is not set.")
+                return {}
+            response = requests.get(update_version_endpoint.format(id=device.id),
+                                    headers={"User-Agent": f"BayrolPoolaccess/{os.environ.get('APP_VERSION', '0.0.0')}"},
                                     timeout=5,
                                     allow_redirects=False)
+            self._logger.debug(f"[Update] Fetched update data from {update_version_endpoint} with status code {response.status_code}")
             if response.status_code == 200:
-                data = response.json()
-                return data.get(device.model, {})
+                return response.json()
         except requests.RequestException as e:
-             self._logger.info(f"RequestException fetching update data: {e}")
+             self._logger.error(f"[Update] RequestException fetching update data: {e}")
         except ValueError  as e:
-             self._logger.info(f"ValueError fetching update data: {e}")
+             self._logger.error(f"[Update] ValueError fetching update data: {e}")
         return {}

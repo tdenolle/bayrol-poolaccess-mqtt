@@ -61,7 +61,7 @@ class Entity:
             # device filtering check
             devices = filters["devices"] if "devices" in filters else []
             if len(devices) > 0 and self._device.code not in devices:
-                self._logger.warning(
+                self._logger.info(
                     "Skipping entity '%s' because device '%s' is in filter devices %s", self._key, self._device.code,
                     devices)
                 self._disable = True
@@ -71,7 +71,7 @@ class Entity:
                 options = filters["options"] if "options" in filters else {}
                 for o in options:
                     if o != options[o]:
-                        self._logger.warning(
+                        self._logger.info(
                             "Skipping entity '%s' because filter option '%s' is not set or not matching value '%s'", self._key, o, options[o])
                         self._disable = True
 
@@ -128,6 +128,7 @@ class Entity:
         pass
 
     def on_poolaccess_message(self, client: PoolAccessClient, broker: MqttClient, message: MQTTMessage):
+        # Only process messages for this entity
         if message.topic == client.build_topic(PoolAccessTopicMode.VALUE, self._uid):
             self._logger.info("Reading %s %s", message.topic, str(message.payload))
             try:

@@ -17,7 +17,10 @@ class TestUpdate(unittest.TestCase):
             "key": "sw_version",
             "name" : "Version"
         }
-        
+        self.patcher = patch("app.hass.Update.requests.get")
+        self.mock_get = self.patcher.start()
+        self.mock_get.return_value = MagicMock(status_code=404)
+        self.addCleanup(self.patcher.stop)
 
     def test_initialization(self):
         update_entity = Update(self.data, self.device)
@@ -51,63 +54,71 @@ class TestUpdate(unittest.TestCase):
         update_entity = Update(self.data, self.device)
         self.assertEqual(update_entity.type, "update")
 
-    @patch("app.hass.Update.requests.get")
-    def test_get_update_data_success(self, mock_get):
+    @patch.dict(os.environ, {"UPDATE_VERSION_ENDPOINT": "http://mocked/endpoint"})
+    def test_get_update_data_success(self):
         mock_response = MagicMock()
         mock_response.status_code = 200
-        mock_response.json.return_value = { self.device.model : { "version": "2.0.0", "url": "https://test.url" } }
-        mock_get.return_value = mock_response
+        mock_response.json.return_value = {
+            "name": "Bayrol Automatic Salt",
+            "url": "https://www.bayrol.fr/support-technique/automatic-salt",
+            "version": "v2.50 (260203-0001)"
+        }
+        self.mock_get.return_value = mock_response
         update_entity = Update(self.data, self.device)
         data = update_entity._get_update_data(self.device)
-        self.assertEqual(data, {"version": "2.0.0", "url": "https://test.url"})
+        self.assertEqual(data, {
+            "name": "Bayrol Automatic Salt",
+            "url": "https://www.bayrol.fr/support-technique/automatic-salt",
+            "version": "v2.50 (260203-0001)"
+        })
 
-    @patch("app.hass.Update.requests.get")
-    def test_get_update_data_model_not_found(self, mock_get):
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {"other_model": {"version": "2.0.0"}}
-        mock_get.return_value = mock_response
+    def test_get_update_data_no_endpoint(self):
+        # UPDATE_VERSION_ENDPOINT not set → returns {} without calling requests.get
         update_entity = Update(self.data, self.device)
         data = update_entity._get_update_data(self.device)
+        self.mock_get.assert_not_called()
         self.assertEqual(data, {})
 
-    @patch("app.hass.Update.requests.get")
-    def test_get_update_data_http_error(self, mock_get):
+    @patch.dict(os.environ, {"UPDATE_VERSION_ENDPOINT": "http://mocked/endpoint"})
+    def test_get_update_data_http_error(self):
         mock_response = MagicMock()
         mock_response.status_code = 404
-        mock_get.return_value = mock_response
+        self.mock_get.return_value = mock_response
         update_entity = Update(self.data, self.device)
         data = update_entity._get_update_data(self.device)
         self.assertEqual(data, {})
 
-    @patch("app.hass.Update.requests.get")
-    def test_get_update_data_json_decode_error(self, mock_get):
+    @patch.dict(os.environ, {"UPDATE_VERSION_ENDPOINT": "http://mocked/endpoint"})
+    def test_get_update_data_json_decode_error(self):
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.json.side_effect = ValueError("No JSON")
-        mock_get.return_value = mock_response
+        self.mock_get.return_value = mock_response
         update_entity = Update(self.data, self.device)
         data = update_entity._get_update_data(self.device)
         self.assertEqual(data, {})
 
-    @patch("app.hass.Update.requests.get")
-    def test_get_update_data_request_exception(self, mock_get):
-        mock_get.side_effect = RequestException("Network error")
+    @patch.dict(os.environ, {"UPDATE_VERSION_ENDPOINT": "http://mocked/endpoint"})
+    def test_get_update_data_request_exception(self):
+        self.mock_get.side_effect = RequestException("Network error")
         update_entity = Update(self.data, self.device)
         data = update_entity._get_update_data(self.device)
         self.assertEqual(data, {})
 
-    @patch.dict(os.environ, {"APP_VERSION": "9.9.9"})
-    @patch("app.hass.Update.requests.get")
-    def test_get_update_data_with_env_version(self, mock_get):
+    @patch.dict(os.environ, {"APP_VERSION": "9.9.9", "UPDATE_VERSION_ENDPOINT": "http://test/endpoint"})
+    def test_get_update_data_with_env_version(self):
         mock_response = MagicMock()
         mock_response.status_code = 200
-        mock_response.json.return_value = { self.device.model : {"version": "2.0.0"}}
-        mock_get.return_value = mock_response
+        mock_response.json.return_value = {
+            "name": "Bayrol Automatic Salt",
+            "url": "https://www.bayrol.fr/support-technique/automatic-salt",
+            "version": "v2.50 (260203-0001)"
+        }
+        self.mock_get.return_value = mock_response
         Update(self.data, self.device)
-        mock_get.assert_called_with(
-            Update.BAYROL_UPDATE_URL,
-            params={"id": self.device.id, "version": "9.9.9"},
+        self.mock_get.assert_called_with(
+            "http://test/endpoint",
+            headers={"User-Agent": "BayrolPoolaccess/9.9.9"},
             timeout=5,
             allow_redirects=False
         )
@@ -120,6 +131,29 @@ class TestUpdate(unittest.TestCase):
         self.assertIn("installed_version", value_template)
         self.assertIn("latest_version", value_template)
         self.assertIn("release_url", value_template)
+
+    def test_value_template_fallback_when_no_update_data(self):
+        # No endpoint set → update_data = {} → fallback to "unavailable" and DEFAULT_BAYROL_SUPPORT_URL
+        update_entity = Update(self.data, self.device)
+        value_template = update_entity.get_attr("value_template")
+        self.assertIn("unavailable", value_template)
+        self.assertIn(Update.DEFAULT_BAYROL_SUPPORT_URL, value_template)
+
+    @patch.dict(os.environ, {"UPDATE_VERSION_ENDPOINT": "http://mocked/endpoint"})
+    def test_value_template_uses_update_data(self):
+        # Endpoint set, valid response → value_template uses version and url from response
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "name": "Bayrol Automatic Salt",
+            "url": "https://www.bayrol.fr/support-technique/automatic-salt",
+            "version": "v2.50 (260203-0001)"
+        }
+        self.mock_get.return_value = mock_response
+        update_entity = Update(self.data, self.device)
+        value_template = update_entity.get_attr("value_template")
+        self.assertIn("v2.50 (260203-0001)", value_template)
+        self.assertIn("https://www.bayrol.fr/support-technique/automatic-salt", value_template)
 
 
 if __name__ == '__main__':

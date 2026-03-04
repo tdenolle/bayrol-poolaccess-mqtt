@@ -1,7 +1,7 @@
 [project]
-version = "1.4.5"
+version = "2026.3.0"
 name = "bayrol-poolaccess-mqtt"
-requires-python = ">= 3.12"
+requires-python = ">= 3.13"
 authors = [
     { name="tdenolle", email="thomas@denolle.fr" }
 ]
@@ -10,15 +10,15 @@ keywords = ['bayrol', 'poolaccess', 'mqtt']
 readme = "README.md"
 license = {file = "LICENSE"}
 dependencies = [
-    "paho-mqtt>=2.1.0",
-    "docopt>=0.6.2",
-    "requests>=2.25.1",
-    "toml>=0.10.2"
+    "paho-mqtt==2.1.0",
+    "docopt",
+    "requests==2.32.5",
+    "tomlkit==0.14.0"
 ]
 classifiers=[
     'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Developers',
-    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
 ]
 
 [project.urls]

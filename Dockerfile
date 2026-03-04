@@ -3,6 +3,12 @@ FROM $BUILD_FROM
 # Base image tag for the Dockerfile
 ARG DOCKER_TAG
 ENV APP_VERSION=$DOCKER_TAG
+# Error reporting URL (baked into the image, invisible to users)
+ARG ERROR_REPORTING_ENDPOINT
+ENV ERROR_REPORTING_ENDPOINT=$ERROR_REPORTING_ENDPOINT
+# Update version endpoint (baked into the image, invisible to users)
+ARG UPDATE_VERSION_ENDPOINT
+ENV UPDATE_VERSION_ENDPOINT=$UPDATE_VERSION_ENDPOINT
 # Copy toml file
 COPY pyproject.toml /
 # Copy requirements.txt file
