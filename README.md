@@ -1,9 +1,8 @@
 # Bayrol PoolAccess to MQTT
 
-
-![Supports arm64 Architecture][arm64-shield] 
-![Supports amd64 Architecture][amd64-shield] 
-![Supports armv6 Architecture][armv6-shield] 
+![Supports arm64 Architecture][arm64-shield]
+![Supports amd64 Architecture][amd64-shield]
+![Supports armv6 Architecture][armv6-shield]
 ![Supports armv7 Architecture][armv7-shield]
 
 ![License](https://img.shields.io/github/license/tdenolle/bayrol-poolaccess-mqtt)
@@ -11,7 +10,7 @@
 
 ![Bayrol Automatic Salt](docs/bayrol_automatic_salt_connect.png)
 
-### Bayrol PoolAccess (eg Automatic Salt Products) to MQTT Bridge
+## Bayrol PoolAccess (eg Automatic Salt Products) to MQTT Bridge
 
 **bayrol-poolaccess-mqtt** allows you to connect to bayrol poolaccess server and publish data to your Home Assistant Mqtt broker.
 
