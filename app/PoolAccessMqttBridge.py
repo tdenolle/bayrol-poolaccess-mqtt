@@ -131,25 +131,25 @@ class PoolAccessMqttBridge:
             poolaccess_status = self._poolaccess_client.loop(timeout)
 
             if broker_status != MQTT_ERR_SUCCESS:
-                self._logger.warning(
+                self._logger.info(
                     "Broker Client has been disconnected [status: %s] : trying to reconnect ...", broker_status
                 )
                 try:
                     self._broker_client.reconnect()
                 except Exception as e:
                     self._logger.error("Reconnect exception occurred %s ...", str(e))
-                self._logger.info("Waiting %ss ...", str(self._reconnect_delay))
+                self._logger.info("Waiting %ss for reconnection...", str(self._reconnect_delay))
                 time.sleep(self._reconnect_delay)
 
             if poolaccess_status != MQTT_ERR_SUCCESS:
-                self._logger.warning(
+                self._logger.info(
                     "Poolaccess Client has been disconnected [status: %s] : trying to reconnect ...", poolaccess_status
                 )
                 try:
                     self._poolaccess_client.reconnect()
                 except Exception as e:
                     self._logger.error("Reconnect exception occurred %s ...", str(e))
-                self._logger.info("Waiting %ss ...", str(self._reconnect_delay))
+                self._logger.info("Waiting %ss for reconnection...", str(self._reconnect_delay))
                 time.sleep(self._reconnect_delay)
 
             # loop exit condition
@@ -176,7 +176,7 @@ class PoolAccessMqttBridge:
 
         # Multithreading startup if connection_success
         if connection_success:
-            self._logger.info("Starting Multithreading")
+            self._logger.info("Starting Multithreading...")
             t = threading.Thread(target=self._multi_loop, args=())  # start multi loop
             t.start()
 
