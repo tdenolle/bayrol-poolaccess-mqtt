@@ -176,7 +176,7 @@ class PoolAccessMqttBridge:
 
         # Multithreading startup if connection_success
         if connection_success:
-            self._logger.info("Starting Multithreading")
+            self._logger.info("Starting Multithreading...")
             t = threading.Thread(target=self._multi_loop, args=())  # start multi loop
             t.start()
 
