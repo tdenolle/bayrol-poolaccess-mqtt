@@ -351,6 +351,7 @@
     "key": "sw_version",
     "icon": "mdi:update",
     "device_class": "firmware",
+    "check_interval": 6,
     "entity_picture": "https://raw.githubusercontent.com/tdenolle/bayrol-poolaccess-mqtt/refs/heads/master/docs/bayrol_icon.png"
   },
   {
