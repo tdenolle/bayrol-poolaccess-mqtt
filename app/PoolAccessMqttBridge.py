@@ -179,7 +179,11 @@ class PoolAccessMqttBridge:
             self._logger.info("Starting Multithreading...")
             t = threading.Thread(target=self._multi_loop, args=())  # start multi loop
             t.start()
+            self._start_periodic_refresh()
 
+    def _start_periodic_refresh(self):
+        for e in self._hass_entities:
+            e.start_periodic_refresh(self._poolaccess_client, self._broker_client)
 
 def load_entities(filepath: str, config) -> list[Entity]:
     if "DEVICE_SERIAL" not in config:
