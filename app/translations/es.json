@@ -60,5 +60,6 @@
   "mv_canister_status": "Bidón Cloro",
   "ph_plus_canister_status": "Bidón pH+",
   "ph_minus_canister_status": "Bidón pH-",
-  "mv_dos_rate": "Dosificación Cloro"
+  "mv_dos_rate": "Dosificación Cloro",
+  "control_box_used": "Smart & Easy Box"
 }
