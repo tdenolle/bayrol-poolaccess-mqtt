@@ -285,13 +285,13 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
     def test_load_entities_acl(self):
         entities = load_entities(os.path.join(os.path.dirname(__file__), "../app/entities.json"),
                                  {"DEVICE_SERIAL": "24ACL2-00000"})
-        self.assertEqual(len(list(filter(lambda entity: not entity.disable, entities))), 16)
+        self.assertEqual(len(list(filter(lambda entity: not entity.disable, entities))), 26)
 
 
     def test_load_entities_ase(self):
         entities = load_entities(os.path.join(os.path.dirname(__file__), "../app/entities.json"),
                                  {"DEVICE_SERIAL": "24ASE2-00000"})
-        self.assertEqual(len(list(filter(lambda entity: not entity.disable, entities))), 17)
+        self.assertEqual(len(list(filter(lambda entity: not entity.disable, entities))), 27)
 
     def test_load_entities(self):
         # Mock entities.json file
