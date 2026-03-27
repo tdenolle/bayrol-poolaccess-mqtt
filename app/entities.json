@@ -186,10 +186,9 @@
     "value_template": "{{ 'on' if value_json.v | float == 19.311 else 'off' }}",
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.186\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
-    "filters": {
-      "options": {
-        "#SMART_AND_EASY_CONTROL_MODULE": "True"
-      }
+    "availability": {
+      "topic": "#HASS_DISCOVERY_PREFIX/sensor/#DEVICE_SERIAL/control_box_used",
+      "value_template": "{{ 'online' if value_json.v | float == 19.54 else 'offline' }}"
     }
   },
   {
@@ -202,11 +201,6 @@
     "availability": {
       "topic": "#HASS_DISCOVERY_PREFIX/switch/#DEVICE_SERIAL/light_on_off_1",
       "value_template": "{{ 'online' if value_json.v | float == 19.311 else 'offline' }}"
-    },
-    "filters": {
-      "options": {
-        "#SMART_AND_EASY_CONTROL_MODULE": "True"
-      }
     }
   },
   {
@@ -217,10 +211,9 @@
     "value_template": "{{ 'on' if value_json.v | float == 19.311 else 'off' }}",
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.187\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
-    "filters": {
-      "options": {
-        "#SMART_AND_EASY_CONTROL_MODULE": "True"
-      }
+    "availability": {
+      "topic": "#HASS_DISCOVERY_PREFIX/sensor/#DEVICE_SERIAL/control_box_used",
+      "value_template": "{{ 'online' if value_json.v | float == 19.54 else 'offline' }}"
     }
   },
   {
@@ -233,11 +226,6 @@
     "availability": {
       "topic": "#HASS_DISCOVERY_PREFIX/switch/#DEVICE_SERIAL/light_on_off_2",
       "value_template": "{{ 'online' if value_json.v | float == 19.311 else 'offline' }}"
-    },
-    "filters": {
-      "options": {
-        "#SMART_AND_EASY_CONTROL_MODULE": "True"
-      }
     }
   },
   {
@@ -248,10 +236,9 @@
     "value_template": "{{ 'on' if value_json.v | float == 19.311 else 'off' }}",
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.188\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
-    "filters": {
-      "options": {
-        "#SMART_AND_EASY_CONTROL_MODULE": "True"
-      }
+    "availability": {
+      "topic": "#HASS_DISCOVERY_PREFIX/sensor/#DEVICE_SERIAL/control_box_used",
+      "value_template": "{{ 'online' if value_json.v | float == 19.54 else 'offline' }}"
     }
   },
   {
@@ -264,11 +251,6 @@
     "availability": {
       "topic": "#HASS_DISCOVERY_PREFIX/switch/#DEVICE_SERIAL/light_on_off_3",
       "value_template": "{{ 'online' if value_json.v | float == 19.311 else 'offline' }}"
-    },
-    "filters": {
-      "options": {
-        "#SMART_AND_EASY_CONTROL_MODULE": "True"
-      }
     }
   },
   {
@@ -279,10 +261,9 @@
     "value_template": "{{ 'on' if value_json.v | float == 19.311 else 'off' }}",
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "command_template": "{ \"t\":\"5.189\", \"v\":\"{{ '19.311' if value=='on' else '19.100' }}\" }",
-    "filters": {
-      "options": {
-        "#SMART_AND_EASY_CONTROL_MODULE": "True"
-      }
+    "availability": {
+      "topic": "#HASS_DISCOVERY_PREFIX/sensor/#DEVICE_SERIAL/control_box_used",
+      "value_template": "{{ 'online' if value_json.v | float == 19.54 else 'offline' }}"
     }
   },
   {
@@ -295,11 +276,6 @@
     "availability": {
       "topic": "#HASS_DISCOVERY_PREFIX/switch/#DEVICE_SERIAL/light_on_off_4",
       "value_template": "{{ 'online' if value_json.v | float == 19.311 else 'offline' }}"
-    },
-    "filters": {
-      "options": {
-        "#SMART_AND_EASY_CONTROL_MODULE": "True"
-      }
     }
   },
   {
@@ -318,10 +294,9 @@
     ],
     "mode_command_template": "{ \"t\":\"5.185\", \"v\":\"{{ '19.101' if value=='auto' else '19.100' }}\" }",
     "mode_state_template": "{{ 'auto' if value_json.v | float == 19.101 else 'off' }}",
-    "filters": {
-      "options": {
-        "#SMART_AND_EASY_CONTROL_MODULE": "True"
-      }
+    "availability": {
+      "topic": "#HASS_DISCOVERY_PREFIX/sensor/#DEVICE_SERIAL/control_box_used",
+      "value_template": "{{ 'online' if value_json.v | float == 19.54 else 'offline' }}"
     }
   },
   {
@@ -339,10 +314,9 @@
     ],
     "value_template": "{{ 'On' if value_json.v | float == 19.313 else 'Auto' if value_json.v | float == 19.346 else 'Smart' if value_json.v | float == 19.330 else 'Hors-gel' if value_json.v | float == 19.338 else 'Off' }}",
     "command_template": "{ \"t\":\"5.256\", \"v\":\"{{ '19.313' if value=='On' else '19.338' if value=='Hors-gel' else '19.346' if value=='Auto' else '19.330' if value=='Smart' else '19.312' }}\" }",
-    "filters": {
-      "options": {
-        "#SMART_AND_EASY_CONTROL_MODULE": "True"
-      }
+    "availability": {
+      "topic": "#HASS_DISCOVERY_PREFIX/sensor/#DEVICE_SERIAL/control_box_used",
+      "value_template": "{{ 'online' if value_json.v | float == 19.54 else 'offline' }}"
     }
   },
   {
