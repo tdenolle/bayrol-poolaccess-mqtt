@@ -387,7 +387,7 @@
     "__class__": "Sensor",
     "uid": "5.257",
     "key": "control_box_used",
-    "icon": "mdi:flask-empty-minus-outline",
+    "icon": "mdi:cog-box",
     "value_template": "{{ 'on' if value_json.v | float == 19.54 else 'off' if value_json.v | float == 19.55 else 'N/A' }}",
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
   }
