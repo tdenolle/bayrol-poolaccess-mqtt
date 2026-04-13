@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import json
-import logging
 import threading
 from datetime import datetime, timezone
 from json import JSONDecodeError
@@ -11,21 +10,18 @@ from paho.mqtt.client import MQTTMessage
 from app.Translation import LanguageManager
 from app.hass import load_attr, norm
 from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
+from app.hass.DataPoint import DataPoint
 from app.mqtt.MqttClient import MqttClient
 from app.mqtt.PoolAccessClient import PoolAccessClient, PoolAccessTopicMode
 
 
-class Entity:
+class Entity(DataPoint):
 
     def __init__(self, data: dict, device: BayrolPoolaccessDevice, discovery_prefix: str = "homeassistant"):
-        self._uid = load_attr("uid", data, True)
-        self._key = load_attr("key", data)
+        super().__init__(data, device)
         self._attributes = data
-        self._device = device
         self._discovery_prefix = discovery_prefix
         self._lang = LanguageManager()
-        self._logger = logging.getLogger()
-        self._disable = False
         self._check_interval = load_attr("check_interval", data, True)
         self._refresh_timer = None
 
@@ -48,51 +44,6 @@ class Entity:
 
         if "json_attributes_topic" not in data and "json_attributes_template" in data:
             self._attributes["json_attributes_topic"] = self.state_topic
-
-        if "disable" in data:
-            self._disable = load_attr("disable", data, False)
-            if self._disable:
-                self._logger.info("Entity '%s' is disabled", self._key)
-
-        if not self._disable:
-            filters = load_attr("filters", data, True)
-
-            if filters is None:
-                self._logger.debug("Filters are not set")
-                return
-
-            # device filtering check
-            devices = filters["devices"] if "devices" in filters else []
-            if len(devices) > 0 and self._device.code not in devices:
-                self._logger.info(
-                    "Skipping entity '%s' because device '%s' is in filter devices %s", self._key, self._device.code,
-                    devices)
-                self._disable = True
-
-            # options filtering check
-            if not self._disable:
-                options = filters["options"] if "options" in filters else {}
-                for o in options:
-                    if o != options[o]:
-                        self._logger.info(
-                            "Skipping entity '%s' because filter option '%s' is not set or not matching value '%s'", self._key, o, options[o])
-                        self._disable = True
-
-    @property
-    def uid(self) -> str | None:
-        return self._uid
-
-    @property
-    def key(self) -> str:
-        if self._key is None:
-            raise ValueError("key is not set")
-        return self._key
-
-    @property
-    def disable(self) -> bool:
-        if self._disable is None:
-            raise ValueError("disable is not set")
-        return self._disable
 
     @property
     def name(self) -> str:
@@ -121,11 +72,6 @@ class Entity:
 
     def build_config(self):
         return "%s/config" % self.state_topic, {**self._attributes, "device": self._device}
-
-    def on_poolaccess_connect(self, client: PoolAccessClient):
-        topic = client.build_topic(PoolAccessTopicMode.GET, self._uid)
-        self._logger.info("Publishing to poolaccess: %s", topic)
-        client.publish(topic)
 
     def on_broker_connect(self, _client: MqttClient):
         pass

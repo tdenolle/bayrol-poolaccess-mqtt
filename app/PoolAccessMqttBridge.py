@@ -28,6 +28,7 @@ from paho.mqtt.properties import Properties
 
 from app.Translation import LanguageManager
 from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
+from app.hass.DataPoint import DataPoint
 from app.hass.Entity import Entity
 from app.mqtt.MqttClient import MqttClient
 from app.mqtt.PoolAccessClient import PoolAccessClient, PoolAccessTopicMode
@@ -44,6 +45,7 @@ class PoolAccessMqttBridge:
         hass_entities: list[Entity],
         poolaccess_client: PoolAccessClient,
         broker_client: MqttClient,
+        data_points: list[DataPoint] | None = None,
     ):
         # Logger
         self._logger = logging.getLogger()
@@ -52,6 +54,8 @@ class PoolAccessMqttBridge:
         self._mqtt_base_topic = mqtt_base_topic
         # Home Assistant Entities
         self._hass_entities = hass_entities
+        # Internal Data Points (not bridged to Home Assistant)
+        self._data_points = data_points or []
         # Mqtt Clients
         self._poolaccess_client = poolaccess_client
         self._broker_client = broker_client
@@ -62,6 +66,8 @@ class PoolAccessMqttBridge:
         if not message or message.payload is None or message.topic is None:
             return
         self._logger.debug("[poolaccess] message [%s][%s]", str(message.topic), str(message.payload))
+        for dp in self._data_points:
+            dp.on_poolaccess_message(self._poolaccess_client, message)
         for e in self._hass_entities:
             e.on_poolaccess_message(self._poolaccess_client, self._broker_client, message)
 
@@ -91,6 +97,10 @@ class PoolAccessMqttBridge:
 
                 # Trigger on_poolaccess_connect for each entity
                 e.on_poolaccess_connect(self._poolaccess_client)
+
+            # Trigger on_poolaccess_connect for active internal data points
+            for dp in list(filter(lambda dp: not dp.disable, self._data_points)):
+                dp.on_poolaccess_connect(self._poolaccess_client)
         else:
             self._logger.info("[poolaccess] connect: Connection failed [%s]", str(rc))
             exit(1)
