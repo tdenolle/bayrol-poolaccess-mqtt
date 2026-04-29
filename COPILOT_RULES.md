@@ -9,6 +9,13 @@ sur `develop` ou `master`.**
 - Si les tests passent, présenter le résumé des changements et attendre le feu vert
 - Seulement après confirmation explicite, exécuter `git push`
 
+## Commit & Push sur develop
+
+**Toujours exécuter les TU avant tout `git commit` ou `git push` sur `develop`.**
+
+- Commande TU : `python -m unittest discover -s ./tests -p 'test_*.py'`
+- Si un test échoue : ne pas commit/push tant que ce n'est pas corrigé
+
 ## Versioning
 
 Format **CalVer** : `ANNEE.MOIS.INCREMENT` (ex: `2026.3.0`, `2026.3.1`, ...)
