@@ -56,11 +56,13 @@
   "light_color_4": "Color Iluminación 4",
   "heater_hvac": "Calefacción",
   "filtration_mode": "Modo filtración",
+  "on_off_filter_pump_opmode": "Modo de bomba de filtración",
+  "vsp_opmode": "Modo de bomba de filtración",
   "mv_on_off": "Dosaggio automatico del cloro",
   "mv_canister_status": "Bidón Cloro",
   "ph_plus_canister_status": "Bidón pH+",
   "ph_minus_canister_status": "Bidón pH-",
   "mv_dos_rate": "Dosificación Cloro",
   "control_box_used": "Smart & Easy Box",
-  "e_enum_use_vsp": "Usar Bomba de Velocidad Variable"
+  "e_enum_use_vsp": "Bomba de Velocidad Variable"
 }

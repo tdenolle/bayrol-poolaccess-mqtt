@@ -25,6 +25,11 @@ jobs:
         with:
           python-version: ${{ vars.PYTHON_VERSION }}
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
       - name: Sync pyproject.toml with GitHub vars
         uses: ./.github/actions/sync-pyproject
         with:
@@ -44,6 +49,10 @@ jobs:
           flake8 ./app --count --config=setup.cfg --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 ./app --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Lint markdown files
+        run: |
+          npx -y markdownlint-cli "**/*.md"
 
       - name: Test with unittest
         run: |

@@ -2,7 +2,8 @@
 
 ## Push Git
 
-**Toujours demander l'approbation de l'utilisateur avant de pusher sur `develop` ou `master`.**
+**Toujours demander l'approbation de l'utilisateur avant de pusher
+sur `develop` ou `master`.**
 
 - Jouer les tests
 - Si les tests passent, présenter le résumé des changements et attendre le feu vert

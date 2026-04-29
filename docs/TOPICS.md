@@ -1,5 +1,7 @@
 # Bayrol Poolaccess - MQTT Topics Reference
 
+<!-- markdownlint-disable MD013 MD033 MD060 -->
+
 > **Note:** This document is generated from reverse engineering of the Bayrol Poolaccess MQTT protocol.
 > Topics are addressed using the pattern: `d02/{serial}/{mode}/{topic_full}`
 > where `mode` is `g` (get), `s` (set), or `v` (value).
@@ -24,7 +26,6 @@
   - [Light Programs](#light-programs)
   - [Heating Timers](#heating-timers)
   - [Smart Pump](#smart-pump)
-  - [System Info & Internal](#system-info--internal)
 - [Type 5 – Enum Topics](#type-5--enum-topics)
   - [General Settings](#general-settings)
   - [pH Dosing Enums](#ph-dosing-enums)
@@ -1013,7 +1014,7 @@ Yes (`19.17`) / No (`19.18`)
 
 | Code | EN | FR |
 |------|----|----|
-| `19.312` | OFF | — |
+| `19.312` | Off | — |
 | `19.315` | Low | — |
 | `19.316` | Med | — |
 | `19.317` | High | — |
@@ -1027,7 +1028,8 @@ Yes (`19.17`) / No (`19.18`)
 
 | Code | EN | FR |
 |------|----|----|
-| `19.313` | ON | — |
+| `19.312` | Off | — |
+| `19.313` | On | — |
 | `19.346` | Auto | — |
 | `19.330` | Smart | — |
 | `19.338` | Anti-freeze | Hors Gel |
@@ -1036,7 +1038,7 @@ Yes (`19.17`) / No (`19.18`)
 
 Yes (`19.17`) / No (`19.18`)
 
-#### `5.216` – `e_enum_vsp_extend_runtime_to_t_div_2` — Extend pump runtime at high temp.
+#### `5.216` – `e_enum_vsp_extend_runtime_to_t_div_2` — Extend pump runtime at high temp
 
 ON (`19.54`) / OFF (`19.55`)
 
