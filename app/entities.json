@@ -300,9 +300,22 @@
     }
   },
   {
+    "__class__": "Switch",
+    "uid": "5.215",
+    "key": "use_vsp",
+    "icon": "mdi:water-pump",
+    "value_template": "{{ 'on' if value_json.v | float == 19.17 else 'off' }}",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "command_template": "{ \"t\":\"5.215\", \"v\":\"{{ '19.17' if value=='on' else '19.18' }}\" }",
+    "availability": {
+      "topic": "#HASS_DISCOVERY_PREFIX/sensor/#DEVICE_SERIAL/control_box_used",
+      "value_template": "{{ 'online' if value_json.v | float == 19.54 else 'offline' }}"
+    }
+  },
+  {
     "__class__": "Select",
     "uid": "5.256",
-    "key": "filtration_mode",
+    "key": "on_off_filter_pump_opmode",
     "icon": "mdi:pump",
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
     "options": [
@@ -314,6 +327,28 @@
     ],
     "value_template": "{{ 'On' if value_json.v | float == 19.313 else 'Auto' if value_json.v | float == 19.346 else 'Smart' if value_json.v | float == 19.330 else 'Hors-gel' if value_json.v | float == 19.338 else 'Off' }}",
     "command_template": "{ \"t\":\"5.256\", \"v\":\"{{ '19.313' if value=='On' else '19.338' if value=='Hors-gel' else '19.346' if value=='Auto' else '19.330' if value=='Smart' else '19.312' }}\" }",
+    "availability": {
+      "topic": "#HASS_DISCOVERY_PREFIX/sensor/#DEVICE_SERIAL/control_box_used",
+      "value_template": "{{ 'online' if value_json.v | float == 19.54 else 'offline' }}"
+    }
+  },
+  {
+    "__class__": "Select",
+    "uid": "5.184",
+    "key": "vsp_opmode",
+    "icon": "mdi:pump",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "options": [
+      "Off",
+      "Low",
+      "Med",
+      "High",
+      "Auto",
+      "Smart",
+      "Hors-gel"
+    ],
+    "value_template": "{{ 'Low' if value_json.v | float == 19.315 else 'Med' if value_json.v | float == 19.316 else 'High' if value_json.v | float == 19.317 else 'Auto' if value_json.v | float == 19.346 else 'Smart' if value_json.v | float == 19.330 else 'Hors-gel' if value_json.v | float == 19.338 else 'Off' }}",
+    "command_template": "{ \"t\":\"5.184\", \"v\":\"{{ '19.315' if value=='Low' else '19.316' if value=='Med' else '19.317' if value=='High' else '19.338' if value=='Hors-gel' else '19.346' if value=='Auto' else '19.330' if value=='Smart' else '19.312' }}\" }",
     "availability": {
       "topic": "#HASS_DISCOVERY_PREFIX/sensor/#DEVICE_SERIAL/control_box_used",
       "value_template": "{{ 'online' if value_json.v | float == 19.54 else 'offline' }}"
@@ -364,5 +399,21 @@
     "icon": "mdi:cog-box",
     "value_template": "{{ 'on' if value_json.v | float == 19.54 else 'off' if value_json.v | float == 19.55 else 'N/A' }}",
     "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }"
+  },
+  {
+    "__class__": "Select",
+    "state": "TO BE DELETED IN THE NEXT RELEASE",
+    "uid": "5.256",
+    "key": "filtration_mode",
+    "icon": "mdi:pump",
+    "json_attributes_template": "{ \"updated\": \"{{ value_json.updatedAt }}\" }",
+    "options": [
+      "Off",
+      "On",
+      "Auto",         
+      "Smart",
+      "Hors-gel"
+    ],
+    "disabled" : true
   }
 ]
