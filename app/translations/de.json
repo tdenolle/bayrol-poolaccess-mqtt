@@ -61,5 +61,6 @@
   "ph_minus_canister_status": "pH-Minus-Kanister",
   "mv_dos_rate": "Chlor-Dosierung",
   "sw_version": "Firmware",
-  "control_box_used": "Smart & Easy Box"
+  "control_box_used": "Smart & Easy Box",
+  "e_enum_use_vsp": "Variable Drehzahlpumpe verwenden"
 }

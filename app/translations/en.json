@@ -62,5 +62,6 @@
   "ph_plus_canister_status": "pH+ Canister",
   "ph_minus_canister_status": "pH- Canister",
   "mv_dos_rate": "Chlorine Dosage",
-  "control_box_used": "Smart & Easy Box"
+  "control_box_used": "Smart & Easy Box",
+  "e_enum_use_vsp": "Use Variable Speed Pump"
 }
