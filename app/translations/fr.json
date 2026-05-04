@@ -56,9 +56,13 @@
   "light_color_4": "Couleur Eclairage 4",
   "heater_hvac": "Chauffage",
   "filtration_mode": "Mode filtration",
+  "on_off_filter_pump_opmode": "Mode pompe de filtration",
+  "vsp_opmode": "Mode pompe de filtration",
   "mv_on_off": "Dosage Automatique Chlore",
   "mv_canister_status": "Bidon Chlore",
   "ph_plus_canister_status": "Bidon pH-Plus",
   "ph_minus_canister_status": "Bidon pH-Minus",
-  "mv_dos_rate": "Dosage Chlore"
+  "mv_dos_rate": "Dosage Chlore",
+  "control_box_used": "Smart & Easy Box",
+  "use_vsp": "Pompe à Vitesse Variable"
 }

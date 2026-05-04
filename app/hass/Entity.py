@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import json
 import logging
+import threading
 from datetime import datetime, timezone
 from json import JSONDecodeError
 from typing import Optional
@@ -25,6 +26,8 @@ class Entity:
         self._lang = LanguageManager()
         self._logger = logging.getLogger()
         self._disable = False
+        self._check_interval = load_attr("check_interval", data, True)
+        self._refresh_timer = None
 
         # config variables
         self._attributes["unique_id"] = ("%s_%s_%s" % (norm(device.manufacturer), norm(self._device.id), self.key))
@@ -137,6 +140,32 @@ class Entity:
                 self._logger.info("Publishing to broker %s %s", self.state_topic, str(payload))
             except JSONDecodeError as jde:
                 self._logger.error(jde)
+
+    def on_periodic_refresh(self, _client: PoolAccessClient, _broker: MqttClient):
+        pass
+
+    def start_periodic_refresh(self, poolaccess_client: PoolAccessClient, broker_client: MqttClient):
+        if self.disable or not self._check_interval or self._check_interval <= 0:
+            return
+        self._refresh_timer = threading.Timer(
+            self._check_interval * 3600,
+            self._do_periodic_refresh,
+            args=(poolaccess_client, broker_client)
+        )
+        self._refresh_timer.daemon = True
+        self._refresh_timer.start()
+        self._logger.info("[%s] Periodic refresh scheduled in %s hour(s)", self._key, self._check_interval)
+
+    def _do_periodic_refresh(self, poolaccess_client: PoolAccessClient, broker_client: MqttClient):
+        self._logger.info("[%s] Running periodic refresh...", self._key)
+        self.on_periodic_refresh(poolaccess_client, broker_client)
+        # Reschedule
+        self.start_periodic_refresh(poolaccess_client, broker_client)
+
+    def stop_periodic_refresh(self):
+        if self._refresh_timer:
+            self._refresh_timer.cancel()
+            self._refresh_timer = None
 
     def on_broker_message(self, _client: PoolAccessClient, _broker: MqttClient, _message: MQTTMessage):
         pass

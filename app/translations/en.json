@@ -56,10 +56,15 @@
   "light_color_4": "Lighting  Color 4",
   "heater_hvac": "Heating",
   "filtration_mode": "Filtration mode",
+  "on_off_filter_pump_opmode": "Filter pump mode",
+  "vsp_opmode": "Filter pump mode",
   "mv_on_off": "Automatic Chlorine Dosing",
   "next_light_program": "Light color change",
   "mv_canister_status": "Chlorine Canister",
   "ph_plus_canister_status": "pH+ Canister",
   "ph_minus_canister_status": "pH- Canister",
-  "mv_dos_rate": "Chlorine Dosage"
+  "mv_dos_rate": "Chlorine Dosage",
+  "control_box_used": "Smart & Easy Box",
+  "use_vsp": "Variable Speed Pump",
+  "e_enum_use_vsp": "Variable Speed Pump"
 }

@@ -285,13 +285,13 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
     def test_load_entities_acl(self):
         entities = load_entities(os.path.join(os.path.dirname(__file__), "../app/entities.json"),
                                  {"DEVICE_SERIAL": "24ACL2-00000"})
-        self.assertEqual(len(list(filter(lambda entity: not entity.disable, entities))), 15)
+        self.assertEqual(len(list(filter(lambda entity: not entity.disable, entities))), 28)
 
 
     def test_load_entities_ase(self):
         entities = load_entities(os.path.join(os.path.dirname(__file__), "../app/entities.json"),
                                  {"DEVICE_SERIAL": "24ASE2-00000"})
-        self.assertEqual(len(list(filter(lambda entity: not entity.disable, entities))), 16)
+        self.assertEqual(len(list(filter(lambda entity: not entity.disable, entities))), 29)
 
     def test_load_entities(self):
         # Mock entities.json file
@@ -368,6 +368,41 @@ class TestPoolAccessMqttBridge(unittest.TestCase):
         bridge._logger = MagicMock()
         with self.assertRaises(SystemExit):
             bridge.on_broker_connect(None, None, None, 1, None)
+
+    @patch('app.hass.Entity.threading.Timer')
+    def test_start_periodic_refresh(self, mock_timer_class):
+        mock_timer = MagicMock()
+        mock_timer_class.return_value = mock_timer
+        # Set a check_interval on one entity
+        self.entities[0]._check_interval = 3
+        self.bridge._start_periodic_refresh()
+        mock_timer_class.assert_called_once()
+        mock_timer.start.assert_called_once()
+        self.assertTrue(mock_timer.daemon)
+        # cleanup
+        self.entities[0]._check_interval = None
+
+    def test_start_periodic_refresh_no_interval(self):
+        # No entity has check_interval → no timer created
+        with patch('app.hass.Entity.threading.Timer') as mock_timer_class:
+            self.bridge._start_periodic_refresh()
+            mock_timer_class.assert_not_called()
+
+    @patch('app.PoolAccessMqttBridge.PoolAccessMqttBridge._multi_loop')
+    @patch('app.PoolAccessMqttBridge.PoolAccessMqttBridge._start_periodic_refresh')
+    def test_start_calls_periodic_refresh(self, mock_periodic, mock_multi_loop):
+        self.poolaccess_client.establish_connection.return_value = 0
+        self.broker_client.establish_connection.return_value = 0
+        self.bridge.start()
+        mock_periodic.assert_called_once()
+
+    @patch('app.PoolAccessMqttBridge.PoolAccessMqttBridge._multi_loop')
+    @patch('app.PoolAccessMqttBridge.PoolAccessMqttBridge._start_periodic_refresh')
+    def test_start_no_periodic_refresh_on_connection_failure(self, mock_periodic, mock_multi_loop):
+        self.poolaccess_client.establish_connection.return_value = 1
+        self.broker_client.establish_connection.return_value = 1
+        self.bridge.start()
+        mock_periodic.assert_not_called()
 
 
 if __name__ == '__main__':

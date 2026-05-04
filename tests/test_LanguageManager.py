@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import json
+import os
 import unittest
 
 from app.Translation import LanguageManager
@@ -56,6 +58,29 @@ class TestLanguageManager(unittest.TestCase):
         lang.setup("en")
         str = lang.get_string("non_existing_uid", "default string")
         assert str == "default string"
+
+    def test_all_entities_have_translations(self):
+        """Verify that all entity keys in entities.json have a translation in every available language."""
+        base_dir = os.path.dirname(os.path.dirname(__file__))
+
+        # Load entities
+        with open(os.path.join(base_dir, "app", "entities.json"), "r") as f:
+            entities = json.load(f)
+        entity_keys = [e["key"] for e in entities]
+
+        # Discover available languages
+        translations_dir = os.path.join(base_dir, "app", "translations")
+        languages = [f.removesuffix(".json") for f in os.listdir(translations_dir) if f.endswith(".json")]
+
+        missing = []
+        for lang_code in sorted(languages):
+            with open(os.path.join(translations_dir, f"{lang_code}.json"), "r") as f:
+                translations = json.load(f)
+            for key in entity_keys:
+                if key not in translations:
+                    missing.append(f"{lang_code}: {key}")
+
+        self.assertEqual(missing, [], f"Missing translations:\n" + "\n".join(missing))
 
 
 if __name__ == '__main__':

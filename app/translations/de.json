@@ -55,9 +55,15 @@
   "light_color_4": "Beleuchtung Farbe 4",
   "heater_hvac": "Heizung",
   "filtration_mode": "Filtrationsmodus",
+  "on_off_filter_pump_opmode": "Filterpumpenmodus",
+  "vsp_opmode": "Filterpumpenmodus",
   "mv_on_off": "Automatische Chlor-Dosierung",
   "mv_canister_status": "Chlor-Kanister",
   "ph_plus_canister_status": "pH-Plus-Kanister",
   "ph_minus_canister_status": "pH-Minus-Kanister",
-  "mv_dos_rate": "Chlor-Dosierung"
+  "mv_dos_rate": "Chlor-Dosierung",
+  "sw_version": "Firmware",
+  "control_box_used": "Smart & Easy Box",
+  "use_vsp": "Drehzahlpumpe verwenden",
+  "e_enum_use_vsp": "Variable Drehzahlpumpe verwenden"
 }

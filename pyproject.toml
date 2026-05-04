@@ -1,5 +1,5 @@
 [project]
-version = "2026.3.1"
+version = "2026.5.0"
 name = "bayrol-poolaccess-mqtt"
 requires-python = ">= 3.13"
 authors = [
@@ -12,7 +12,7 @@ license = {file = "LICENSE"}
 dependencies = [
     "paho-mqtt==2.1.0",
     "docopt",
-    "requests==2.32.5",
+    "requests==2.33.1",
     "tomlkit==0.14.0"
 ]
 classifiers=[

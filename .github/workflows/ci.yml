@@ -25,6 +25,11 @@ jobs:
         with:
           python-version: ${{ vars.PYTHON_VERSION }}
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+
       - name: Sync pyproject.toml with GitHub vars
         uses: ./.github/actions/sync-pyproject
         with:
@@ -44,6 +49,10 @@ jobs:
           flake8 ./app --count --config=setup.cfg --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 ./app --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: Lint markdown files
+        run: |
+          npx -y markdownlint-cli "**/*.md"
 
       - name: Test with unittest
         run: |
@@ -112,11 +121,10 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Read version from toml
-        uses: SebRollen/toml-action@v1.2.0
         id: toml_version
-        with:
-          file: '${{ github.workspace }}/pyproject.toml'
-          field: 'project.version'
+        run: |
+          VERSION=$(python -c "import tomllib; print(tomllib.loads(open('pyproject.toml').read())['project']['version'])")
+          echo "value=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Generate tag name
         id: tag_name
@@ -130,7 +138,7 @@ jobs:
           fi
 
       - name: Create tag
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             github.rest.git.createRef({
@@ -148,7 +156,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create draft release with auto-generated notes
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             await github.rest.repos.createRelease({

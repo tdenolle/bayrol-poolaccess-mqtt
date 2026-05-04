@@ -2,11 +2,19 @@
 
 ## Push Git
 
-**Toujours demander l'approbation de l'utilisateur avant de pusher sur `develop` ou `master`.**
+**Toujours demander l'approbation de l'utilisateur avant de pusher
+sur `develop` ou `master`.**
 
 - Jouer les tests
 - Si les tests passent, présenter le résumé des changements et attendre le feu vert
 - Seulement après confirmation explicite, exécuter `git push`
+
+## Commit & Push sur develop
+
+**Toujours exécuter les TU avant tout `git commit` ou `git push` sur `develop`.**
+
+- Commande TU : `python -m unittest discover -s ./tests -p 'test_*.py'`
+- Si un test échoue : ne pas commit/push tant que ce n'est pas corrigé
 
 ## Versioning
 

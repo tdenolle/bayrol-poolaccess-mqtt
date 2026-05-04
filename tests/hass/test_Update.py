@@ -1,10 +1,12 @@
 import json
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch, ANY
 
 from requests import RequestException
 from app.hass.Update import Update
 from app.hass.BayrolPoolaccessDevice import BayrolPoolaccessDevice
+from app.mqtt.MqttClient import MqttClient
+from app.mqtt.PoolAccessClient import PoolAccessClient
 import os
 
 
@@ -154,6 +156,62 @@ class TestUpdate(unittest.TestCase):
         value_template = update_entity.get_attr("value_template")
         self.assertIn("v2.50 (260203-0001)", value_template)
         self.assertIn("https://www.bayrol.fr/support-technique/automatic-salt", value_template)
+
+    @patch.dict(os.environ, {"UPDATE_VERSION_ENDPOINT": "http://mocked/endpoint"})
+    def test_on_periodic_refresh(self):
+        """Test that on_periodic_refresh re-fetches update data and republishes config + GET."""
+        # Initial creation with no update data
+        update_entity = Update(self.data, self.device)
+
+        # Now mock a successful response for refresh
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "version": "v3.00 (260301-0001)",
+            "url": "https://www.bayrol.fr/support-technique/new-version"
+        }
+        self.mock_get.return_value = mock_response
+
+        mock_poolaccess = MagicMock(spec=PoolAccessClient)
+        mock_broker = MagicMock(spec=MqttClient)
+
+        update_entity.on_periodic_refresh(mock_poolaccess, mock_broker)
+
+        # Check value_template was updated
+        value_template = update_entity.get_attr("value_template")
+        self.assertIn("v3.00 (260301-0001)", value_template)
+        self.assertIn("https://www.bayrol.fr/support-technique/new-version", value_template)
+
+        # Check config was published to broker
+        mock_broker.publish.assert_called_once_with(
+            "homeassistant/update/22ASE2-12343/sw_version/config",
+            payload=ANY,
+            retain=True
+        )
+
+        # Check GET was published to poolaccess
+        mock_poolaccess.publish.assert_called_once()
+
+    @patch.dict(os.environ, {"UPDATE_VERSION_ENDPOINT": "http://mocked/endpoint"})
+    def test_on_periodic_refresh_with_http_failure(self):
+        """Test that on_periodic_refresh falls back gracefully on HTTP failure."""
+        update_entity = Update(self.data, self.device)
+
+        # Mock a failed response for refresh
+        self.mock_get.return_value = MagicMock(status_code=500)
+
+        mock_poolaccess = MagicMock(spec=PoolAccessClient)
+        mock_broker = MagicMock(spec=MqttClient)
+
+        update_entity.on_periodic_refresh(mock_poolaccess, mock_broker)
+
+        # Check value_template falls back to unavailable
+        value_template = update_entity.get_attr("value_template")
+        self.assertIn("unavailable", value_template)
+
+        # Config and GET should still be published
+        mock_broker.publish.assert_called_once()
+        mock_poolaccess.publish.assert_called_once()
 
 
 if __name__ == '__main__':
