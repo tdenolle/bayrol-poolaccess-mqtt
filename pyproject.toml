@@ -13,7 +13,7 @@ dependencies = [
     "paho-mqtt==2.1.0",
     "docopt",
     "requests==2.33.1",
-    "tomlkit==0.14.0"
+    "tomlkit==0.15.0"
 ]
 classifiers=[
     'Development Status :: 5 - Production/Stable',
