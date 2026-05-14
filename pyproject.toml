@@ -12,7 +12,7 @@ license = {file = "LICENSE"}
 dependencies = [
     "paho-mqtt==2.1.0",
     "docopt",
-    "requests==2.33.1",
+    "requests==2.34.2",
     "tomlkit==0.15.0"
 ]
 classifiers=[
