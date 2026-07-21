@@ -64,6 +64,5 @@
   "mv_dos_rate": "Chlor-Dosierung",
   "sw_version": "Firmware",
   "control_box_used": "Smart & Easy Box",
-  "use_vsp": "Drehzahlpumpe verwenden",
-  "e_enum_use_vsp": "Variable Drehzahlpumpe verwenden"
+  "use_vsp": "Variable Drehzahlpumpe verwenden"
 }
